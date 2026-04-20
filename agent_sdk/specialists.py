@@ -7,10 +7,13 @@ from .tools import (
     analyze_monthly_trends,
     create_budget,
     delete_transaction,
-    forecast_spending,
     finance_snapshot_for_insights,
+    get_forecast,
     get_budget_status,
+    get_overspending_risk,
     get_spending_summary,
+    get_subscription_list,
+    get_top_categories,
     list_categories,
     list_transactions,
     rename_category,
@@ -26,7 +29,7 @@ transaction_agent = Agent(
     handoff_description="Use for adding, listing, deleting, and correcting transactions.",
     instructions=(
         "You handle adding, listing, and deleting transactions. "
-        "Always confirm the amount and category before adding. "
+        "Always confirm the amount and category before adding, and store the merchant name when provided. "
         "Use tools whenever the user asks for live transaction data or changes."
     ),
     tools=[
@@ -44,6 +47,7 @@ budget_agent = Agent(
     handoff_description="Use for budget creation, updates, and status checks.",
     instructions=(
         "You manage budget creation, updates, and status checks. "
+        "Budget updates should use the category name the user gives you. "
         "Alert when spending exceeds 80% of a budget limit."
     ),
     tools=[
@@ -62,7 +66,14 @@ analytics_agent = Agent(
         "You provide spending insights, trends, and forecasts. "
         "Use clear numbers and percentages."
     ),
-    tools=[get_spending_summary, forecast_spending, analyze_monthly_trends],
+    tools=[
+        get_spending_summary,
+        get_forecast,
+        get_top_categories,
+        get_subscription_list,
+        get_overspending_risk,
+        analyze_monthly_trends,
+    ],
 )
 
 
@@ -87,5 +98,13 @@ insights_agent = Agent(
         "Use the provided finance snapshot and any relevant tools to generate practical, specific, non-judgmental recommendations. "
         "Prefer concise summaries with clear next steps."
     ),
-    tools=[finance_snapshot_for_insights, summarize_budget_health, analyze_monthly_trends],
+    tools=[
+        finance_snapshot_for_insights,
+        summarize_budget_health,
+        get_forecast,
+        get_top_categories,
+        get_subscription_list,
+        get_overspending_risk,
+        analyze_monthly_trends,
+    ],
 )

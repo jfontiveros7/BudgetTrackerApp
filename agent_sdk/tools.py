@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import calendar
 from datetime import date, timedelta
+from typing import Any
 from typing import Literal
 
 from agents import RunContextWrapper, function_tool
@@ -43,6 +44,64 @@ def _month_projection(current_spend: float) -> tuple[float, str]:
     return round(projected, 2), trend
 
 
+def _build_finance_snapshot(ctx: BudgetAppContext) -> dict[str, Any]:
+    summary = get_spending_summary_v2(ctx, "monthly")
+    budgets = get_budget_status_v2(ctx)
+    categories = [item for item in summary["breakdown"] if item.get("type") == "expense"][:5]
+    subscriptions = [
+        item for item in summary["breakdown"]
+        if item.get("type") == "expense"
+        and any(
+            keyword in str(item.get("category", "")).lower()
+            for keyword in (
+                "subscription",
+                "subscriptions",
+                "netflix",
+                "spotify",
+                "membership",
+                "memberships",
+                "software",
+            )
+        )
+    ]
+
+    today = date.today()
+    day_of_month = max(today.day, 1)
+    days_in_month = calendar.monthrange(today.year, today.month)[1]
+    projected_income = (
+        (float(summary["total_income"]) / day_of_month) * days_in_month
+        if float(summary["total_income"])
+        else 0.0
+    )
+    projected_expenses = (
+        (float(summary["total_expenses"]) / day_of_month) * days_in_month
+        if float(summary["total_expenses"])
+        else 0.0
+    )
+    forecast_eom_balance = round(projected_income - projected_expenses, 2)
+
+    max_budget_use = max((float(item.get("percent_used", 0)) for item in budgets), default=0.0)
+    if float(summary["net"]) < 0 or max_budget_use >= 100:
+        overspending_risk = "high"
+    elif max_budget_use >= 80 or (
+        float(summary["total_income"]) > 0
+        and float(summary["total_expenses"]) >= float(summary["total_income"]) * 0.9
+    ):
+        overspending_risk = "medium"
+    else:
+        overspending_risk = "low"
+
+    return {
+        "income_30d": round(float(summary["total_income"]), 2),
+        "expenses_30d": round(float(summary["total_expenses"]), 2),
+        "net": round(float(summary["net"]), 2),
+        "top_categories": categories,
+        "subscriptions": subscriptions,
+        "overspending_risk": overspending_risk,
+        "forecast_eom_balance": forecast_eom_balance,
+    }
+
+
 @function_tool
 def create_transaction(
     ctx: RunContextWrapper[BudgetAppContext],
@@ -66,20 +125,22 @@ def create_transaction(
 @function_tool
 def add_transaction(
     ctx: RunContextWrapper[BudgetAppContext],
-    category: str,
     amount: float,
-    description: str = "",
+    category: str,
+    merchant: str = "",
+    date: str | None = None,
     type: Literal["income", "expense"] = "expense",
 ) -> dict:
-    """Add a new income or expense transaction.
+    """Add a new transaction using the app's preferred signature.
 
     Args:
-        category: The transaction category.
         amount: The numeric transaction amount.
-        description: Optional transaction description.
+        category: The transaction category.
+        merchant: Merchant or payee name, stored in the description field.
+        date: Optional transaction date in YYYY-MM-DD format.
         type: Either income or expense.
     """
-    return add_transaction_v2(ctx.context, amount, category, type, description)
+    return add_transaction_v2(ctx.context, amount, category, type, merchant, date)
 
 
 @function_tool
@@ -175,32 +236,62 @@ def create_budget(
 @function_tool
 def update_budget(
     ctx: RunContextWrapper[BudgetAppContext],
-    budget_id: int,
+    category: str,
     amount: float,
 ) -> dict:
-    """Update a budget amount.
+    """Update the active budget amount for a category.
 
     Args:
-        budget_id: Budget id to update.
+        category: Budget category to update.
         amount: New budget amount.
     """
     with get_db_connection(ctx.context) as conn:
-        cursor = conn.cursor()
-        cursor.execute(
-            """
-            UPDATE budgets
-            SET amount = %s, amount_limit = %s
-            WHERE id = %s AND user_id = %s
-            """,
-            (amount, amount, budget_id, ctx.context.user_id),
-        )
-        conn.commit()
-        return {
-            "status": "success",
-            "updated": cursor.rowcount,
-            "budget_id": budget_id,
-            "amount": float(amount),
-        }
+        cursor = conn.cursor(dictionary=True)
+        try:
+            cursor.execute(
+                """
+                SELECT
+                    b.id,
+                    COALESCE(c.name, b.category) AS category_name
+                FROM budgets b
+                LEFT JOIN categories c ON b.category_id = c.id
+                WHERE b.user_id = %s
+                  AND b.is_active = TRUE
+                  AND LOWER(COALESCE(c.name, b.category)) = LOWER(%s)
+                ORDER BY b.id DESC
+                LIMIT 1
+                """,
+                (ctx.context.user_id, category),
+            )
+            row = cursor.fetchone()
+            if not row:
+                return {
+                    "status": "not_found",
+                    "updated": 0,
+                    "category": category,
+                    "amount": float(amount),
+                }
+
+            budget_id = int(row["id"])
+            resolved_category = row["category_name"]
+            cursor.execute(
+                """
+                UPDATE budgets
+                SET amount = %s, amount_limit = %s
+                WHERE id = %s AND user_id = %s
+                """,
+                (amount, amount, budget_id, ctx.context.user_id),
+            )
+            conn.commit()
+            return {
+                "status": "success",
+                "updated": cursor.rowcount,
+                "budget_id": budget_id,
+                "category": resolved_category,
+                "amount": float(amount),
+            }
+        finally:
+            cursor.close()
 
 
 @function_tool
@@ -227,8 +318,21 @@ def update_budget_amount(
         budget_id: Budget id to update.
         amount: New budget amount.
     """
-    result = update_budget(ctx, budget_id, amount)
-    return f"Updated {result['updated']} budget(s)."
+    with get_db_connection(ctx.context) as conn:
+        cursor = conn.cursor()
+        try:
+            cursor.execute(
+                """
+                UPDATE budgets
+                SET amount = %s, amount_limit = %s
+                WHERE id = %s AND user_id = %s
+                """,
+                (amount, amount, budget_id, ctx.context.user_id),
+            )
+            conn.commit()
+            return f"Updated {cursor.rowcount} budget(s)."
+        finally:
+            cursor.close()
 
 
 @function_tool
@@ -326,6 +430,18 @@ def forecast_spending(ctx: RunContextWrapper[BudgetAppContext]) -> dict:
 
 
 @function_tool
+def get_forecast(ctx: RunContextWrapper[BudgetAppContext]) -> dict:
+    """Get the current end-of-month forecast."""
+    forecast = forecast_spending(ctx)
+    snapshot = _build_finance_snapshot(ctx.context)
+    return {
+        "projected_expenses": forecast["projected"],
+        "trend": forecast["trend"],
+        "forecast_eom_balance": snapshot["forecast_eom_balance"],
+    }
+
+
+@function_tool
 def list_categories(ctx: RunContextWrapper[BudgetAppContext]) -> str:
     """List distinct categories used across budgets and transactions."""
     categories = [row["name"] for row in list_categories_v2(ctx.context) if row.get("name")]
@@ -381,11 +497,28 @@ def rename_category(
 @function_tool
 def finance_snapshot_for_insights(ctx: RunContextWrapper[BudgetAppContext]) -> str:
     """Return a compact finance snapshot for the Insights Agent to reason over."""
-    summary = get_spending_summary_v2(ctx.context, "monthly")
-    categories = summary["breakdown"][:5]
-    compact_summary = {
-        "total_income": summary["total_income"],
-        "total_expenses": summary["total_expenses"],
-        "net": summary["net"],
+    snapshot = _build_finance_snapshot(ctx.context)
+    return f"User financial snapshot: {snapshot}"
+
+
+@function_tool
+def get_top_categories(ctx: RunContextWrapper[BudgetAppContext]) -> list[dict[str, Any]]:
+    """Get the top expense categories for the current month."""
+    return _build_finance_snapshot(ctx.context)["top_categories"]
+
+
+@function_tool
+def get_subscription_list(ctx: RunContextWrapper[BudgetAppContext]) -> list[dict[str, Any]]:
+    """Get likely subscription-related categories for the current month."""
+    return _build_finance_snapshot(ctx.context)["subscriptions"]
+
+
+@function_tool
+def get_overspending_risk(ctx: RunContextWrapper[BudgetAppContext]) -> dict[str, Any]:
+    """Get the current overspending risk classification."""
+    snapshot = _build_finance_snapshot(ctx.context)
+    return {
+        "overspending_risk": snapshot["overspending_risk"],
+        "forecast_eom_balance": snapshot["forecast_eom_balance"],
+        "net": snapshot["net"],
     }
-    return f"Summary={compact_summary}; Top categories={categories}"

@@ -28,10 +28,11 @@ $totalTransactions = $conn->query("SELECT COUNT(*) AS c FROM transactions")->fet
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex">
     <aside class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col p-6">
-        <h1 class="text-xl font-semibold mb-8">BudgetTracker Pro</h1>
+        <h1 class="text-xl font-semibold mb-8">Badget Tracker App by Konticode Labs</h1>
         <nav class="space-y-2">
             <a href="dashboard.php" class="block px-3 py-2 rounded hover:bg-slate-800">Dashboard</a>
             <a href="add_transaction.php" class="block px-3 py-2 rounded hover:bg-slate-800">Add Transaction</a>
+            <a href="settings.php" class="block px-3 py-2 rounded hover:bg-slate-800">Settings</a>
             <a href="admin.php" class="block px-3 py-2 rounded bg-slate-800 text-slate-100">Admin</a>
         </nav>
         <div class="mt-auto pt-6 border-t border-slate-800">

@@ -15,6 +15,8 @@ require_once "../src/transactions.php";
 $summary = getUserSummary($userId);
 $chartData = getUserChartData($userId);
 $agentReport = getBudgetAgentReport($userId);
+$signalSnapshot = getBudgetSignalSnapshot($userId);
+$dashboardAlerts = getDashboardAlerts($userId);
 $recentTransactions = getRecentTransactions($userId, 50);
 ?>
 <!DOCTYPE html>
@@ -32,6 +34,7 @@ $recentTransactions = getRecentTransactions($userId, 50);
         <nav class="space-y-2">
             <a href="dashboard.php" class="block px-3 py-2 rounded bg-slate-800 text-slate-100">Dashboard</a>
             <a href="add_transaction.php" class="block px-3 py-2 rounded hover:bg-slate-800">Add Transaction</a>
+            <a href="settings.php" class="block px-3 py-2 rounded hover:bg-slate-800">Settings</a>
             <?php if ($isAdmin): ?>
                 <a href="admin.php" class="block px-3 py-2 rounded hover:bg-slate-800">Admin</a>
             <?php endif; ?>
@@ -80,12 +83,116 @@ $recentTransactions = getRecentTransactions($userId, 50);
             </div>
         </div>
 
+        <?php if (!empty($dashboardAlerts)): ?>
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-8 shadow-xl mb-10">
+                <div class="flex flex-col gap-2 mb-6 md:flex-row md:items-center md:justify-between">
+                    <div>
+                        <h3 class="text-xl font-semibold">Alerts</h3>
+                        <p class="text-slate-400 text-sm mt-2">Live dashboard alerts based on your budgets, forecast, and recent spending behavior.</p>
+                    </div>
+                    <button
+                        id="alertPreferencesToggle"
+                        type="button"
+                        class="inline-flex items-center justify-center rounded-lg border border-slate-700 bg-slate-950 px-4 py-2 text-sm font-medium text-slate-200 transition hover:bg-slate-800"
+                        aria-expanded="false"
+                        aria-controls="alertPreferencesPanel"
+                    >
+                        Alert Preferences
+                    </button>
+                </div>
+
+                <div id="alertPreferencesPanel" class="hidden rounded-xl border border-slate-800 bg-slate-950/60 p-5 mb-6">
+                    <h4 class="text-sm font-semibold text-slate-200">Choose Which Alerts To Show</h4>
+                    <p class="text-sm text-slate-400 mt-1">Your choices are saved in this browser so the dashboard stays calm and relevant.</p>
+
+                    <div class="grid grid-cols-1 gap-3 mt-4 md:grid-cols-2 xl:grid-cols-5">
+                        <label class="flex items-center gap-3 rounded-lg border border-slate-800 bg-slate-900/80 px-4 py-3 text-sm text-slate-300">
+                            <input type="checkbox" data-alert-pref="overspending_risk" class="alert-pref-checkbox h-4 w-4 rounded border-slate-600 bg-slate-950 text-emerald-500 focus:ring-emerald-500">
+                            Overspending Risk
+                        </label>
+                        <label class="flex items-center gap-3 rounded-lg border border-slate-800 bg-slate-900/80 px-4 py-3 text-sm text-slate-300">
+                            <input type="checkbox" data-alert-pref="forecast" class="alert-pref-checkbox h-4 w-4 rounded border-slate-600 bg-slate-950 text-emerald-500 focus:ring-emerald-500">
+                            Forecast
+                        </label>
+                        <label class="flex items-center gap-3 rounded-lg border border-slate-800 bg-slate-900/80 px-4 py-3 text-sm text-slate-300">
+                            <input type="checkbox" data-alert-pref="budget_threshold" class="alert-pref-checkbox h-4 w-4 rounded border-slate-600 bg-slate-950 text-emerald-500 focus:ring-emerald-500">
+                            Budget Thresholds
+                        </label>
+                        <label class="flex items-center gap-3 rounded-lg border border-slate-800 bg-slate-900/80 px-4 py-3 text-sm text-slate-300">
+                            <input type="checkbox" data-alert-pref="subscription_review" class="alert-pref-checkbox h-4 w-4 rounded border-slate-600 bg-slate-950 text-emerald-500 focus:ring-emerald-500">
+                            Subscription Review
+                        </label>
+                        <label class="flex items-center gap-3 rounded-lg border border-slate-800 bg-slate-900/80 px-4 py-3 text-sm text-slate-300">
+                            <input type="checkbox" data-alert-pref="coach_recommendation" class="alert-pref-checkbox h-4 w-4 rounded border-slate-600 bg-slate-950 text-emerald-500 focus:ring-emerald-500">
+                            Coach Recommendation
+                        </label>
+                    </div>
+
+                    <div class="mt-4">
+                        <button
+                            id="resetDismissedAlerts"
+                            type="button"
+                            class="inline-flex items-center justify-center rounded-lg border border-slate-700 bg-slate-900 px-4 py-2 text-sm font-medium text-slate-200 transition hover:bg-slate-800"
+                        >
+                            Restore Dismissed Alerts
+                        </button>
+                    </div>
+                </div>
+
+                <div id="dashboardAlertsGrid" class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                    <?php foreach ($dashboardAlerts as $alert): ?>
+                        <div
+                            class="dashboard-alert-card rounded-xl border px-5 py-4 <?php echo $alert["level"] === "critical" ? "border-rose-500/30 bg-rose-500/10" : ($alert["level"] === "warning" ? "border-amber-500/30 bg-amber-500/10" : "border-sky-500/30 bg-sky-500/10"); ?>"
+                            data-alert-id="<?php echo htmlspecialchars($alert["id"]); ?>"
+                            data-alert-type="<?php echo htmlspecialchars($alert["type"]); ?>"
+                        >
+                            <div class="flex items-center justify-between gap-3">
+                                <h4 class="text-sm font-semibold <?php echo $alert["level"] === "critical" ? "text-rose-300" : ($alert["level"] === "warning" ? "text-amber-300" : "text-sky-300"); ?>">
+                                    <?php echo htmlspecialchars($alert["title"]); ?>
+                                </h4>
+                                <div class="flex items-center gap-2">
+                                    <span class="rounded-full border px-2 py-1 text-[11px] uppercase tracking-[0.2em] <?php echo $alert["level"] === "critical" ? "border-rose-500/30 text-rose-200" : ($alert["level"] === "warning" ? "border-amber-500/30 text-amber-200" : "border-sky-500/30 text-sky-200"); ?>">
+                                        <?php echo htmlspecialchars($alert["level"]); ?>
+                                    </span>
+                                    <button
+                                        type="button"
+                                        class="dismiss-alert inline-flex items-center justify-center rounded-lg border border-slate-700 bg-slate-950 px-2 py-1 text-xs font-medium text-slate-300 transition hover:bg-slate-800"
+                                        data-dismiss-alert="<?php echo htmlspecialchars($alert["id"]); ?>"
+                                    >
+                                        Dismiss
+                                    </button>
+                                </div>
+                            </div>
+                            <p class="mt-3 text-sm text-slate-200"><?php echo htmlspecialchars($alert["message"]); ?></p>
+                            <p class="mt-3 text-sm text-slate-400"><?php echo htmlspecialchars($alert["action"]); ?></p>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+
+                <div id="alertsEmptyState" class="hidden rounded-xl border border-dashed border-slate-700 bg-slate-950/50 px-4 py-10 text-center mt-4">
+                    <p class="text-sm text-slate-400">No alerts match your current preferences right now.</p>
+                </div>
+            </div>
+        <?php endif; ?>
+
         <div class="bg-slate-900 border border-slate-800 rounded-xl p-8 shadow-xl mb-10">
             <h3 class="text-xl font-semibold mb-4">Income vs Expense (Last 30 Days)</h3>
             <canvas id="incomeExpenseChart" height="120"></canvas>
         </div>
 
-        <div class="bg-slate-900 border border-slate-800 rounded-xl p-8 shadow-xl mb-10">
+        <div class="mb-10">
+            <button
+                id="coachScoreToggle"
+                type="button"
+                class="inline-flex items-center justify-center rounded-lg border border-slate-700 bg-slate-900 px-4 py-2 text-sm font-medium text-slate-200 transition hover:bg-slate-800"
+                aria-expanded="false"
+                aria-controls="coachScoreSection"
+            >
+                Show Coach Score
+            </button>
+        </div>
+
+        <div id="coachScoreSection" class="hidden bg-slate-900 border border-slate-800 rounded-xl p-8 shadow-xl mb-10">
             <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                 <div>
                     <p class="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-400">AI Budget Coach</p>
@@ -99,6 +206,51 @@ $recentTransactions = getRecentTransactions($userId, 50);
                     </p>
                 </div>
             </div>
+
+            <?php $scoreBreakdown = $agentReport["score_breakdown"] ?? []; ?>
+            <?php if (!empty($scoreBreakdown)): ?>
+                <div class="mt-8 rounded-xl border border-slate-800 bg-slate-950/60 p-5">
+                    <div class="flex flex-col gap-2 mb-5 md:flex-row md:items-center md:justify-between">
+                        <div>
+                            <h4 class="text-sm font-semibold text-slate-200">Why This Score?</h4>
+                            <p class="text-sm text-slate-400 mt-1">A breakdown of the habits and signals shaping your financial control score.</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-5">
+                        <div class="rounded-lg border border-slate-800 bg-slate-900/80 p-4">
+                            <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Budget Adherence</p>
+                            <p class="mt-2 text-2xl font-semibold <?php echo $scoreBreakdown["budget_adherence"] >= 80 ? "text-emerald-400" : ($scoreBreakdown["budget_adherence"] >= 50 ? "text-amber-400" : "text-rose-400"); ?>">
+                                <?php echo (int) $scoreBreakdown["budget_adherence"]; ?>
+                            </p>
+                        </div>
+                        <div class="rounded-lg border border-slate-800 bg-slate-900/80 p-4">
+                            <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Category Volatility</p>
+                            <p class="mt-2 text-2xl font-semibold <?php echo $scoreBreakdown["category_volatility"] >= 80 ? "text-emerald-400" : ($scoreBreakdown["category_volatility"] >= 50 ? "text-amber-400" : "text-rose-400"); ?>">
+                                <?php echo (int) $scoreBreakdown["category_volatility"]; ?>
+                            </p>
+                        </div>
+                        <div class="rounded-lg border border-slate-800 bg-slate-900/80 p-4">
+                            <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Subscription Creep</p>
+                            <p class="mt-2 text-2xl font-semibold <?php echo $scoreBreakdown["subscription_creep"] >= 80 ? "text-emerald-400" : ($scoreBreakdown["subscription_creep"] >= 50 ? "text-amber-400" : "text-rose-400"); ?>">
+                                <?php echo (int) $scoreBreakdown["subscription_creep"]; ?>
+                            </p>
+                        </div>
+                        <div class="rounded-lg border border-slate-800 bg-slate-900/80 p-4">
+                            <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Savings Rate</p>
+                            <p class="mt-2 text-2xl font-semibold <?php echo $scoreBreakdown["savings_rate"] >= 80 ? "text-emerald-400" : ($scoreBreakdown["savings_rate"] >= 50 ? "text-amber-400" : "text-rose-400"); ?>">
+                                <?php echo (int) $scoreBreakdown["savings_rate"]; ?>
+                            </p>
+                        </div>
+                        <div class="rounded-lg border border-slate-800 bg-slate-900/80 p-4">
+                            <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Burn Rate vs Income</p>
+                            <p class="mt-2 text-2xl font-semibold <?php echo $scoreBreakdown["burn_rate_vs_income"] >= 80 ? "text-emerald-400" : ($scoreBreakdown["burn_rate_vs_income"] >= 50 ? "text-amber-400" : "text-rose-400"); ?>">
+                                <?php echo (int) $scoreBreakdown["burn_rate_vs_income"]; ?>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            <?php endif; ?>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
                 <div class="rounded-xl border border-slate-800 bg-slate-950/60 p-5">
@@ -123,6 +275,75 @@ $recentTransactions = getRecentTransactions($userId, 50);
                     </div>
                 </div>
             </div>
+
+            <div class="mt-8 rounded-xl border border-slate-800 bg-slate-950/60 p-5">
+                <div class="flex flex-col gap-2 mb-5 md:flex-row md:items-center md:justify-between">
+                    <div>
+                        <h4 class="text-sm font-semibold text-slate-200">Financial Snapshot</h4>
+                        <p class="text-sm text-slate-400 mt-1">Live signals the agent uses for insights, warnings, and suggestions.</p>
+                    </div>
+                    <span class="rounded-full border px-3 py-1 text-xs <?php echo $signalSnapshot["overspending_risk"] === "high" ? "border-rose-500/30 bg-rose-500/10 text-rose-300" : ($signalSnapshot["overspending_risk"] === "medium" ? "border-amber-500/30 bg-amber-500/10 text-amber-300" : "border-emerald-500/30 bg-emerald-500/10 text-emerald-300"); ?>">
+                        Overspending Risk: <?php echo ucfirst($signalSnapshot["overspending_risk"]); ?>
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+                    <div class="rounded-lg border border-slate-800 bg-slate-900/80 p-4">
+                        <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Income (30d)</p>
+                        <p class="mt-2 text-2xl font-semibold text-emerald-400">$<?php echo number_format($signalSnapshot["income_30d"], 2); ?></p>
+                    </div>
+                    <div class="rounded-lg border border-slate-800 bg-slate-900/80 p-4">
+                        <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Expenses (30d)</p>
+                        <p class="mt-2 text-2xl font-semibold text-rose-400">$<?php echo number_format($signalSnapshot["expenses_30d"], 2); ?></p>
+                    </div>
+                    <div class="rounded-lg border border-slate-800 bg-slate-900/80 p-4">
+                        <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Net</p>
+                        <p class="mt-2 text-2xl font-semibold <?php echo $signalSnapshot["net"] >= 0 ? "text-emerald-400" : "text-rose-400"; ?>">
+                            $<?php echo number_format($signalSnapshot["net"], 2); ?>
+                        </p>
+                    </div>
+                    <div class="rounded-lg border border-slate-800 bg-slate-900/80 p-4">
+                        <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Forecast EOM Balance</p>
+                        <p class="mt-2 text-2xl font-semibold <?php echo $signalSnapshot["forecast_eom_balance"] >= 0 ? "text-emerald-400" : "text-rose-400"; ?>">
+                            $<?php echo number_format($signalSnapshot["forecast_eom_balance"], 2); ?>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-2">
+                    <div class="rounded-lg border border-slate-800 bg-slate-900/80 p-4">
+                        <p class="text-xs uppercase tracking-[0.2em] text-slate-500 mb-3">Top Categories</p>
+                        <?php if (empty($signalSnapshot["top_categories"])): ?>
+                            <p class="text-sm text-slate-400">No expense categories detected yet.</p>
+                        <?php else: ?>
+                            <div class="space-y-2">
+                                <?php foreach ($signalSnapshot["top_categories"] as $category): ?>
+                                    <div class="flex items-center justify-between rounded-lg bg-slate-950/70 px-3 py-2 text-sm">
+                                        <span class="text-slate-300"><?php echo htmlspecialchars($category["category"]); ?></span>
+                                        <span class="font-medium text-slate-100">$<?php echo number_format((float) $category["total"], 2); ?></span>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+
+                    <div class="rounded-lg border border-slate-800 bg-slate-900/80 p-4">
+                        <p class="text-xs uppercase tracking-[0.2em] text-slate-500 mb-3">Subscriptions</p>
+                        <?php if (empty($signalSnapshot["subscriptions"])): ?>
+                            <p class="text-sm text-slate-400">No subscriptions detected from the recent transaction data.</p>
+                        <?php else: ?>
+                            <div class="space-y-2">
+                                <?php foreach ($signalSnapshot["subscriptions"] as $subscription): ?>
+                                    <div class="flex items-center justify-between rounded-lg bg-slate-950/70 px-3 py-2 text-sm">
+                                        <span class="text-slate-300"><?php echo htmlspecialchars($subscription["category"]); ?></span>
+                                        <span class="font-medium text-slate-100">$<?php echo number_format((float) $subscription["total"], 2); ?></span>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="bg-slate-900 border border-slate-800 rounded-xl p-8 shadow-xl mb-10">
@@ -132,14 +353,14 @@ $recentTransactions = getRecentTransactions($userId, 50);
                     <p class="text-slate-400 text-sm mt-2">Ask questions about spending, savings, cash flow, or where to improve next.</p>
                 </div>
                 <span class="rounded-full border border-slate-700 bg-slate-950 px-3 py-1 text-xs text-slate-400">
-                    Uses Agent SDK and OpenAI when configured
+                    AI features by Konticode Labs, available when OpenAI is configured
                 </span>
             </div>
 
             <div class="rounded-xl border border-slate-800 bg-slate-950/60 p-5">
                 <div id="coachMessages" class="space-y-3 mb-4">
                     <div class="rounded-lg border border-slate-800 bg-slate-900 px-4 py-3 text-sm text-slate-300">
-                        Ask something like "How can I save more this month?" or "What category should I reduce first?"
+                        Ask something like "What category is draining my money the fastest?", "How much can I safely save this month?", or "Which subscriptions should I cancel first?"
                     </div>
                 </div>
 
@@ -270,6 +491,206 @@ $recentTransactions = getRecentTransactions($userId, 50);
         const coachForm = document.getElementById('coachForm');
         const coachInput = document.getElementById('coachInput');
         const coachMessages = document.getElementById('coachMessages');
+        const coachScoreToggle = document.getElementById('coachScoreToggle');
+        const coachScoreSection = document.getElementById('coachScoreSection');
+        const alertPreferencesToggle = document.getElementById('alertPreferencesToggle');
+        const alertPreferencesPanel = document.getElementById('alertPreferencesPanel');
+        const alertCards = Array.from(document.querySelectorAll('.dashboard-alert-card'));
+        const alertPrefCheckboxes = Array.from(document.querySelectorAll('.alert-pref-checkbox'));
+        const resetDismissedAlertsButton = document.getElementById('resetDismissedAlerts');
+        const alertsEmptyState = document.getElementById('alertsEmptyState');
+
+        const defaultAlertPreferences = {
+            overspending_risk: true,
+            forecast: true,
+            budget_threshold: true,
+            subscription_review: true,
+            coach_recommendation: true,
+        };
+        let alertPreferencesState = { ...defaultAlertPreferences };
+        let dismissedAlertsState = [];
+        let aiSettingsState = {
+            coach_score_default_visible: false,
+            weekly_digest_enabled: true,
+            notification_cadence: 'weekly',
+        };
+
+        async function loadAlertSettings() {
+            const response = await fetch('api/alert_preferences.php');
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.error || 'Could not load alert settings.');
+            }
+
+            alertPreferencesState = { ...defaultAlertPreferences, ...(data.preferences || {}) };
+            dismissedAlertsState = Array.isArray(data.dismissed_alerts) ? data.dismissed_alerts : [];
+            aiSettingsState = { ...aiSettingsState, ...(data.ai_settings || {}) };
+        }
+
+        async function saveAlertPreferences(preferences) {
+            const response = await fetch('api/alert_preferences.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'save_preferences',
+                    preferences,
+                }),
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.error || 'Could not save alert preferences.');
+            }
+
+            alertPreferencesState = { ...defaultAlertPreferences, ...(data.preferences || {}) };
+            dismissedAlertsState = Array.isArray(data.dismissed_alerts) ? data.dismissed_alerts : dismissedAlertsState;
+            aiSettingsState = { ...aiSettingsState, ...(data.ai_settings || {}) };
+        }
+
+        async function dismissAlert(alertId) {
+            const response = await fetch('api/alert_preferences.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'dismiss_alert',
+                    alert_id: alertId,
+                }),
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.error || 'Could not dismiss alert.');
+            }
+
+            dismissedAlertsState = Array.isArray(data.dismissed_alerts) ? data.dismissed_alerts : dismissedAlertsState;
+        }
+
+        async function restoreDismissedAlerts() {
+            const response = await fetch('api/alert_preferences.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'restore_dismissed',
+                }),
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.error || 'Could not restore dismissed alerts.');
+            }
+
+            dismissedAlertsState = Array.isArray(data.dismissed_alerts) ? data.dismissed_alerts : [];
+        }
+
+        async function saveAiSettings(settings) {
+            const response = await fetch('api/alert_preferences.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'save_ai_settings',
+                    ai_settings: settings,
+                }),
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.error || 'Could not save AI settings.');
+            }
+
+            aiSettingsState = { ...aiSettingsState, ...(data.ai_settings || {}) };
+        }
+
+        function applyAlertVisibility() {
+            if (!alertCards.length) {
+                return;
+            }
+
+            const dismissed = new Set(dismissedAlertsState);
+            let visibleCount = 0;
+
+            alertCards.forEach((card) => {
+                const type = card.dataset.alertType;
+                const id = card.dataset.alertId;
+                const isEnabled = alertPreferencesState[type] !== false;
+                const isDismissed = dismissed.has(id);
+                const shouldShow = isEnabled && !isDismissed;
+                card.classList.toggle('hidden', !shouldShow);
+                if (shouldShow) {
+                    visibleCount += 1;
+                }
+            });
+
+            alertsEmptyState?.classList.toggle('hidden', visibleCount > 0);
+        }
+
+        function syncAlertPreferenceInputs() {
+            alertPrefCheckboxes.forEach((checkbox) => {
+                checkbox.checked = alertPreferencesState[checkbox.dataset.alertPref] !== false;
+            });
+        }
+
+        function setCoachScoreVisibility(isVisible) {
+            coachScoreSection.classList.toggle('hidden', !isVisible);
+            coachScoreToggle.setAttribute('aria-expanded', isVisible ? 'true' : 'false');
+            coachScoreToggle.textContent = isVisible ? 'Hide Coach Score' : 'Show Coach Score';
+        }
+
+        coachScoreToggle.addEventListener('click', async () => {
+            const isVisible = !coachScoreSection.classList.contains('hidden');
+            const nextVisible = !isVisible;
+            setCoachScoreVisibility(nextVisible);
+            try {
+                await saveAiSettings({
+                    coach_score_default_visible: nextVisible,
+                });
+            } catch (error) {
+                appendCoachMessage('Coach visibility could not be saved right now.', 'assistant');
+            }
+        });
+
+        if (alertPreferencesToggle && alertPreferencesPanel) {
+            alertPreferencesToggle.addEventListener('click', () => {
+                const isExpanded = alertPreferencesToggle.getAttribute('aria-expanded') === 'true';
+                alertPreferencesToggle.setAttribute('aria-expanded', isExpanded ? 'false' : 'true');
+                alertPreferencesPanel.classList.toggle('hidden', isExpanded);
+            });
+        }
+
+        alertPrefCheckboxes.forEach((checkbox) => {
+            checkbox.addEventListener('change', async () => {
+                const nextPreferences = { ...alertPreferencesState, [checkbox.dataset.alertPref]: checkbox.checked };
+                alertPreferencesState = nextPreferences;
+                applyAlertVisibility();
+                try {
+                    await saveAlertPreferences(nextPreferences);
+                    syncAlertPreferenceInputs();
+                    applyAlertVisibility();
+                } catch (error) {
+                    appendCoachMessage('Alert preferences could not be saved right now.', 'assistant');
+                }
+            });
+        });
+
+        document.querySelectorAll('.dismiss-alert').forEach((button) => {
+            button.addEventListener('click', async () => {
+                const alertId = button.dataset.dismissAlert;
+                dismissedAlertsState = Array.from(new Set([...dismissedAlertsState, alertId]));
+                applyAlertVisibility();
+                try {
+                    await dismissAlert(alertId);
+                    applyAlertVisibility();
+                } catch (error) {
+                    appendCoachMessage('This alert could not be dismissed right now.', 'assistant');
+                }
+            });
+        });
+
+        resetDismissedAlertsButton?.addEventListener('click', async () => {
+            dismissedAlertsState = [];
+            applyAlertVisibility();
+            try {
+                await restoreDismissedAlerts();
+                applyAlertVisibility();
+            } catch (error) {
+                appendCoachMessage('Dismissed alerts could not be restored right now.', 'assistant');
+            }
+        });
 
         function appendCoachMessage(text, role) {
             const message = document.createElement('div');
@@ -279,6 +700,17 @@ $recentTransactions = getRecentTransactions($userId, 50);
             message.textContent = text;
             coachMessages.appendChild(message);
         }
+
+        (async () => {
+            try {
+                await loadAlertSettings();
+            } catch (error) {
+                appendCoachMessage('Account-level alert settings could not be loaded, so local defaults are being used.', 'assistant');
+            }
+            setCoachScoreVisibility(Boolean(aiSettingsState.coach_score_default_visible));
+            syncAlertPreferenceInputs();
+            applyAlertVisibility();
+        })();
 
         async function requestCoachReply(url, message) {
             const response = await fetch(url, {

@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-import os
 import sys
 
 from .agent import run_agent_sync
@@ -27,7 +26,6 @@ def main() -> None:
         print(output)
     sys.stdout.flush()
     sys.stderr.flush()
-    os._exit(0)
 
 
 if __name__ == "__main__":

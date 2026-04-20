@@ -7,8 +7,11 @@ It exposes a single root agent for the app while preserving a tool-driven fallba
 from __future__ import annotations
 
 import json
+import logging
 import os
 import socket
+import calendar
+from datetime import date
 from typing import Any
 from urllib.parse import urlparse
 
@@ -26,6 +29,9 @@ from .repository_v2 import (
     get_transactions_v2,
     list_categories as list_categories_v2,
 )
+
+
+logger = logging.getLogger(__name__)
 
 
 @function_tool
@@ -131,6 +137,16 @@ Rules:
 - Use dollar formatting ($1,234.56)
 - Warn when spending exceeds 80% of a budget limit
 - Be concise and actionable
+- When possible, reason from this financial snapshot shape:
+  User financial snapshot:
+  - Income (30d): $X
+  - Expenses (30d): $Y
+  - Net: $Z
+  - Top categories: ...
+  - Subscriptions: ...
+  - Overspending risk: ...
+  - Forecast EOM balance: ...
+- Provide insights, warnings, and suggestions based on that data
 - When listing transactions, show: date, category, amount, description
 - Default period is current month unless specified
 - If a user asks about something outside budgeting or finance, politely redirect them
@@ -190,6 +206,97 @@ def _can_reach_openai(timeout_seconds: float = 2.0) -> bool:
         return False
 
 
+def _project_end_of_month_balance(total_income: float, total_expenses: float) -> float:
+    today = date.today()
+    day_of_month = max(today.day, 1)
+    days_in_month = calendar.monthrange(today.year, today.month)[1]
+    projected_income = (total_income / day_of_month) * days_in_month if total_income else 0.0
+    projected_expenses = (total_expenses / day_of_month) * days_in_month if total_expenses else 0.0
+    return round(projected_income - projected_expenses, 2)
+
+
+def _build_financial_signals(
+    summary: dict[str, Any],
+    budgets: list[dict[str, Any]],
+    recent: list[dict[str, Any]],
+) -> dict[str, Any]:
+    total_income = float(summary["total_income"])
+    total_expenses = float(summary["total_expenses"])
+    net = float(summary["net"])
+
+    expense_categories = [
+        item for item in summary.get("breakdown", [])
+        if item.get("type") == "expense"
+    ]
+    top_categories = sorted(
+        expense_categories,
+        key=lambda item: float(item.get("total", 0)),
+        reverse=True,
+    )[:3]
+
+    subscription_keywords = (
+        "subscription", "subscriptions", "netflix", "spotify", "hulu",
+        "disney", "prime", "membership", "memberships", "software", "saas"
+    )
+    subscriptions = []
+    seen_categories: set[str] = set()
+    for item in expense_categories:
+        category_name = str(item.get("category", ""))
+        lowered = category_name.lower()
+        if any(keyword in lowered for keyword in subscription_keywords):
+            if category_name not in seen_categories:
+                subscriptions.append(
+                    {
+                        "category": category_name,
+                        "amount": round(float(item.get("total", 0)), 2),
+                    }
+                )
+                seen_categories.add(category_name)
+
+    max_budget_use = max((float(item.get("percent_used", 0)) for item in budgets), default=0.0)
+    if net < 0 or max_budget_use >= 100:
+        overspending_risk = "high"
+    elif max_budget_use >= 80 or (total_income > 0 and total_expenses >= total_income * 0.9):
+        overspending_risk = "medium"
+    else:
+        overspending_risk = "low"
+
+    forecast_eom_balance = _project_end_of_month_balance(total_income, total_expenses)
+
+    return {
+        "income_30d": round(total_income, 2),
+        "expenses_30d": round(total_expenses, 2),
+        "net": round(net, 2),
+        "top_categories": top_categories,
+        "subscriptions": subscriptions,
+        "overspending_risk": overspending_risk,
+        "forecast_eom_balance": forecast_eom_balance,
+        "recent_transactions_count": len(recent),
+    }
+
+
+def _format_financial_snapshot(signals: dict[str, Any]) -> str:
+    top_categories = ", ".join(
+        f"{item['category']} (${float(item['total']):.2f})"
+        for item in signals["top_categories"]
+    ) or "None yet"
+    subscriptions = ", ".join(
+        f"{item['category']} (${float(item['amount']):.2f})"
+        for item in signals["subscriptions"]
+    ) or "None detected"
+
+    return (
+        "User financial snapshot:\n"
+        f"- Income (30d): ${signals['income_30d']:.2f}\n"
+        f"- Expenses (30d): ${signals['expenses_30d']:.2f}\n"
+        f"- Net: ${signals['net']:.2f}\n"
+        f"- Top categories: {top_categories}\n"
+        f"- Subscriptions: {subscriptions}\n"
+        f"- Overspending risk: {signals['overspending_risk']}\n"
+        f"- Forecast EOM balance: ${signals['forecast_eom_balance']:.2f}"
+    )
+
+
 def _local_budget_fallback(context: BudgetAppContext, user_message: str) -> str:
     question = (user_message or "").strip().lower()
     try:
@@ -201,9 +308,11 @@ def _local_budget_fallback(context: BudgetAppContext, user_message: str) -> str:
         budgets = _legacy_budget_status(context)
         recent = _legacy_recent_transactions(context)
 
-    total_income = float(summary["total_income"])
-    total_expenses = float(summary["total_expenses"])
-    net = float(summary["net"])
+    signals = _build_financial_signals(summary, budgets, recent)
+    total_income = float(signals["income_30d"])
+    total_expenses = float(signals["expenses_30d"])
+    net = float(signals["net"])
+    snapshot = _format_financial_snapshot(signals)
 
     top_expense = next(
         (item for item in summary["breakdown"] if item.get("type") == "expense"),
@@ -216,48 +325,60 @@ def _local_budget_fallback(context: BudgetAppContext, user_message: str) -> str:
 
     if "save" in question or "saving" in question:
         if net > 0:
-            reply = f"You are net positive by ${net:.2f} this month."
+            reply = snapshot + "\n\n"
+            reply += f"Insight: You are net positive by ${net:.2f} this month."
             if top_expense:
                 reply += (
                     f" Your largest expense category is {top_expense['category']} at "
                     f"${float(top_expense['total']):.2f}, so that is the first place to trim."
                 )
-            reply += " A practical next step is to move part of your surplus into savings right after income arrives."
+            reply += " Suggestion: Move part of your surplus into savings right after income arrives."
             return reply
         return (
-            f"You are currently net negative by ${abs(net):.2f} this month. "
-            "Reduce one recurring expense category first before setting a bigger savings target."
+            snapshot + "\n\n"
+            + f"Warning: You are currently net negative by ${abs(net):.2f} this month. "
+            + "Suggestion: Reduce one recurring expense category first before setting a bigger savings target."
         )
 
     if "budget" in question and budget_warning:
         return (
-            f"Your {budget_warning['category']} budget is at {float(budget_warning['percent_used']):.1f}% "
-            f"used, with ${float(budget_warning['spent']):.2f} spent against a ${float(budget_warning['limit']):.2f} limit."
+            snapshot + "\n\n"
+            + f"Warning: Your {budget_warning['category']} budget is at {float(budget_warning['percent_used']):.1f}% "
+            + f"used, with ${float(budget_warning['spent']):.2f} spent against a ${float(budget_warning['limit']):.2f} limit. "
+            + "Suggestion: Slow spending in that category or raise the budget if this is a planned increase."
         )
 
     if "spend" in question or "expense" in question:
         if top_expense:
             return (
-                f"Your top expense category this month is {top_expense['category']} at "
-                f"${float(top_expense['total']):.2f}. Total expenses are ${total_expenses:.2f} and net cash flow is ${net:.2f}."
+                snapshot + "\n\n"
+                + f"Insight: Your top expense category this month is {top_expense['category']} at "
+                + f"${float(top_expense['total']):.2f}. "
+                + "Suggestion: Review whether that category is fixed, discretionary, or subscription-driven."
             )
-        return f"You have ${total_expenses:.2f} in expenses this month and ${net:.2f} net cash flow."
+        return snapshot + "\n\n" + f"Insight: You have ${total_expenses:.2f} in expenses this month and ${net:.2f} net cash flow."
 
     if "income" in question:
         return (
-            f"You have recorded ${total_income:.2f} in income and ${total_expenses:.2f} in expenses this month, "
-            f"for a net of ${net:.2f}."
+            snapshot + "\n\n"
+            + f"Insight: You have recorded ${total_income:.2f} in income and ${total_expenses:.2f} in expenses this month, "
+            + f"for a net of ${net:.2f}."
         )
 
     if recent:
         latest = recent[0]
         return (
-            f"Your current month shows ${total_income:.2f} income, ${total_expenses:.2f} expenses, "
-            f"and ${net:.2f} net. Your latest transaction was {latest['type']} ${float(latest['amount']):.2f} "
-            f"in {latest.get('category_name') or latest.get('category')} on {latest['transaction_date']}."
+            snapshot + "\n\n"
+            + f"Insight: Your latest transaction was {latest['type']} ${float(latest['amount']):.2f} "
+            + f"in {latest.get('category_name') or latest.get('category')} on {latest['transaction_date']}. "
+            + "Suggestion: Use the top categories and subscriptions above to decide what to reduce next."
         )
 
-    return "I could not reach the live AI service, but your budget data is available. Add more transactions and budgets for sharper insights."
+    return snapshot + "\n\nInsight: I could not reach the live AI service, but your budget data is available. Suggestion: Add more transactions and budgets for sharper insights."
+
+
+def _build_fallback_response(context: BudgetAppContext, user_message: str, reason: str) -> str:
+    return f"{reason}\n\n{_local_budget_fallback(context, user_message)}"
 
 
 def _legacy_monthly_summary(context: BudgetAppContext) -> dict[str, Any]:
@@ -396,7 +517,11 @@ async def run_agent(user_message: str, conversation_history: list[dict[str, Any]
     transcript_parts.append(f"user: {user_message}")
 
     if not _can_reach_openai():
-        return _local_budget_fallback(context, user_message)
+        return _build_fallback_response(
+            context,
+            user_message,
+            "Live AI service is unavailable right now, so the app is using local budget logic instead.",
+        )
 
     try:
         result = await Runner.run(
@@ -405,8 +530,13 @@ async def run_agent(user_message: str, conversation_history: list[dict[str, Any]
             context=context,
         )
         return result.final_output
-    except Exception:
-        return _local_budget_fallback(context, user_message)
+    except Exception as exc:
+        logger.exception("Agent runtime failed; using local budget fallback.")
+        return _build_fallback_response(
+            context,
+            user_message,
+            f"Live AI agent failed ({type(exc).__name__}: {exc}), so the app is using local budget logic instead.",
+        )
 
 
 def run_agent_sync(user_message: str, conversation_history: list[dict[str, Any]] | None = None) -> str:
@@ -421,7 +551,11 @@ def run_agent_sync(user_message: str, conversation_history: list[dict[str, Any]]
     transcript_parts.append(f"user: {user_message}")
 
     if not _can_reach_openai():
-        return _local_budget_fallback(context, user_message)
+        return _build_fallback_response(
+            context,
+            user_message,
+            "Live AI service is unavailable right now, so the app is using local budget logic instead.",
+        )
 
     try:
         result = Runner.run_sync(
@@ -430,5 +564,10 @@ def run_agent_sync(user_message: str, conversation_history: list[dict[str, Any]]
             context=context,
         )
         return result.final_output
-    except Exception:
-        return _local_budget_fallback(context, user_message)
+    except Exception as exc:
+        logger.exception("Agent runtime failed; using local budget fallback.")
+        return _build_fallback_response(
+            context,
+            user_message,
+            f"Live AI agent failed ({type(exc).__name__}: {exc}), so the app is using local budget logic instead.",
+        )
