@@ -58,3 +58,9 @@ Show:
 - use the same branding in every screenshot
 - crop tightly enough to highlight value
 - show active states, not empty shells
+
+## Ready-To-Use Captions
+
+For listing-ready titles and captions, use:
+
+- [SCREENSHOT_CAPTIONS.md](./SCREENSHOT_CAPTIONS.md)

@@ -32,6 +32,10 @@ Ideal for:
 - productized template sellers
 - agencies shipping custom finance portals
 
+Full Gumroad-ready copy:
+
+- [GUMROAD_PRODUCT_COPY.md](./GUMROAD_PRODUCT_COPY.md)
+
 ## CodeCanyon-Oriented Copy
 
 Budget Tracker App is a full-featured personal finance dashboard template built with PHP, MySQL, and Tailwind-based UI patterns. It includes transaction management, budget monitoring, AI/alert settings, dynamic dashboard alerts, and a structured codebase prepared for further SaaS extension.
