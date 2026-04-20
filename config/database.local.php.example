@@ -1,0 +1,5 @@
+<?php
+$host = "localhost";
+$user = "root";
+$pass = "your_local_db_password";
+$db   = "budgettracker_pro";

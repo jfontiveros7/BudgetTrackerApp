@@ -1,0 +1,6 @@
+agent_sdk/.env
+config/database.local.php
+__pycache__/
+*.pyc
+*.pyo
+*.log
