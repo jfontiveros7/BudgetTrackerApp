@@ -206,3 +206,31 @@ function saveUserAiSettings($userId, $settings) {
 
     return getUserAiSettings($userId);
 }
+
+function resetUserAlertPreferencesToDefaults($userId) {
+    global $conn;
+
+    btEnsureAlertPreferenceTables();
+    $stmt = $conn->prepare(
+        "DELETE FROM user_alert_preferences
+         WHERE user_id = ?"
+    );
+    $stmt->bind_param("i", $userId);
+    $stmt->execute();
+
+    return getUserAlertPreferences($userId);
+}
+
+function resetUserAiSettingsToDefaults($userId) {
+    global $conn;
+
+    btEnsureAlertPreferenceTables();
+    $stmt = $conn->prepare(
+        "DELETE FROM user_ai_settings
+         WHERE user_id = ?"
+    );
+    $stmt->bind_param("i", $userId);
+    $stmt->execute();
+
+    return getUserAiSettings($userId);
+}
