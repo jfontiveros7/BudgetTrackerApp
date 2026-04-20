@@ -397,6 +397,44 @@ $recentTransactions = getRecentTransactions($userId, 50);
                     <p class="text-sm text-slate-400">No transactions yet. Add your first one to start tracking your budget.</p>
                 </div>
             <?php else: ?>
+                <div class="mb-6 rounded-xl border border-slate-800 bg-slate-950/60 p-5">
+                    <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+                        <div class="md:col-span-2">
+                            <label for="transactionSearch" class="block text-sm font-medium text-slate-200 mb-2">Search Transactions</label>
+                            <input
+                                id="transactionSearch"
+                                type="text"
+                                placeholder="Search by category, description, amount, or date..."
+                                class="w-full rounded-lg bg-slate-950 border border-slate-700 px-3 py-2 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                            >
+                        </div>
+                        <div>
+                            <label for="transactionTypeFilter" class="block text-sm font-medium text-slate-200 mb-2">Filter by Type</label>
+                            <select
+                                id="transactionTypeFilter"
+                                class="w-full rounded-lg bg-slate-950 border border-slate-700 px-3 py-2 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                            >
+                                <option value="all">All Types</option>
+                                <option value="income">Income</option>
+                                <option value="expense">Expense</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                        <p id="transactionResultsSummary" class="text-sm text-slate-400">
+                            Showing all recent transactions.
+                        </p>
+                        <button
+                            id="transactionFiltersReset"
+                            type="button"
+                            class="inline-flex items-center justify-center rounded-lg bg-slate-800 px-4 py-2 text-sm text-slate-200 transition hover:bg-slate-700"
+                        >
+                            Reset Filters
+                        </button>
+                    </div>
+                </div>
+
                 <div class="overflow-hidden rounded-xl border border-slate-800 bg-slate-900 shadow-2xl">
                     <div class="overflow-x-auto">
                         <table class="min-w-full text-sm">
@@ -412,7 +450,17 @@ $recentTransactions = getRecentTransactions($userId, 50);
 
                             <tbody class="divide-y divide-slate-800">
                                 <?php foreach ($recentTransactions as $row): ?>
-                                    <tr class="hover:bg-slate-800/40 transition-colors">
+                                    <tr
+                                        class="transaction-row hover:bg-slate-800/40 transition-colors"
+                                        data-type="<?php echo htmlspecialchars($row["type"]); ?>"
+                                        data-search="<?php echo htmlspecialchars(strtolower(
+                                            ($row["display_date"] ?? "") . " " .
+                                            ($row["category_name"] ?? "") . " " .
+                                            ($row["description"] ?? "") . " " .
+                                            number_format((float) $row["amount"], 2) . " " .
+                                            ($row["type"] ?? "")
+                                        )); ?>"
+                                    >
                                         <td class="px-5 py-4 text-slate-300">
                                             <?php echo date("M d, Y", strtotime($row["display_date"])); ?>
                                         </td>
@@ -444,6 +492,10 @@ $recentTransactions = getRecentTransactions($userId, 50);
                             </tbody>
                         </table>
                     </div>
+                </div>
+
+                <div id="transactionEmptyState" class="hidden rounded-xl border border-dashed border-slate-700 bg-slate-950/50 px-4 py-10 text-center mt-6">
+                    <p class="text-sm text-slate-400">No transactions match your current search or filter.</p>
                 </div>
             <?php endif; ?>
         </div>
@@ -491,6 +543,12 @@ $recentTransactions = getRecentTransactions($userId, 50);
         const coachForm = document.getElementById('coachForm');
         const coachInput = document.getElementById('coachInput');
         const coachMessages = document.getElementById('coachMessages');
+        const transactionSearch = document.getElementById('transactionSearch');
+        const transactionTypeFilter = document.getElementById('transactionTypeFilter');
+        const transactionFiltersReset = document.getElementById('transactionFiltersReset');
+        const transactionRows = Array.from(document.querySelectorAll('.transaction-row'));
+        const transactionResultsSummary = document.getElementById('transactionResultsSummary');
+        const transactionEmptyState = document.getElementById('transactionEmptyState');
         const coachScoreToggle = document.getElementById('coachScoreToggle');
         const coachScoreSection = document.getElementById('coachScoreSection');
         const alertPreferencesToggle = document.getElementById('alertPreferencesToggle');
@@ -701,6 +759,36 @@ $recentTransactions = getRecentTransactions($userId, 50);
             coachMessages.appendChild(message);
         }
 
+        function applyTransactionFilters() {
+            if (!transactionRows.length) {
+                return;
+            }
+
+            const query = (transactionSearch?.value || '').trim().toLowerCase();
+            const selectedType = transactionTypeFilter?.value || 'all';
+            let visibleCount = 0;
+
+            transactionRows.forEach((row) => {
+                const matchesQuery = !query || row.dataset.search.includes(query);
+                const matchesType = selectedType === 'all' || row.dataset.type === selectedType;
+                const shouldShow = matchesQuery && matchesType;
+                row.classList.toggle('hidden', !shouldShow);
+                if (shouldShow) {
+                    visibleCount += 1;
+                }
+            });
+
+            if (transactionResultsSummary) {
+                if (!query && selectedType === 'all') {
+                    transactionResultsSummary.textContent = 'Showing all recent transactions.';
+                } else {
+                    transactionResultsSummary.textContent = `Showing ${visibleCount} matching transaction${visibleCount === 1 ? '' : 's'}.`;
+                }
+            }
+
+            transactionEmptyState?.classList.toggle('hidden', visibleCount > 0);
+        }
+
         (async () => {
             try {
                 await loadAlertSettings();
@@ -711,6 +799,20 @@ $recentTransactions = getRecentTransactions($userId, 50);
             syncAlertPreferenceInputs();
             applyAlertVisibility();
         })();
+
+        transactionSearch?.addEventListener('input', applyTransactionFilters);
+        transactionTypeFilter?.addEventListener('change', applyTransactionFilters);
+        transactionFiltersReset?.addEventListener('click', () => {
+            if (transactionSearch) {
+                transactionSearch.value = '';
+            }
+            if (transactionTypeFilter) {
+                transactionTypeFilter.value = 'all';
+            }
+            applyTransactionFilters();
+        });
+
+        applyTransactionFilters();
 
         async function requestCoachReply(url, message) {
             const response = await fetch(url, {
