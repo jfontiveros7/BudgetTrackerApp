@@ -17,7 +17,9 @@ RUN composer install --no-dev --optimize-autoloader
 COPY public/ ./public/
 COPY src/ /var/www/src/
 
-RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
+ENV PORT=80
+
+RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
 
 RUN a2enmod rewrite
 
