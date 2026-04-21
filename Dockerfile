@@ -21,6 +21,8 @@ ENV PORT=80
 
 RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
 
+RUN a2dismod mpm_prefork mpm_event mpm_worker 2>/dev/null || true
+RUN a2enmod mpm_prefork
 RUN a2enmod rewrite
 
 EXPOSE 80
