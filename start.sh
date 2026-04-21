@@ -1,5 +1,2 @@
-#!/bin/sh
-set -eu
-
-PORT_VALUE="${PORT:-8080}"
-exec php -S "0.0.0.0:${PORT_VALUE}" -t public
+#!/bin/bash
+php -S 0.0.0.0:$PORT -t public
