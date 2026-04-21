@@ -38,8 +38,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Add Transaction</title>
+    <title>Add Transaction - Budget Tracker App</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
     <style>
         input[type="date"] {
             color-scheme: dark;
@@ -57,7 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex">
     <aside class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col p-6">
-        <h1 class="text-xl font-semibold mb-8">Badget Tracker App by Konticode Labs</h1>
+        <h1 class="text-xl font-semibold mb-8">Budget Tracker App</h1>
         <nav class="space-y-2">
             <a href="dashboard.php" class="block px-3 py-2 rounded hover:bg-slate-800">Dashboard</a>
             <a href="add_transaction.php" class="block px-3 py-2 rounded bg-slate-800 text-slate-100">Add Transaction</a>
@@ -79,8 +80,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     </aside>
 
     <main class="flex-1 p-10">
+        <div class="app-status-strip">
+            <span class="app-status-pill">transaction mode: quick add</span>
+            <span class="app-status-pill">input: natural language</span>
+            <span class="app-status-pill">save target: realtime</span>
+        </div>
         <div class="max-w-2xl">
             <div class="mb-8">
+                <p class="app-kicker">Operations / Transactions</p>
                 <h2 class="text-3xl font-semibold">Add Transaction</h2>
                 <p class="text-slate-400 text-sm mt-2">Record a new income or expense entry in your budget.</p>
             </div>

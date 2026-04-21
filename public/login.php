@@ -32,12 +32,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login - BudgetTracker Pro</title>
+    <title>Login - Budget Tracker App</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center">
     <div class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-xl p-8 shadow-xl">
-        <h1 class="text-2xl font-semibold mb-2 text-center">BudgetTracker Pro</h1>
+        <h1 class="text-2xl font-semibold mb-2 text-center">Budget Tracker App</h1>
         <p class="text-sm text-slate-400 mb-6 text-center">Sign in to manage your finances.</p>
 
         <?php if (!empty($error)): ?>
@@ -61,6 +62,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 class="w-full mt-2 inline-flex items-center justify-center rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-medium py-2 text-sm transition">
                 Sign In
             </button>
+            <div class="text-right">
+                <a href="forgot_password.php" class="text-sm text-sky-300 hover:text-sky-200">Forgot password?</a>
+            </div>
         </form>
         <p class="mt-6 text-center text-sm text-slate-400">
             Need an account?

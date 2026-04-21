@@ -23,13 +23,14 @@ $recentTransactions = getRecentTransactions($userId, 50);
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard - Badget Tracker App by Konticode Labs</title>
+    <title>Dashboard - Budget Tracker App</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex">
     <aside class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col p-6">
-        <h1 class="text-xl font-semibold mb-8">Badget Tracker App by Konticode Labs</h1>
+        <h1 class="text-xl font-semibold mb-8">Budget Tracker App</h1>
 
         <nav class="space-y-2">
             <a href="dashboard.php" class="block px-3 py-2 rounded bg-slate-800 text-slate-100">Dashboard</a>
@@ -48,8 +49,14 @@ $recentTransactions = getRecentTransactions($userId, 50);
     </aside>
 
     <main class="flex-1 p-10">
+        <div class="app-status-strip">
+            <span class="app-status-pill">ops mode: live</span>
+            <span class="app-status-pill">support target: &lt;24h</span>
+            <span class="app-status-pill">workspace: budget tracker</span>
+        </div>
         <div class="flex flex-col gap-3 mb-10 md:flex-row md:items-center md:justify-between">
             <div>
+                <p class="app-kicker">Operations / Dashboard</p>
                 <h2 class="text-3xl font-semibold">Dashboard</h2>
                 <p class="text-slate-400 text-sm mt-2">
                     Welcome back, <?php echo htmlspecialchars($userName ?: $userEmail); ?>
@@ -61,21 +68,21 @@ $recentTransactions = getRecentTransactions($userId, 50);
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-xl">
+            <div class="metric-card bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-xl">
                 <p class="text-sm text-slate-400">Total Income</p>
                 <p class="text-3xl font-semibold text-emerald-400 mt-2">
                     $<?php echo number_format($summary["total_income"], 2); ?>
                 </p>
             </div>
 
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-xl">
+            <div class="metric-card bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-xl">
                 <p class="text-sm text-slate-400">Total Expenses</p>
                 <p class="text-3xl font-semibold text-rose-400 mt-2">
                     $<?php echo number_format($summary["total_expense"], 2); ?>
                 </p>
             </div>
 
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-xl">
+            <div class="metric-card bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-xl">
                 <p class="text-sm text-slate-400">Net Balance</p>
                 <p class="text-3xl font-semibold mt-2 <?php echo $summary["net"] >= 0 ? 'text-emerald-400' : 'text-rose-400'; ?>">
                     $<?php echo number_format($summary["net"], 2); ?>
@@ -514,16 +521,16 @@ $recentTransactions = getRecentTransactions($userId, 50);
                     {
                         label: 'Income',
                         data: incomeData,
-                        borderColor: 'rgb(34, 197, 94)',
-                        backgroundColor: 'rgba(34, 197, 94, 0.2)',
+                        borderColor: '#2fe39f',
+                        backgroundColor: 'rgba(47, 227, 159, 0.2)',
                         tension: 0.4,
                         borderWidth: 2
                     },
                     {
                         label: 'Expense',
                         data: expenseData,
-                        borderColor: 'rgb(248, 113, 113)',
-                        backgroundColor: 'rgba(248, 113, 113, 0.2)',
+                        borderColor: '#ff8f7a',
+                        backgroundColor: 'rgba(255, 143, 122, 0.2)',
                         tension: 0.4,
                         borderWidth: 2
                     }
@@ -531,11 +538,11 @@ $recentTransactions = getRecentTransactions($userId, 50);
             },
             options: {
                 plugins: {
-                    legend: { labels: { color: '#e5e7eb' } }
+                    legend: { labels: { color: '#d9e7f5' } }
                 },
                 scales: {
-                    x: { ticks: { color: '#9ca3af' }, grid: { color: '#1f2937' } },
-                    y: { ticks: { color: '#9ca3af' }, grid: { color: '#1f2937' } }
+                    x: { ticks: { color: '#8ea7c0' }, grid: { color: '#223648' } },
+                    y: { ticks: { color: '#8ea7c0' }, grid: { color: '#223648' } }
                 }
             }
         });

@@ -24,6 +24,18 @@ CREATE TABLE IF NOT EXISTS categories (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS password_resets (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    token_hash VARCHAR(64) NOT NULL UNIQUE,
+    expires_at DATETIME NOT NULL,
+    used_at DATETIME DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_password_resets_user
+        FOREIGN KEY (user_id) REFERENCES users(id)
+        ON DELETE CASCADE
+);
+
 DELIMITER $$
 
 DROP PROCEDURE IF EXISTS migrate_budgettracker_v1_to_v2 $$
@@ -245,6 +257,26 @@ BEGIN
           AND index_name = 'idx_budgets_category_id'
     ) THEN
         CREATE INDEX idx_budgets_category_id ON budgets(category_id);
+    END IF;
+
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.statistics
+        WHERE table_schema = DATABASE()
+          AND table_name = 'password_resets'
+          AND index_name = 'idx_password_resets_user_id'
+    ) THEN
+        CREATE INDEX idx_password_resets_user_id ON password_resets(user_id);
+    END IF;
+
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.statistics
+        WHERE table_schema = DATABASE()
+          AND table_name = 'password_resets'
+          AND index_name = 'idx_password_resets_expires_at'
+    ) THEN
+        CREATE INDEX idx_password_resets_expires_at ON password_resets(expires_at);
     END IF;
 END $$
 

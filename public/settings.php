@@ -57,8 +57,9 @@ $aiSettings = getUserAiSettings($userId);
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Settings - Badget Tracker App by Konticode Labs</title>
+    <title>Settings - Budget Tracker App</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
     <style>
         @keyframes toast-in {
             from {
@@ -121,7 +122,7 @@ $aiSettings = getUserAiSettings($userId);
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex">
     <aside class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col p-6">
-        <h1 class="text-xl font-semibold mb-8">Badget Tracker App by Konticode Labs</h1>
+        <h1 class="text-xl font-semibold mb-8">Budget Tracker App</h1>
         <nav class="space-y-2">
             <a href="dashboard.php" class="block px-3 py-2 rounded hover:bg-slate-800">Dashboard</a>
             <a href="add_transaction.php" class="block px-3 py-2 rounded hover:bg-slate-800">Add Transaction</a>
@@ -138,8 +139,14 @@ $aiSettings = getUserAiSettings($userId);
     </aside>
 
     <main class="flex-1 p-10">
+        <div class="app-status-strip">
+            <span class="app-status-pill">preferences: account level</span>
+            <span class="app-status-pill">alerts: customizable</span>
+            <span class="app-status-pill">ai profile: active</span>
+        </div>
         <div class="max-w-4xl">
             <div class="mb-8">
+                <p class="app-kicker">Operations / Settings</p>
                 <h2 class="text-3xl font-semibold">Settings</h2>
                 <p class="text-slate-400 text-sm mt-2">Control which dashboard alerts you see across your account and restore alerts you previously dismissed.</p>
             </div>

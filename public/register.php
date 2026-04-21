@@ -28,13 +28,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Register - BudgetTracker Pro</title>
+    <title>Register - Budget Tracker App</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center px-4">
     <div class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-xl p-8 shadow-xl">
         <h1 class="text-2xl font-semibold mb-2 text-center">Create Your Account</h1>
-        <p class="text-sm text-slate-400 mb-6 text-center">Join BudgetTracker Pro and start organizing your finances.</p>
+        <p class="text-sm text-slate-400 mb-6 text-center">Join Budget Tracker App and start organizing your finances.</p>
 
         <?php if (!empty($error)): ?>
             <div class="mb-4 rounded border border-rose-500 bg-rose-950/40 text-rose-200 px-3 py-2 text-sm">

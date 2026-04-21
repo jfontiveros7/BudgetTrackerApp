@@ -97,6 +97,18 @@ CREATE TABLE IF NOT EXISTS user_ai_settings (
         ON DELETE CASCADE
 );
 
+    CREATE TABLE IF NOT EXISTS password_resets (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        token_hash VARCHAR(64) NOT NULL UNIQUE,
+        expires_at DATETIME NOT NULL,
+        used_at DATETIME DEFAULT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        CONSTRAINT fk_password_resets_user
+        FOREIGN KEY (user_id) REFERENCES users(id)
+        ON DELETE CASCADE
+    );
+
 -- Seed default categories
 INSERT IGNORE INTO categories (name, type) VALUES
     ('Salary', 'income'),
@@ -126,3 +138,5 @@ CREATE INDEX idx_budgets_category_id ON budgets(category_id);
 CREATE INDEX idx_user_alert_preferences_user ON user_alert_preferences(user_id);
 CREATE INDEX idx_user_alert_dismissals_user ON user_alert_dismissals(user_id);
 CREATE INDEX idx_user_ai_settings_user ON user_ai_settings(user_id);
+CREATE INDEX idx_password_resets_user_id ON password_resets(user_id);
+CREATE INDEX idx_password_resets_expires_at ON password_resets(expires_at);
