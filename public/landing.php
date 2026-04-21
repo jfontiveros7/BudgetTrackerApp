@@ -91,7 +91,7 @@
 <body>
   <header class="sticky top-0 z-30 bg-[#070c12]/88 border-b border-[#1b2a38] backdrop-blur">
     <div class="max-w-6xl mx-auto px-5 py-4 flex items-center justify-between gap-4">
-      <a href="landing.php" class="font-semibold tracking-tight text-base md:text-lg">Budget Tracker App</a>
+      <a href="index.php" class="font-semibold tracking-tight text-base md:text-lg">Budget Tracker App</a>
       <div class="hidden md:flex items-center gap-6 text-sm text-slate-300">
         <a href="#work" class="hover:text-white transition">Work</a>
         <a href="#pricing" class="hover:text-white transition">Pricing</a>

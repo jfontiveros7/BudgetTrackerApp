@@ -1,1 +1,3 @@
-<?php header("Location: landing.php"); ?>
+<?php
+require __DIR__ . "/landing.php";
+?>
