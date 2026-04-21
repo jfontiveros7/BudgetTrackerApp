@@ -1,5 +1,8 @@
 FROM php:8.2-apache
 
+# Install PHP extensions
+RUN docker-php-ext-install mysqli
+
 WORKDIR /var/www/html
 
 # Install Composer
