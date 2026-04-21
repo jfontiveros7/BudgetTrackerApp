@@ -123,6 +123,43 @@ Agent SDK details:
 
 - [agent_sdk/README.md](./agent_sdk/README.md)
 
+## Railway Deployment
+
+### Runtime
+
+- Docker-based deploy uses [Dockerfile](./Dockerfile)
+- App binds to Railway `PORT` via [start.sh](./start.sh)
+- Public web root is `public/`
+
+### Database Environment Variables
+
+The app supports either custom `BT_DB_*` variables or Railway MySQL variables.
+
+Priority order used by the app:
+
+1. `BT_DB_HOST` then `MYSQLHOST`
+2. `BT_DB_USER` then `MYSQLUSER`
+3. `BT_DB_PASSWORD` then `MYSQLPASSWORD`
+4. `BT_DB_NAME` then `MYSQLDATABASE`
+5. `BT_DB_PORT` then `MYSQLPORT` (fallback `3306`)
+
+### First Deploy Checklist
+
+1. Push your code to GitHub.
+2. Create a Railway project and connect the repository.
+3. Ensure Railway builds using the repository Dockerfile.
+4. Attach a Railway MySQL service or manually set `BT_DB_*` variables.
+5. Import one schema file into your database:
+	- Recommended: [sql/schema_v2_compatible.sql](./sql/schema_v2_compatible.sql)
+	- Legacy/basic: [sql/schema.sql](./sql/schema.sql)
+6. Redeploy and open `/`.
+
+### Troubleshooting
+
+- If startup fails with a port issue, confirm Railway detects `PORT` and that `start.sh` is present.
+- If DB connection fails, validate env var names and database host reachability from Railway.
+- If login/dashboard fails after DB connects, confirm schema import completed successfully.
+
 ## Demo Login
 
 If you load [sql/demo_seed.sql](./sql/demo_seed.sql), use:
