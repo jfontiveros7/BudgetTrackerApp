@@ -1,30 +1,12 @@
-FROM php:8.2-apache
+FROM php:8.2-cli
 
-# Install PHP extensions
+# Required database extension used by config/database.php
 RUN docker-php-ext-install mysqli
 
-WORKDIR /var/www/html
+WORKDIR /app
 
-# Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# Copy the full app so public pages can include src/ and config/ files.
+COPY . .
 
-# Copy composer files and install dependencies
-COPY composer.json ./
-COPY composer.lock* ./
-RUN composer install --no-dev --optimize-autoloader
-
-# Copy application files
-COPY public/ ./public/
-COPY src/ /var/www/src/
-
-ENV PORT=80
-
-RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
-
-RUN a2dismod mpm_prefork mpm_event mpm_worker 2>/dev/null || true
-RUN a2enmod mpm_prefork
-RUN a2enmod rewrite
-
-EXPOSE 80
-
-CMD ["apache2-foreground"]
+EXPOSE 8080
+CMD ["sh", "-c", "php -S 0.0.0.0:${PORT:-8080} -t public public/index.php"]
