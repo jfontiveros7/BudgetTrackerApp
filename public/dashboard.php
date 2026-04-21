@@ -26,7 +26,7 @@ $recentTransactions = getRecentTransactions($userId, 50);
     <title>Dashboard - Budget Tracker App</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex">
     <aside class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col p-6">

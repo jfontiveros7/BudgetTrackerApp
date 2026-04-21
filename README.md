@@ -2,6 +2,45 @@
 
 A modern PHP + MySQL budget tracker with AI-assisted insights, dashboard alerts, settings controls, and a Python Agent SDK layer for natural-language financial workflows.
 
+## Deployment Structure (Railway)
+
+The app is organized around a simple PHP deployment layout:
+
+```text
+Budget_Tracker/
+|
+|-- public/
+|   |-- index.php
+|   |-- login.php
+|   |-- dashboard.php
+|   |-- assets/
+|   `-- css/
+|
+|-- src/
+|   |-- auth.php
+|   |-- analytics.php
+|   |-- transactions.php
+|   `-- helpers.php
+|
+|-- config/
+|   `-- database.php
+|
+|-- sql/
+|   `-- schema.sql
+|
+|-- composer.json
+|-- start.sh
+|-- Procfile
+|-- .gitignore
+`-- README.md
+```
+
+Notes:
+
+- `public/` is the web root in deployment.
+- `start.sh` binds the app to Railway's `PORT` environment variable.
+- `Dockerfile` uses `php:8.2-cli` so Apache MPM module conflicts are avoided.
+
 ## Highlights
 
 - Dark, dashboard-first budget tracking UI

@@ -59,7 +59,7 @@ $aiSettings = getUserAiSettings($userId);
     <meta charset="UTF-8">
     <title>Settings - Budget Tracker App</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="css/style.css">
     <style>
         @keyframes toast-in {
             from {
