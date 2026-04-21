@@ -2,6 +2,15 @@ FROM php:8.2-apache
 
 WORKDIR /var/www/html
 
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Copy composer files and install dependencies
+COPY composer.json ./
+COPY composer.lock* ./
+RUN composer install --no-dev --optimize-autoloader
+
+# Copy application files
 COPY public/ .
 COPY src/ /var/www/src/
 
