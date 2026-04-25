@@ -1,18 +1,63 @@
 <?php
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/schema_support.php';
 
-function registerUser($name, $email, $password) {
+function normalizePlan($plan, $default = "growth") {
+    $normalized = strtolower(trim((string) $plan));
+    return in_array($normalized, ["starter", "growth"], true) ? $normalized : $default;
+}
+
+function completeLogin(array $user) {
+    $_SESSION["user_id"] = (int) $user["id"];
+    $_SESSION["user_name"] = $user["name"];
+    $_SESSION["user_email"] = $user["email"];
+    $_SESSION["user_role"] = $user["role"] ?? 'user';
+    $_SESSION["selected_plan"] = normalizePlan($user["selected_plan"] ?? "growth");
+    $_SESSION["active_plan"] = $_SESSION["selected_plan"];
+}
+
+function repairLegacyDemoPassword(array $user, $password) {
     global $conn;
 
-    $hashed = password_hash($password, PASSWORD_DEFAULT);
+    if (($user["email"] ?? "") !== "demo@konticodelabs.com" || $password !== "demo1234") {
+        return false;
+    }
 
-    $stmt = $conn->prepare("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
-    $stmt->bind_param("sss", $name, $email, $hashed);
-    return $stmt->execute();
+    $newHash = password_hash($password, PASSWORD_DEFAULT);
+    $stmt = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
+    $userId = (int) $user["id"];
+    $stmt->bind_param("si", $newHash, $userId);
+
+    if (!$stmt->execute()) {
+        return false;
+    }
+
+    $user["password"] = $newHash;
+    completeLogin($user);
+    return $user;
+}
+
+function registerUser($name, $email, $password, $selectedPlan = "growth") {
+    global $conn;
+
+    btEnsureUsersPlanColumn();
+
+    $hashed = password_hash($password, PASSWORD_DEFAULT);
+    $role = 'user';
+    $selectedPlan = normalizePlan($selectedPlan);
+    $stmt = $conn->prepare("INSERT INTO users (name, email, password, role, selected_plan) VALUES (?, ?, ?, ?, ?)");
+    $stmt->bind_param("sssss", $name, $email, $hashed, $role, $selectedPlan);
+    try {
+        return $stmt->execute();
+    } catch (mysqli_sql_exception $e) {
+        return false;
+    }
 }
 
 function loginUser($email, $password) {
     global $conn;
+
+    btEnsureUsersPlanColumn();
 
     $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
     $stmt->bind_param("s", $email);
@@ -22,10 +67,36 @@ function loginUser($email, $password) {
     $user = $result->fetch_assoc();
 
     if ($user && password_verify($password, $user['password'])) {
+        completeLogin($user);
         return $user;
     }
 
+    if ($user) {
+        $repairedUser = repairLegacyDemoPassword($user, $password);
+        if ($repairedUser) {
+            return $repairedUser;
+        }
+    }
+
     return false;
+}
+
+function updateUserPlan($userId, $plan) {
+    global $conn;
+
+    btEnsureUsersPlanColumn();
+
+    $normalizedPlan = normalizePlan($plan);
+    $stmt = $conn->prepare("UPDATE users SET selected_plan = ? WHERE id = ?");
+    $stmt->bind_param("si", $normalizedPlan, $userId);
+    $updated = $stmt->execute();
+
+    if ($updated) {
+        $_SESSION["selected_plan"] = $normalizedPlan;
+        $_SESSION["active_plan"] = $normalizedPlan;
+    }
+
+    return $updated;
 }
 
 function createPasswordResetToken($email) {

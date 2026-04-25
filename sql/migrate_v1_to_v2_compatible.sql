@@ -45,6 +45,17 @@ BEGIN
         SELECT 1
         FROM information_schema.columns
         WHERE table_schema = DATABASE()
+          AND table_name = 'users'
+          AND column_name = 'selected_plan'
+    ) THEN
+        ALTER TABLE users
+            ADD COLUMN selected_plan ENUM('starter', 'growth') NOT NULL DEFAULT 'growth' AFTER role;
+    END IF;
+
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema = DATABASE()
           AND table_name = 'transactions'
           AND column_name = 'transaction_date'
     ) THEN

@@ -1,5 +1,6 @@
 agent_sdk/.env
 config/database.local.php
+config/payments.local.php
 __pycache__/
 *.pyc
 *.pyo

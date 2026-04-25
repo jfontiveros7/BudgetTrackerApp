@@ -18,6 +18,8 @@ CREATE TABLE IF NOT EXISTS users (
     name VARCHAR(100),
     email VARCHAR(150) UNIQUE,
     password VARCHAR(255),
+    role ENUM('admin','user') NOT NULL DEFAULT 'user',
+    selected_plan ENUM('starter','growth') NOT NULL DEFAULT 'growth',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

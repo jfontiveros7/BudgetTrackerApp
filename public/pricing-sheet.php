@@ -120,7 +120,7 @@ header("Expires: 0");
         <p class="mono text-xs text-emerald-300 mb-2">TIER 1</p>
         <h2 class="text-2xl font-semibold mb-1">Starter</h2>
         <p class="text-sm text-slate-300 mb-4">For solo operators needing monthly clarity.</p>
-        <p class="text-4xl font-bold mb-1">$5.99<span class="text-lg text-slate-400">/mo</span></p>
+        <p class="text-4xl font-bold mb-1">$5<span class="text-lg text-slate-400">/mo</span></p>
         <p class="mono text-xs text-slate-400 mb-5">month-to-month</p>
         <ul class="text-sm text-slate-300 space-y-2 mb-7 flex-1">
           <li>Monthly budget health report</li>
@@ -135,7 +135,7 @@ header("Expires: 0");
         <p class="mono text-xs text-emerald-300 mb-2">MOST POPULAR</p>
         <h2 class="text-2xl font-semibold mb-1">Growth</h2>
         <p class="text-sm text-slate-300 mb-4">For freelancers and teams needing active oversight.</p>
-        <p class="text-4xl font-bold mb-1">$10.99<span class="text-lg text-slate-400">/mo</span></p>
+        <p class="text-4xl font-bold mb-1">$10<span class="text-lg text-slate-400">/mo</span></p>
         <p class="mono text-xs text-slate-400 mb-5">recommended minimum: 3 months</p>
         <ul class="text-sm text-slate-300 space-y-2 mb-7 flex-1">
           <li>Biweekly spend and variance reviews</li>

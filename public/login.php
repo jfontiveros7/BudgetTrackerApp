@@ -1,11 +1,20 @@
 <?php
 session_start();
-require_once "../src/auth.php";
+require_once __DIR__ . "/../src/auth.php";
 
 $error = "";
 $email = "";
+$selectedPlan = normalizePlan($_GET["plan"] ?? "", "");
+$completedPlan = normalizePlan($_SESSION["completed_purchase_plan"] ?? "", "");
+$planLabels = [
+    "starter" => "Starter",
+    "growth" => "Growth",
+];
+$selectedPlanLabel = $planLabels[$selectedPlan] ?? null;
+$completedPlanLabel = $planLabels[$completedPlan] ?? null;
 
-if (isset($_SESSION["user"])) {
+
+if (isset($_SESSION["user_id"])) {
     header("Location: dashboard.php");
     exit;
 }
@@ -13,14 +22,29 @@ if (isset($_SESSION["user"])) {
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $email = trim($_POST["email"] ?? "");
     $password = $_POST["password"] ?? "";
+    $postedPlan = strtolower(trim($_POST["plan"] ?? $selectedPlan));
+    if (!isset($planLabels[$postedPlan])) {
+        $postedPlan = "";
+    }
 
     $user = loginUser($email, $password);
 
     if ($user) {
         session_regenerate_id(true);
-        $_SESSION["user_id"] = (int) $user["id"];
-        $_SESSION["user_name"] = $user["name"];
-        $_SESSION["user_email"] = $user["email"];
+        if ($completedPlan !== "" && ($postedPlan === "" || $postedPlan === $completedPlan)) {
+            updateUserPlan((int) $user["id"], $completedPlan);
+            unset($_SESSION["completed_purchase_plan"], $_SESSION["pending_plan"]);
+            $_SESSION["purchase_flash"] = $planLabels[$completedPlan] . " access is now active on your account.";
+            header("Location: dashboard.php");
+            exit;
+        }
+
+        if ($postedPlan !== "") {
+            $_SESSION["pending_plan"] = $postedPlan;
+            header("Location: checkout.php?plan=" . urlencode($postedPlan));
+            exit;
+        }
+
         header("Location: dashboard.php");
         exit;
     } else {
@@ -41,6 +65,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <h1 class="text-2xl font-semibold mb-2 text-center">Budget Tracker App</h1>
         <p class="text-sm text-slate-400 mb-6 text-center">Sign in to manage your finances.</p>
 
+        <?php if ($completedPlanLabel !== null): ?>
+            <div class="mb-4 rounded border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-100">
+                Your <strong><?php echo htmlspecialchars($completedPlanLabel); ?></strong> payment is complete. Sign in to activate it on your account.
+            </div>
+        <?php elseif ($selectedPlanLabel !== null): ?>
+            <div class="mb-4 rounded border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-100">
+                You selected the <strong><?php echo htmlspecialchars($selectedPlanLabel); ?></strong> plan. Sign in to continue your purchase flow.
+            </div>
+        <?php endif; ?>
+
         <?php if (!empty($error)): ?>
             <div class="mb-4 rounded border border-rose-500 bg-rose-950/40 text-rose-200 px-3 py-2 text-sm">
                 <?php echo htmlspecialchars($error); ?>
@@ -48,6 +82,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <?php endif; ?>
 
         <form method="POST" class="space-y-4">
+            <input type="hidden" name="plan" value="<?php echo htmlspecialchars($selectedPlan); ?>">
             <div>
                 <label class="block text-sm mb-1">Email</label>
                 <input type="email" name="email" value="<?php echo htmlspecialchars($email); ?>" required
@@ -68,7 +103,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         </form>
         <p class="mt-6 text-center text-sm text-slate-400">
             Need an account?
-            <a href="register.php" class="text-emerald-400 hover:text-emerald-300">Create one</a>
+            <a href="register.php<?php echo $selectedPlan !== "" ? "?plan=" . urlencode($selectedPlan) : ($completedPlan !== "" ? "?plan=" . urlencode($completedPlan) : ""); ?>" class="text-emerald-400 hover:text-emerald-300">Create one</a>
         </p>
     </div>
 </body>

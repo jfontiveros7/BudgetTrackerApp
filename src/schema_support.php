@@ -43,3 +43,37 @@ function btHasV2Categories() {
 function btHasTransactionDate() {
     return btColumnExists("transactions", "transaction_date");
 }
+
+function btEnsureUsersRoleColumn() {
+    global $conn;
+
+    if (btColumnExists("users", "role")) {
+        return true;
+    }
+
+    $afterColumn = btColumnExists("users", "password") ? "password" : "email";
+
+    return $conn->query(
+        "ALTER TABLE users
+         ADD COLUMN role ENUM('admin','user') NOT NULL DEFAULT 'user'
+         AFTER {$afterColumn}"
+    ) === true;
+}
+
+function btEnsureUsersPlanColumn() {
+    global $conn;
+
+    btEnsureUsersRoleColumn();
+
+    if (btColumnExists("users", "selected_plan")) {
+        return true;
+    }
+
+    $afterColumn = btColumnExists("users", "role") ? "role" : (btColumnExists("users", "password") ? "password" : "email");
+
+    return $conn->query(
+        "ALTER TABLE users
+         ADD COLUMN selected_plan ENUM('starter','growth') NOT NULL DEFAULT 'growth'
+         AFTER {$afterColumn}"
+    ) === true;
+}
