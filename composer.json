@@ -3,6 +3,7 @@
   "description": "Budget Tracker App",
   "require": {
     "php": ">=8.0",
-    "ext-mysqli": "*"
+    "ext-mysqli": "*",
+    "stripe/stripe-php": "^17.0"
   }
 }

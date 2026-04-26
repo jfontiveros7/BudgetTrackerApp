@@ -4,7 +4,7 @@ require_once __DIR__ . '/schema_support.php';
 
 function normalizePlan($plan, $default = "growth") {
     $normalized = strtolower(trim((string) $plan));
-    return in_array($normalized, ["starter", "growth"], true) ? $normalized : $default;
+    return in_array($normalized, ["starter", "growth", "scale"], true) ? $normalized : $default;
 }
 
 function completeLogin(array $user) {

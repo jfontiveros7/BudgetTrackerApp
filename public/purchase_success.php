@@ -6,6 +6,7 @@ $plan = normalizePlan($_GET["plan"] ?? ($_SESSION["pending_plan"] ?? ""), "");
 $planLabels = [
     "starter" => "Starter",
     "growth" => "Growth",
+    "scale" => "Scale",
 ];
 $planLabel = $planLabels[$plan] ?? null;
 

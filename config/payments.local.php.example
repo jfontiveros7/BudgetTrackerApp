@@ -1,3 +1,4 @@
 <?php
 $starterPaymentLink = "https://buy.stripe.com/your-starter-link";
 $growthPaymentLink = "https://buy.stripe.com/your-growth-link";
+$scalePaymentLink = "https://buy.stripe.com/your-scale-link";

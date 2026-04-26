@@ -1,0 +1,6 @@
+<?php
+$stripeSecretKey = "sk_test_your_secret_key";
+$starterStripePriceId = "price_your_starter_price_id";
+$growthStripePriceId = "price_your_growth_price_id";
+$scaleStripePriceId = "price_your_scale_price_id";
+$appBaseUrl = "http://127.0.0.1:8000";

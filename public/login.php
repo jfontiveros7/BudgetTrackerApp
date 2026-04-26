@@ -9,6 +9,7 @@ $completedPlan = normalizePlan($_SESSION["completed_purchase_plan"] ?? "", "");
 $planLabels = [
     "starter" => "Starter",
     "growth" => "Growth",
+    "scale" => "Scale",
 ];
 $selectedPlanLabel = $planLabels[$selectedPlan] ?? null;
 $completedPlanLabel = $planLabels[$completedPlan] ?? null;

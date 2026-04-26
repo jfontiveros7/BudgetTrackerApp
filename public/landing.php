@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Budget Tracker App | Track Spending With Confidence</title>
+  <title>Budget Tracker App | Turn Budget Visibility Into Better Decisions</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -18,13 +18,17 @@
       --text: #f5f2e9;
       --muted: #b7c2d3;
       --accent: #ffbf47;
-      --accent-soft: #4b3512;
       --accent-alt: #7dd4ff;
       --warn: #ff7f5a;
+      --success: #9be58a;
     }
 
     * {
       box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
     }
 
     body {
@@ -63,6 +67,11 @@
       border-color: #5f7596;
     }
 
+    .metric {
+      border: 1px solid #31435f;
+      background: rgba(10, 15, 23, 0.72);
+    }
+
     .text-slate-300 {
       color: var(--muted) !important;
     }
@@ -77,56 +86,12 @@
     }
 
     .text-emerald-300 {
-      color: #ffe1a2 !important;
+      color: var(--success) !important;
     }
 
     .bg-\[var\(--accent\)\] {
       color: #261402 !important;
       box-shadow: 0 8px 24px rgba(255, 191, 71, 0.32);
-    }
-
-    .bg-\[\#152837\],
-    .bg-\[\#10202d\] {
-      background: rgba(24, 36, 52, 0.9) !important;
-    }
-
-    .hover\:bg-\[\#1a3144\]:hover,
-    .hover\:bg-\[\#132734\]:hover,
-    .hover\:bg-\[\#13202c\]:hover {
-      background: rgba(34, 50, 72, 0.95) !important;
-    }
-
-    .border-\[\#34506a\],
-    .border-\[\#30475d\],
-    .border-\[\#2a3f54\],
-    .border-\[\#254158\],
-    .border-\[\#1b2a38\] {
-      border-color: #3c4f6b !important;
-    }
-
-    .reveal {
-      opacity: 0;
-      transform: translateY(12px);
-      animation: reveal 560ms ease forwards;
-    }
-
-    .d1 {
-      animation-delay: 100ms;
-    }
-
-    .d2 {
-      animation-delay: 180ms;
-    }
-
-    .d3 {
-      animation-delay: 280ms;
-    }
-
-    @keyframes reveal {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
     }
   </style>
 </head>
@@ -137,166 +102,222 @@
       <nav class="hidden md:flex items-center gap-6 text-sm text-slate-300">
         <a href="#features" class="hover:text-white transition">Features</a>
         <a href="#pricing" class="hover:text-white transition">Pricing</a>
+        <a href="#faq" class="hover:text-white transition">FAQ</a>
       </nav>
       <div class="flex items-center gap-2">
         <a href="demo-slideshow.php" class="text-xs sm:text-sm px-3 py-2 rounded border border-[#2a3f54] hover:bg-[#13202c] transition">Watch Demo</a>
-        <a href="#pricing" class="text-xs sm:text-sm px-3 py-2 rounded border border-[#2a3f54] hover:bg-[#13202c] transition">View Pricing</a>
-        <a href="mailto:sales@budgettrackerpro.com" class="text-xs sm:text-sm px-3 py-2 rounded bg-[var(--accent)] font-semibold hover:brightness-95 transition">Book Discovery Call</a>
+        <a href="login.php" class="text-xs sm:text-sm px-3 py-2 rounded border border-[#2a3f54] hover:bg-[#13202c] transition">Client Login</a>
+        <a href="#pricing" class="text-xs sm:text-sm px-3 py-2 rounded bg-[var(--accent)] font-semibold hover:brightness-95 transition">Start Now</a>
       </div>
     </div>
   </header>
 
   <main class="px-5 py-8 md:py-12">
-    <div class="max-w-6xl mx-auto text-center mb-8 text-slate-300">
-      <p class="mono text-sm">Need expert help? <a href="managed/" class="text-sky-300 hover:text-white transition">-&gt; /managed</a></p>
-    </div>
+    <section class="max-w-6xl mx-auto frame rounded-3xl p-6 md:p-10 mb-8 overflow-hidden">
+      <div class="grid lg:grid-cols-[1.2fr_0.8fr] gap-8 items-start">
+        <div>
+          <p class="mono text-[11px] tracking-[0.18em] text-[var(--accent-alt)] mb-4">BUDGET TRACKER + AI COACH + PREMIUM SUPPORT</p>
+          <h1 class="text-3xl sm:text-5xl md:text-6xl font-semibold leading-tight tracking-tight max-w-5xl">
+            Track spending, catch drift early, and turn your budget into action.
+          </h1>
+          <p class="text-slate-300 text-base md:text-lg max-w-3xl mt-5">
+            Budget Tracker App helps solo operators and growing teams monitor category limits, review spending trends, and act before overspending compounds.
+          </p>
+          <div class="flex flex-wrap gap-3 mt-7">
+            <a href="checkout.php?plan=growth" class="inline-flex items-center justify-center rounded-lg bg-[var(--accent)] px-5 py-3 text-sm font-semibold transition hover:brightness-95">
+              Start Growth Plan
+            </a>
+            <a href="demo-slideshow.php" class="inline-flex items-center justify-center rounded-lg border border-[#2a3f54] px-5 py-3 text-sm transition hover:bg-[#13202c]">
+              Watch Product Demo
+            </a>
+            <a href="managed/" class="inline-flex items-center justify-center rounded-lg border border-[#2a3f54] px-5 py-3 text-sm transition hover:bg-[#13202c]">
+              Need Managed Help?
+            </a>
+          </div>
+          <div class="grid sm:grid-cols-3 gap-3 mt-8">
+            <div class="metric rounded-xl px-4 py-4">
+              <p class="mono text-[11px] text-sky-300 mb-1">VALUE</p>
+              <p class="font-semibold">$5 to $19.99/mo</p>
+              <p class="text-sm text-slate-300 mt-1">Low-friction entry point for budget discipline.</p>
+            </div>
+            <div class="metric rounded-xl px-4 py-4">
+              <p class="mono text-[11px] text-sky-300 mb-1">SPEED</p>
+              <p class="font-semibold">Fast setup</p>
+              <p class="text-sm text-slate-300 mt-1">Register after checkout and get into the dashboard immediately.</p>
+            </div>
+            <div class="metric rounded-xl px-4 py-4">
+              <p class="mono text-[11px] text-sky-300 mb-1">UPSIDE</p>
+              <p class="font-semibold">Upgrade path</p>
+              <p class="text-sm text-slate-300 mt-1">Start self-serve, then add AI and higher-touch support as you grow.</p>
+            </div>
+          </div>
+        </div>
 
-    <section class="max-w-6xl mx-auto frame rounded-2xl p-6 md:p-10 mb-8" id="problem">
-      <p class="mono text-[11px] tracking-[0.18em] text-[var(--warn)] mb-4">PROBLEM</p>
-      <h1 class="text-3xl sm:text-5xl md:text-6xl font-semibold leading-tight tracking-tight max-w-5xl">
-        You're tracking spending but still feel behind.
-      </h1>
-      <p class="text-slate-300 text-base md:text-lg max-w-3xl mt-5">
-        You already log transactions. But without consistent oversight, threshold updates, and practical execution, budget drift still creeps in.
-      </p>
+        <div class="soft-frame rounded-2xl p-5">
+          <p class="mono text-[11px] tracking-[0.18em] text-[var(--warn)] mb-3">WHY PEOPLE BUY</p>
+          <div class="space-y-4">
+            <div>
+              <h2 class="font-semibold mb-1">Most budgets fail from inconsistency, not intent.</h2>
+              <p class="text-sm text-slate-300">Teams usually know they should review spending. What slips is the habit, the thresholds, and the follow-through.</p>
+            </div>
+            <div class="soft-frame rounded-xl p-4">
+              <p class="mono text-xs text-emerald-300 mb-2">BUILT TO CONVERT</p>
+              <ul class="text-sm text-slate-300 space-y-2">
+                <li>Clear plan ladder from Starter to Scale</li>
+                <li>AI Coach reserved for higher-value plans</li>
+                <li>Managed service available as premium upsell</li>
+                <li>Checkout-ready Stripe payment link flow</li>
+              </ul>
+            </div>
+            <a href="pricing-sheet.php" class="inline-flex items-center justify-center w-full rounded-lg border border-[#2a3f54] px-4 py-3 text-sm transition hover:bg-[#13202c]">
+              View Pricing Sheet
+            </a>
+          </div>
+        </div>
+      </div>
     </section>
 
-    <section class="max-w-6xl mx-auto frame rounded-2xl p-6 md:p-10 mb-8" id="solution">
-      <p class="mono text-[11px] tracking-[0.18em] text-[var(--accent-alt)] mb-4">SOLUTION</p>
-      <h2 class="text-2xl sm:text-4xl md:text-5xl font-semibold leading-tight tracking-tight max-w-5xl">
-        We operate your budget like a fractional finance team.
+    <section class="max-w-6xl mx-auto frame rounded-2xl p-6 md:p-10 mb-8" id="features">
+      <p class="mono text-[11px] tracking-[0.18em] text-[var(--accent-alt)] mb-4">FEATURES</p>
+      <h2 class="text-2xl sm:text-4xl md:text-5xl font-semibold leading-tight tracking-tight max-w-4xl">
+        Everything needed to move from expense logging to budget control.
       </h2>
-      <div class="grid md:grid-cols-3 gap-4 mt-7">
-        <article class="soft-frame rounded-xl p-5">
-          <h3 class="font-semibold mb-2">Hands-on Monitoring</h3>
-          <p class="text-sm text-slate-300">Weekly review of spending patterns with early anomaly detection and escalation.</p>
-        </article>
-        <article class="soft-frame rounded-xl p-5">
-          <h3 class="font-semibold mb-2">Threshold Operations</h3>
-          <p class="text-sm text-slate-300">Category limits and alert rules are adjusted continuously as your workflows change.</p>
-        </article>
-        <article class="soft-frame rounded-xl p-5">
-          <h3 class="font-semibold mb-2">Decision-ready Reporting</h3>
-          <p class="text-sm text-slate-300">Clear monthly summaries with recommendations on what to keep, cut, or automate.</p>
-        </article>
-      </div>
-    </section>
-
-    <!-- Proof section hidden until real proof/testimonials are available.
-    <section class="max-w-6xl mx-auto frame rounded-2xl p-6 md:p-10 mb-8" id="proof">
-      <p class="mono text-[11px] tracking-[0.18em] text-[var(--accent-alt)] mb-4">PROOF</p>
-      <h2 class="text-2xl md:text-4xl font-semibold mb-6">Outcomes from teams we support</h2>
-      <div class="grid md:grid-cols-3 gap-4">
-        <article class="soft-frame rounded-xl p-5">
-          <p class="mono text-xs text-sky-300 mb-2">CASE STUDY</p>
-          <h3 class="font-semibold mb-2">SaaS Ops Team</h3>
-          <p class="text-sm text-slate-300 mb-3">"We finally had one budget operating rhythm instead of one-off fire drills."</p>
-          <p class="mono text-xs text-emerald-300">Outcome: cut software spend 30% in 8 weeks</p>
-        </article>
-        <article class="soft-frame rounded-xl p-5">
-          <p class="mono text-xs text-sky-300 mb-2">TESTIMONIAL</p>
-          <h3 class="font-semibold mb-2">Agency Founder</h3>
-          <p class="text-sm text-slate-300 mb-3">"Alerts became actionable and we stopped discovering overruns at month-end."</p>
-          <p class="mono text-xs text-emerald-300">Outcome: reduced budget variance by 22%</p>
-        </article>
-        <article class="soft-frame rounded-xl p-5">
-          <p class="mono text-xs text-sky-300 mb-2">CASE STUDY</p>
-          <h3 class="font-semibold mb-2">Operations Team</h3>
-          <p class="text-sm text-slate-300 mb-3">"Monthly reviews gave us confidence to make faster cost decisions."</p>
-          <p class="mono text-xs text-emerald-300">Outcome: saved 11 hours/week in finance ops</p>
-        </article>
-      </div>
-    </section>
-    -->
-
-    <section class="max-w-6xl mx-auto frame rounded-2xl p-6 md:p-10 mb-8" id="process">
-      <p class="mono text-[11px] tracking-[0.18em] text-[var(--accent-alt)] mb-4">PROCESS</p>
-      <h2 class="text-2xl md:text-4xl font-semibold mb-6">Scope -> Operate -> Improve</h2>
-      <div class="grid md:grid-cols-3 gap-4">
-        <article class="soft-frame rounded-xl p-5">
-          <p class="mono text-sm text-emerald-300 mb-3">01 / Scope</p>
-          <h3 class="font-semibold mb-2">Baseline and goals</h3>
-          <p class="text-sm text-slate-300">We map spending posture, category model, and review cadence before execution starts.</p>
-        </article>
-        <article class="soft-frame rounded-xl p-5">
-          <p class="mono text-sm text-emerald-300 mb-3">02 / Operate</p>
-          <h3 class="font-semibold mb-2">Weekly execution</h3>
-          <p class="text-sm text-slate-300">Ongoing monitoring, threshold tuning, and alerts management with clear weekly updates.</p>
-        </article>
-        <article class="soft-frame rounded-xl p-5">
-          <p class="mono text-sm text-emerald-300 mb-3">03 / Improve</p>
-          <h3 class="font-semibold mb-2">Review and optimize</h3>
-          <p class="text-sm text-slate-300">Monthly recommendations focus on measurable savings and operational confidence.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="max-w-6xl mx-auto py-4" id="features">
-      <p class="mono text-[11px] tracking-[0.18em] text-[var(--accent-alt)] mb-3">FEATURES</p>
-      <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-4">
+      <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-4 mt-7">
         <article class="soft-frame lift rounded-xl p-5">
           <h3 class="font-semibold mb-2">Smart Categories</h3>
-          <p class="text-sm text-slate-300">Group every transaction with clean category logic and quick edits.</p>
+          <p class="text-sm text-slate-300">Organize every transaction with cleaner category logic and faster edits.</p>
         </article>
         <article class="soft-frame lift rounded-xl p-5">
           <h3 class="font-semibold mb-2">Budget Thresholds</h3>
-          <p class="text-sm text-slate-300">Set monthly limits per category and track progress in real time.</p>
+          <p class="text-sm text-slate-300">Set monthly limits by category and see drift before it becomes a surprise.</p>
         </article>
         <article class="soft-frame lift rounded-xl p-5">
           <h3 class="font-semibold mb-2">Alerts</h3>
-          <p class="text-sm text-slate-300">Receive overspending and variance warnings before budgets drift.</p>
+          <p class="text-sm text-slate-300">Flag overspending, anomalies, and variance so action happens sooner.</p>
         </article>
         <article class="soft-frame lift rounded-xl p-5">
-          <h3 class="font-semibold mb-2">Reports</h3>
-          <p class="text-sm text-slate-300">See monthly summaries with trends, risks, and action-ready insights.</p>
+          <h3 class="font-semibold mb-2">AI Coach</h3>
+          <p class="text-sm text-slate-300">Use guided AI budget insight on Growth and Scale to turn data into next steps.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto frame rounded-2xl p-6 md:p-10 mb-8" id="process">
+      <p class="mono text-[11px] tracking-[0.18em] text-[var(--warn)] mb-4">HOW IT SELLS</p>
+      <h2 class="text-2xl md:text-4xl font-semibold mb-6">Three buying paths for three budgets</h2>
+      <div class="grid md:grid-cols-3 gap-4">
+        <article class="soft-frame rounded-xl p-5">
+          <p class="mono text-sm text-emerald-300 mb-3">01 / STARTER</p>
+          <h3 class="font-semibold mb-2">Try the core workflow</h3>
+          <p class="text-sm text-slate-300">A low-risk plan for users who want dashboard visibility and monthly accountability.</p>
+        </article>
+        <article class="soft-frame rounded-xl p-5">
+          <p class="mono text-sm text-emerald-300 mb-3">02 / GROWTH</p>
+          <h3 class="font-semibold mb-2">Upgrade for AI and active review</h3>
+          <p class="text-sm text-slate-300">The main revenue tier for users who want alerts, AI insight, and a stronger operating rhythm.</p>
+        </article>
+        <article class="soft-frame rounded-xl p-5">
+          <p class="mono text-sm text-emerald-300 mb-3">03 / SCALE</p>
+          <h3 class="font-semibold mb-2">Monetize urgency and support needs</h3>
+          <p class="text-sm text-slate-300">Premium plan and managed-service bridge for customers who want ongoing help and faster response.</p>
         </article>
       </div>
     </section>
 
     <section class="max-w-6xl mx-auto" id="pricing">
-      <p class="mono text-[11px] tracking-[0.18em] text-[var(--warn)] mb-3">PRICING</p>
-      <h2 class="text-2xl md:text-4xl font-semibold mb-6">Budget App Purchase Options</h2>
-      <div class="grid md:grid-cols-2 gap-4">
+      <p class="mono text-[11px] tracking-[0.18em] text-[var(--accent-alt)] mb-3">PRICING</p>
+      <h2 class="text-2xl md:text-4xl font-semibold mb-3">Choose the plan that matches your budget maturity</h2>
+      <p class="text-slate-300 max-w-3xl mb-6">The best conversion path is usually Growth: enough value to feel meaningful, still priced for easy self-serve purchase.</p>
+      <div class="grid lg:grid-cols-3 gap-4">
         <article class="frame rounded-2xl p-6 flex flex-col">
           <h3 class="text-2xl font-semibold mb-2">Starter</h3>
           <p class="text-4xl font-bold mb-4">$5<span class="text-lg text-slate-400">/mo</span></p>
           <ul class="text-sm text-slate-300 space-y-2 flex-1">
             <li>Monthly budget health report</li>
             <li>One optimization pass per month</li>
-            <li>Limited dashboard alerts</li>
+            <li>Core dashboard access</li>
+            <li>Limited alerts</li>
             <li>AI Coach not included</li>
           </ul>
           <a href="checkout.php?plan=starter" class="mt-6 inline-flex items-center justify-center rounded-lg border border-[#2a3f54] bg-[#13202c] px-4 py-3 text-sm font-medium text-slate-100 transition hover:bg-[#1a3144]">
-            Choose Starter
+            Start Starter
           </a>
         </article>
+
         <article class="frame rounded-2xl p-6 border-2 border-[var(--accent)] flex flex-col">
-          <p class="mono text-xs text-emerald-300 mb-2">MOST POPULAR</p>
+          <p class="mono text-xs text-emerald-300 mb-2">BEST VALUE</p>
           <h3 class="text-2xl font-semibold mb-2">Growth</h3>
           <p class="text-4xl font-bold mb-4">$10<span class="text-lg text-slate-400">/mo</span></p>
           <ul class="text-sm text-slate-300 space-y-2 flex-1">
             <li>Biweekly spend and variance reviews</li>
             <li>Alert tuning and threshold updates</li>
-            <li>Monthly strategic action plan</li>
+            <li>Monthly action plan</li>
             <li>Full dashboard alerts</li>
-            <li>Includes AI Coach visibility and chat</li>
+            <li>AI Coach visibility and chat</li>
           </ul>
           <a href="checkout.php?plan=growth" class="mt-6 inline-flex items-center justify-center rounded-lg bg-[var(--accent)] px-4 py-3 text-sm font-semibold text-[#261402] transition hover:brightness-95">
-            Choose Growth
+            Start Growth
           </a>
+        </article>
+
+        <article class="frame rounded-2xl p-6 flex flex-col">
+          <p class="mono text-xs text-sky-300 mb-2">PREMIUM</p>
+          <h3 class="text-2xl font-semibold mb-2">Scale</h3>
+          <p class="text-4xl font-bold mb-4">$19.99<span class="text-lg text-slate-400">/mo</span></p>
+          <ul class="text-sm text-slate-300 space-y-2 flex-1">
+            <li>Weekly advisor check-ins</li>
+            <li>Forecasting and scenario planning</li>
+            <li>Priority support lane</li>
+            <li>Custom workflow guidance</li>
+            <li>Strongest path into managed services</li>
+          </ul>
+          <div class="mt-6 grid gap-3">
+            <a href="checkout.php?plan=scale" class="inline-flex items-center justify-center rounded-lg border border-[#2a3f54] bg-[#13202c] px-4 py-3 text-sm font-medium text-slate-100 transition hover:bg-[#1a3144]">
+              Start Scale
+            </a>
+            <a href="mailto:sales@budgettrackerpro.com" class="inline-flex items-center justify-center rounded-lg border border-[#2a3f54] px-4 py-3 text-sm transition hover:bg-[#13202c]">
+              Book Discovery Call
+            </a>
+          </div>
         </article>
       </div>
     </section>
 
-    <section class="max-w-6xl mx-auto py-12" id="contact">
-      <div class="frame rounded-2xl p-7 md:p-10 text-center">
-        <p class="mono text-[11px] tracking-[0.2em] text-[var(--accent-alt)] mb-3">NEXT STEP</p>
-        <h2 class="text-3xl md:text-5xl font-semibold mb-4">Book your discovery call</h2>
-        <p class="text-slate-300 max-w-2xl mx-auto mb-8">Tell us your current transaction volume and budget process. We will map your operating tier and rollout plan.</p>
-        <div class="flex flex-wrap items-center justify-center gap-3">
-          <!-- Removed duplicate demo button to keep only one on page -->
-          <a href="mailto:sales@budgettrackerpro.com" class="inline-block px-7 py-3 rounded-md bg-[var(--accent)] text-[#261402] font-semibold hover:brightness-95 transition">Book Discovery Call</a>
+    <section class="max-w-6xl mx-auto py-12">
+      <div class="frame rounded-2xl p-7 md:p-10">
+        <p class="mono text-[11px] tracking-[0.2em] text-[var(--accent-alt)] mb-3">HIGHER-TICKET OFFER</p>
+        <div class="grid lg:grid-cols-[1fr_auto] gap-6 items-center">
+          <div>
+            <h2 class="text-3xl md:text-4xl font-semibold mb-3">Want hands-on support instead of self-serve?</h2>
+            <p class="text-slate-300 max-w-3xl">The managed service offer turns this product into a second revenue lane: monthly retainers for setup, oversight, reporting, and optimization.</p>
+          </div>
+          <div class="flex flex-wrap gap-3">
+            <a href="managed/" class="inline-block px-7 py-3 rounded-md bg-[var(--accent)] text-[#261402] font-semibold hover:brightness-95 transition">Explore Managed Service</a>
+            <a href="pricing-sheet.php" class="inline-block px-7 py-3 rounded-md border border-[#2a3f54] hover:bg-[#13202c] transition">Open Pricing Sheet</a>
+          </div>
         </div>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto frame rounded-2xl p-6 md:p-10 mb-8" id="faq">
+      <p class="mono text-[11px] tracking-[0.18em] text-[var(--warn)] mb-4">FAQ</p>
+      <div class="grid md:grid-cols-2 gap-4">
+        <article class="soft-frame rounded-xl p-5">
+          <h3 class="font-semibold mb-2">Which plan should most people buy?</h3>
+          <p class="text-sm text-slate-300">Growth is the strongest default. It includes alerts, AI Coach access, and enough ongoing value to justify a monthly subscription.</p>
+        </article>
+        <article class="soft-frame rounded-xl p-5">
+          <h3 class="font-semibold mb-2">What is Scale for?</h3>
+          <p class="text-sm text-slate-300">Scale is for customers who need faster support, planning help, or a stepping stone into managed finance operations.</p>
+        </article>
+        <article class="soft-frame rounded-xl p-5">
+          <h3 class="font-semibold mb-2">Can I sell both software and services?</h3>
+          <p class="text-sm text-slate-300">Yes. This funnel now supports low-ticket self-serve subscriptions and a premium service upsell from the same site.</p>
+        </article>
+        <article class="soft-frame rounded-xl p-5">
+          <h3 class="font-semibold mb-2">What do I need before taking payments?</h3>
+          <p class="text-sm text-slate-300">Add your Stripe Payment Links in `config/payments.local.php` or set the matching `BT_STRIPE_*_LINK` environment variables.</p>
+        </article>
       </div>
     </section>
   </main>

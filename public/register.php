@@ -15,6 +15,7 @@ $selectedPlan = normalizePlan($_POST["plan"] ?? ($_GET["plan"] ?? ($_SESSION["co
 $planLabels = [
     "starter" => "Starter",
     "growth" => "Growth",
+    "scale" => "Scale",
 ];
 $selectedPlanLabel = $planLabels[$selectedPlan] ?? null;
 

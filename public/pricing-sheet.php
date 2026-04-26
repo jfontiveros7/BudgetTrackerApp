@@ -101,11 +101,11 @@ header("Expires: 0");
   <main class="max-w-6xl mx-auto px-5 py-10 md:py-14">
     <section class="frame rounded-2xl p-6 md:p-9 mb-6">
       <p class="mono text-[11px] tracking-[0.2em] text-[var(--accent-alt)] mb-3">BUDGET TRACKER APP / PRICING SHEET</p>
-      <h1 class="text-3xl md:text-5xl font-semibold leading-tight mb-4">Managed budget operations pricing</h1>
-      <p class="text-slate-300 max-w-3xl mb-7">Service-first retainers for freelancers and small teams that want recurring oversight, not another app to maintain.</p>
+      <h1 class="text-3xl md:text-5xl font-semibold leading-tight mb-4">Software pricing plus premium support paths</h1>
+      <p class="text-slate-300 max-w-3xl mb-7">Use this sheet to close both self-serve subscriptions and higher-ticket support. Starter and Growth convert quickly online, while Scale and add-ons raise average order value.</p>
       <div class="grid sm:grid-cols-3 gap-3 mb-6">
         <div class="soft-frame rounded-md px-4 py-3 mono text-xs text-slate-300">prepared: April 2026</div>
-        <div class="soft-frame rounded-md px-4 py-3 mono text-xs text-slate-300">billing: monthly retainer</div>
+        <div class="soft-frame rounded-md px-4 py-3 mono text-xs text-slate-300">billing: monthly subscription</div>
         <div class="soft-frame rounded-md px-4 py-3 mono text-xs text-slate-300">response target: &lt;24h</div>
       </div>
       <div class="no-print flex flex-wrap gap-3">
@@ -119,7 +119,7 @@ header("Expires: 0");
       <article class="frame lift rounded-2xl p-6 flex flex-col">
         <p class="mono text-xs text-emerald-300 mb-2">TIER 1</p>
         <h2 class="text-2xl font-semibold mb-1">Starter</h2>
-        <p class="text-sm text-slate-300 mb-4">For solo operators needing monthly clarity.</p>
+        <p class="text-sm text-slate-300 mb-4">For solo operators who want a low-risk entry point.</p>
         <p class="text-4xl font-bold mb-1">$5<span class="text-lg text-slate-400">/mo</span></p>
         <p class="mono text-xs text-slate-400 mb-5">month-to-month</p>
         <ul class="text-sm text-slate-300 space-y-2 mb-7 flex-1">
@@ -127,14 +127,15 @@ header("Expires: 0");
           <li>One category and threshold optimization pass</li>
           <li>Transaction anomaly highlights</li>
           <li>Email support, 48-hour response SLA</li>
+          <li>Self-serve onboarding flow</li>
         </ul>
-        <p class="text-xs text-slate-400">Best for founders moving from spreadsheets to a predictable finance cadence.</p>
+        <a href="checkout.php?plan=starter" class="mt-5 inline-flex items-center justify-center rounded-lg border border-[#34506a] px-4 py-3 text-sm font-medium hover:bg-[#132734] transition">Choose Starter</a>
       </article>
 
       <article class="frame lift rounded-2xl p-6 flex flex-col border-2 border-[var(--accent)]">
         <p class="mono text-xs text-emerald-300 mb-2">MOST POPULAR</p>
         <h2 class="text-2xl font-semibold mb-1">Growth</h2>
-        <p class="text-sm text-slate-300 mb-4">For freelancers and teams needing active oversight.</p>
+        <p class="text-sm text-slate-300 mb-4">For freelancers and teams needing stronger accountability and AI insight.</p>
         <p class="text-4xl font-bold mb-1">$10<span class="text-lg text-slate-400">/mo</span></p>
         <p class="mono text-xs text-slate-400 mb-5">recommended minimum: 3 months</p>
         <ul class="text-sm text-slate-300 space-y-2 mb-7 flex-1">
@@ -142,14 +143,15 @@ header("Expires: 0");
           <li>Alert tuning and threshold updates</li>
           <li>Monthly strategic action plan</li>
           <li>Priority support, 24-hour response SLA</li>
+          <li>AI Coach visibility and chat</li>
         </ul>
-        <p class="text-xs text-slate-400">Best for teams with increasing transaction volume and tighter cashflow windows.</p>
+        <a href="checkout.php?plan=growth" class="mt-5 inline-flex items-center justify-center rounded-lg bg-[var(--accent)] px-4 py-3 text-sm font-semibold text-[#032318] hover:brightness-95 transition">Choose Growth</a>
       </article>
 
       <article class="frame lift rounded-2xl p-6 flex flex-col">
         <p class="mono text-xs text-emerald-300 mb-2">TIER 3</p>
         <h2 class="text-2xl font-semibold mb-1">Scale</h2>
-        <p class="text-sm text-slate-300 mb-4">For teams wanting weekly operations support.</p>
+        <p class="text-sm text-slate-300 mb-4">For customers who need planning help, faster support, and a premium support lane.</p>
         <p class="text-4xl font-bold mb-1">$19.99<span class="text-lg text-slate-400">/mo</span></p>
         <p class="mono text-xs text-slate-400 mb-5">custom scope available</p>
         <ul class="text-sm text-slate-300 space-y-2 mb-7 flex-1">
@@ -157,8 +159,12 @@ header("Expires: 0");
           <li>Forecasting and scenario planning</li>
           <li>Custom workflows and automation support</li>
           <li>Priority support and escalation channel</li>
+          <li>Best bridge into managed services</li>
         </ul>
-        <p class="text-xs text-slate-400">Best for teams using finance operations as a growth lever.</p>
+        <div class="mt-5 grid gap-3">
+          <a href="checkout.php?plan=scale" class="inline-flex items-center justify-center rounded-lg border border-[#34506a] px-4 py-3 text-sm font-medium hover:bg-[#132734] transition">Choose Scale</a>
+          <a href="mailto:sales@budgettrackerpro.com" class="inline-flex items-center justify-center rounded-lg border border-[#34506a] px-4 py-3 text-sm hover:bg-[#132734] transition">Talk To Sales</a>
+        </div>
       </article>
     </section>
 
@@ -191,13 +197,13 @@ header("Expires: 0");
       <p class="mono text-[11px] tracking-[0.2em] text-emerald-300 mb-3">OPTIONAL ADD-ONS</p>
       <div class="grid md:grid-cols-3 gap-4 mb-7">
         <div class="soft-frame rounded-xl p-4">
-          <p class="font-semibold mb-1">30-Day Pilot</p>
-          <p class="text-sm text-slate-300">$150 setup + first month tier fee</p>
-        </div>
-        <div class="soft-frame rounded-xl p-4">
-          <p class="font-semibold mb-1">Extra Advisory Call</p>
-          <p class="text-sm text-slate-300">$180 per 45-minute session</p>
-        </div>
+        <p class="font-semibold mb-1">Managed Onboarding</p>
+        <p class="text-sm text-slate-300">$150 setup + first month tier fee</p>
+      </div>
+      <div class="soft-frame rounded-xl p-4">
+        <p class="font-semibold mb-1">Extra Advisory Call</p>
+        <p class="text-sm text-slate-300">$180 per 45-minute session</p>
+      </div>
         <div class="soft-frame rounded-xl p-4">
           <p class="font-semibold mb-1">Custom Workflow Build</p>
           <p class="text-sm text-slate-300">From $300 per scoped request</p>
@@ -206,10 +212,10 @@ header("Expires: 0");
 
       <div class="soft-frame rounded-xl p-5">
         <p class="font-semibold mb-2">Next step</p>
-        <p class="text-slate-300 mb-4">Book a 20-minute discovery call and we will map the right tier based on transaction volume, goals, and support expectations.</p>
+        <p class="text-slate-300 mb-4">Most buyers can start immediately on Starter or Growth. If the buyer needs planning help or process ownership, route them to Scale or a discovery call.</p>
         <div class="no-print flex flex-wrap gap-3">
-          <a href="mailto:sales@budgettrackerpro.com" class="px-5 py-3 rounded-md bg-[var(--accent)] text-[#032318] font-semibold hover:brightness-95 transition">Book Discovery Call</a>
-          <a href="landing.php" class="px-5 py-3 rounded-md border border-[#34506a] hover:bg-[#132734] transition">Return To Landing</a>
+          <a href="checkout.php?plan=growth" class="px-5 py-3 rounded-md bg-[var(--accent)] text-[#032318] font-semibold hover:brightness-95 transition">Start Growth</a>
+          <a href="mailto:sales@budgettrackerpro.com" class="px-5 py-3 rounded-md border border-[#34506a] hover:bg-[#132734] transition">Book Discovery Call</a>
         </div>
       </div>
     </section>
