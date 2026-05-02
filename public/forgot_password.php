@@ -1,6 +1,7 @@
 <?php
 session_start();
-require_once "../src/auth.php";
+define("BT_ALLOW_DB_DEGRADED", true);
+require_once __DIR__ . "/../src/auth.php";
 
 if (isset($_SESSION["user_id"], $_SESSION["user_email"])) {
     header("Location: dashboard.php");
@@ -11,11 +12,16 @@ $email = "";
 $success = "";
 $error = "";
 $resetLink = "";
+$authAvailable = btDatabaseAvailable();
+$authStatusMessage = btDatabaseStatusMessage();
+$requestMethod = $_SERVER["REQUEST_METHOD"] ?? "GET";
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
+if ($requestMethod === "POST") {
     $email = trim((string) ($_POST["email"] ?? ""));
 
-    if ($email === "" || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    if (!$authAvailable) {
+        $error = $authStatusMessage !== "" ? $authStatusMessage : "Password recovery is temporarily unavailable.";
+    } elseif ($email === "" || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = "Please enter a valid email address.";
     } else {
         $token = createPasswordResetToken($email);
@@ -40,6 +46,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <p class="app-kicker text-center">Account Recovery</p>
         <h1 class="text-2xl font-semibold mb-2 text-center">Forgot Password</h1>
         <p class="text-sm text-slate-400 mb-6 text-center">Enter your email and we will generate a reset link.</p>
+
+        <?php if (!$authAvailable && $authStatusMessage !== ""): ?>
+            <div class="mb-4 rounded border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm text-amber-100">
+                <?php echo htmlspecialchars($authStatusMessage); ?>
+            </div>
+        <?php endif; ?>
 
         <?php if ($error !== ""): ?>
             <div class="mb-4 rounded border border-rose-500 bg-rose-950/40 text-rose-200 px-3 py-2 text-sm">
@@ -70,14 +82,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     name="email"
                     value="<?php echo htmlspecialchars($email); ?>"
                     required
+                    <?php echo !$authAvailable ? "disabled" : ""; ?>
                     class="w-full rounded-lg bg-slate-950 border border-slate-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 >
             </div>
             <button
                 type="submit"
+                <?php echo !$authAvailable ? "disabled" : ""; ?>
                 class="w-full inline-flex items-center justify-center rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-medium py-2 text-sm transition"
             >
-                Generate Reset Link
+                <?php echo $authAvailable ? "Generate Reset Link" : "Temporarily Unavailable"; ?>
             </button>
         </form>
 

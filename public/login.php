@@ -1,5 +1,6 @@
 <?php
 session_start();
+define("BT_ALLOW_DB_DEGRADED", true);
 require_once __DIR__ . "/../src/auth.php";
 
 $error = "";
@@ -15,6 +16,9 @@ $selectedPlanLabel = $planLabels[$selectedPlan] ?? null;
 $completedPlanLabel = $planLabels[$completedPlan] ?? null;
 $canCreateAccount = $completedPlan !== "";
 $showForgotPassword = $completedPlan !== "";
+$authAvailable = btDatabaseAvailable();
+$authStatusMessage = btDatabaseStatusMessage();
+$requestMethod = $_SERVER["REQUEST_METHOD"] ?? "GET";
 
 
 if (isset($_SESSION["user_id"])) {
@@ -22,7 +26,7 @@ if (isset($_SESSION["user_id"])) {
     exit;
 }
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
+if ($requestMethod === "POST") {
     $email = trim($_POST["email"] ?? "");
     $password = $_POST["password"] ?? "";
     $postedPlan = strtolower(trim($_POST["plan"] ?? $selectedPlan));
@@ -30,27 +34,30 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $postedPlan = "";
     }
 
-    $user = loginUser($email, $password);
+    if (!$authAvailable) {
+        $error = $authStatusMessage !== "" ? $authStatusMessage : "Sign in is temporarily unavailable.";
+    } else {
+        $user = loginUser($email, $password);
 
-    if ($user) {
-        session_regenerate_id(true);
-        if ($completedPlan !== "" && ($postedPlan === "" || $postedPlan === $completedPlan)) {
-            updateUserPlan((int) $user["id"], $completedPlan);
-            unset($_SESSION["completed_purchase_plan"], $_SESSION["pending_plan"]);
-            $_SESSION["purchase_flash"] = $planLabels[$completedPlan] . " access is now active on your account.";
+        if ($user) {
+            session_regenerate_id(true);
+            if ($completedPlan !== "" && ($postedPlan === "" || $postedPlan === $completedPlan)) {
+                updateUserPlan((int) $user["id"], $completedPlan);
+                unset($_SESSION["completed_purchase_plan"], $_SESSION["pending_plan"]);
+                $_SESSION["purchase_flash"] = $planLabels[$completedPlan] . " access is now active on your account.";
+                header("Location: dashboard.php");
+                exit;
+            }
+
+            if ($postedPlan !== "") {
+                $_SESSION["pending_plan"] = $postedPlan;
+                header("Location: checkout.php?plan=" . urlencode($postedPlan));
+                exit;
+            }
+
             header("Location: dashboard.php");
             exit;
         }
-
-        if ($postedPlan !== "") {
-            $_SESSION["pending_plan"] = $postedPlan;
-            header("Location: checkout.php?plan=" . urlencode($postedPlan));
-            exit;
-        }
-
-        header("Location: dashboard.php");
-        exit;
-    } else {
         $error = "Invalid login credentials.";
     }
 }
@@ -67,6 +74,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <div class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-xl p-8 shadow-xl">
         <h1 class="text-2xl font-semibold mb-2 text-center">Budget Tracker App</h1>
         <p class="text-sm text-slate-400 mb-6 text-center">Sign in to manage your finances.</p>
+
+        <?php if (!$authAvailable && $authStatusMessage !== ""): ?>
+            <div class="mb-4 rounded border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm text-amber-100">
+                <?php echo htmlspecialchars($authStatusMessage); ?>
+            </div>
+        <?php endif; ?>
 
         <?php if ($completedPlanLabel !== null): ?>
             <div class="mb-4 rounded border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-100">
@@ -89,18 +102,21 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <div>
                 <label class="block text-sm mb-1">Email</label>
                 <input type="email" name="email" value="<?php echo htmlspecialchars($email); ?>" required
+                       <?php echo !$authAvailable ? "disabled" : ""; ?>
                        class="w-full rounded-lg bg-slate-950 border border-slate-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
             </div>
             <div>
                 <label class="block text-sm mb-1">Password</label>
                 <input type="password" name="password" required
+                       <?php echo !$authAvailable ? "disabled" : ""; ?>
                        class="w-full rounded-lg bg-slate-950 border border-slate-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
             </div>
-            <button
+            <button type="submit"
+                <?php echo !$authAvailable ? "disabled" : ""; ?>
                 class="w-full mt-2 inline-flex items-center justify-center rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-medium py-2 text-sm transition">
-                Sign In
+                <?php echo $authAvailable ? "Sign In" : "Temporarily Unavailable"; ?>
             </button>
-            <?php if ($showForgotPassword): ?>
+            <?php if ($showForgotPassword && $authAvailable): ?>
                 <div class="text-right">
                     <a href="forgot_password.php" class="text-sm text-sky-300 hover:text-sky-200">Forgot password?</a>
                 </div>

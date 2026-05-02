@@ -2,6 +2,10 @@
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/schema_support.php';
 
+function btAuthDatabaseReady() {
+    return function_exists("btDatabaseAvailable") ? btDatabaseAvailable() : false;
+}
+
 function normalizePlan($plan, $default = "growth") {
     $normalized = strtolower(trim((string) $plan));
     return in_array($normalized, ["starter", "growth", "scale"], true) ? $normalized : $default;
@@ -18,6 +22,10 @@ function completeLogin(array $user) {
 
 function repairLegacyDemoPassword(array $user, $password) {
     global $conn;
+
+    if (!btAuthDatabaseReady()) {
+        return false;
+    }
 
     if (($user["email"] ?? "") !== "demo@konticodelabs.com" || $password !== "demo1234") {
         return false;
@@ -40,6 +48,10 @@ function repairLegacyDemoPassword(array $user, $password) {
 function registerUser($name, $email, $password, $selectedPlan = "growth") {
     global $conn;
 
+    if (!btAuthDatabaseReady()) {
+        return false;
+    }
+
     btEnsureUsersPlanColumn();
 
     $hashed = password_hash($password, PASSWORD_DEFAULT);
@@ -56,6 +68,10 @@ function registerUser($name, $email, $password, $selectedPlan = "growth") {
 
 function loginUser($email, $password) {
     global $conn;
+
+    if (!btAuthDatabaseReady()) {
+        return false;
+    }
 
     btEnsureUsersPlanColumn();
 
@@ -84,6 +100,10 @@ function loginUser($email, $password) {
 function updateUserPlan($userId, $plan) {
     global $conn;
 
+    if (!btAuthDatabaseReady()) {
+        return false;
+    }
+
     btEnsureUsersPlanColumn();
 
     $normalizedPlan = normalizePlan($plan);
@@ -101,6 +121,10 @@ function updateUserPlan($userId, $plan) {
 
 function createPasswordResetToken($email) {
     global $conn;
+
+    if (!btAuthDatabaseReady()) {
+        return null;
+    }
 
     $stmt = $conn->prepare("SELECT id FROM users WHERE email = ? LIMIT 1");
     $stmt->bind_param("s", $email);
@@ -134,6 +158,10 @@ function createPasswordResetToken($email) {
 function getPasswordResetByToken($token) {
     global $conn;
 
+    if (!btAuthDatabaseReady()) {
+        return null;
+    }
+
     $tokenHash = hash("sha256", $token);
     $stmt = $conn->prepare(
         "SELECT pr.id, pr.user_id, pr.expires_at, pr.used_at, u.email
@@ -164,6 +192,10 @@ function getPasswordResetByToken($token) {
 
 function resetPasswordWithToken($token, $newPassword) {
     global $conn;
+
+    if (!btAuthDatabaseReady()) {
+        return false;
+    }
 
     $reset = getPasswordResetByToken($token);
     if (!$reset) {

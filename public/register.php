@@ -1,5 +1,6 @@
 <?php
 session_start();
+define("BT_ALLOW_DB_DEGRADED", true);
 require_once __DIR__ . "/../src/auth.php";
 
 
@@ -19,19 +20,24 @@ $planLabels = [
     "scale" => "Scale",
 ];
 $selectedPlanLabel = $planLabels[$selectedPlan] ?? null;
+$authAvailable = btDatabaseAvailable();
+$authStatusMessage = btDatabaseStatusMessage();
+$requestMethod = $_SERVER["REQUEST_METHOD"] ?? "GET";
 
 if ($completedPlan === "" || $selectedPlan === "" || $selectedPlan !== $completedPlan) {
     header("Location: login.php");
     exit;
 }
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
+if ($requestMethod === "POST") {
     $name = trim($_POST["name"] ?? "");
     $email = trim($_POST["email"] ?? "");
     $password = $_POST["password"] ?? "";
     $planForAccount = $selectedPlan !== "" ? $selectedPlan : "growth";
 
-    if (registerUser($name, $email, $password, $planForAccount)) {
+    if (!$authAvailable) {
+        $error = $authStatusMessage !== "" ? $authStatusMessage : "Account creation is temporarily unavailable.";
+    } elseif (registerUser($name, $email, $password, $planForAccount)) {
         // Auto-login after registration
         $user = loginUser($email, $password);
         if ($user) {
@@ -49,7 +55,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
     }
 
-    $error = "Unable to register user. The email may already be in use.";
+    if ($error === "") {
+        $error = "Unable to register user. The email may already be in use.";
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -64,6 +72,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <div class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-xl p-8 shadow-xl">
         <h1 class="text-2xl font-semibold mb-2 text-center">Create Your Account</h1>
         <p class="text-sm text-slate-400 mb-6 text-center">Join Budget Tracker App and start organizing your finances.</p>
+
+        <?php if (!$authAvailable && $authStatusMessage !== ""): ?>
+            <div class="mb-4 rounded border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm text-amber-100">
+                <?php echo htmlspecialchars($authStatusMessage); ?>
+            </div>
+        <?php endif; ?>
 
         <?php if ($selectedPlanLabel !== null): ?>
             <div class="mb-4 rounded border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-100">
@@ -82,21 +96,25 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <div>
                 <label class="block text-sm mb-1">Name</label>
                 <input type="text" name="name" value="<?php echo htmlspecialchars($name); ?>" required
+                    <?php echo !$authAvailable ? "disabled" : ""; ?>
                     class="w-full rounded-lg bg-slate-950 border border-slate-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
             </div>
             <div>
                 <label class="block text-sm mb-1">Email</label>
                 <input type="email" name="email" value="<?php echo htmlspecialchars($email); ?>" required
+                    <?php echo !$authAvailable ? "disabled" : ""; ?>
                     class="w-full rounded-lg bg-slate-950 border border-slate-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
             </div>
             <div>
                 <label class="block text-sm mb-1">Password</label>
                 <input type="password" name="password" required
+                    <?php echo !$authAvailable ? "disabled" : ""; ?>
                     class="w-full rounded-lg bg-slate-950 border border-slate-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
             </div>
             <button type="submit"
+                <?php echo !$authAvailable ? "disabled" : ""; ?>
                 class="w-full inline-flex items-center justify-center rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-medium py-2 text-sm transition">
-                Create Account
+                <?php echo $authAvailable ? "Create Account" : "Temporarily Unavailable"; ?>
             </button>
         </form>
 
