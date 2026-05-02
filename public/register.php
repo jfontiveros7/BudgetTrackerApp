@@ -12,12 +12,18 @@ $error = "";
 $name = "";
 $email = "";
 $selectedPlan = normalizePlan($_POST["plan"] ?? ($_GET["plan"] ?? ($_SESSION["completed_purchase_plan"] ?? "")), "");
+$completedPlan = normalizePlan($_SESSION["completed_purchase_plan"] ?? "", "");
 $planLabels = [
     "starter" => "Starter",
     "growth" => "Growth",
     "scale" => "Scale",
 ];
 $selectedPlanLabel = $planLabels[$selectedPlan] ?? null;
+
+if ($completedPlan === "" || $selectedPlan === "" || $selectedPlan !== $completedPlan) {
+    header("Location: login.php");
+    exit;
+}
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $name = trim($_POST["name"] ?? "");

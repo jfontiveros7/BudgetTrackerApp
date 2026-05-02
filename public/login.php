@@ -13,6 +13,8 @@ $planLabels = [
 ];
 $selectedPlanLabel = $planLabels[$selectedPlan] ?? null;
 $completedPlanLabel = $planLabels[$completedPlan] ?? null;
+$canCreateAccount = $completedPlan !== "";
+$showForgotPassword = $completedPlan !== "";
 
 
 if (isset($_SESSION["user_id"])) {
@@ -98,14 +100,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 class="w-full mt-2 inline-flex items-center justify-center rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-medium py-2 text-sm transition">
                 Sign In
             </button>
-            <div class="text-right">
-                <a href="forgot_password.php" class="text-sm text-sky-300 hover:text-sky-200">Forgot password?</a>
-            </div>
+            <?php if ($showForgotPassword): ?>
+                <div class="text-right">
+                    <a href="forgot_password.php" class="text-sm text-sky-300 hover:text-sky-200">Forgot password?</a>
+                </div>
+            <?php endif; ?>
         </form>
-        <p class="mt-6 text-center text-sm text-slate-400">
-            Need an account?
-            <a href="register.php<?php echo $selectedPlan !== "" ? "?plan=" . urlencode($selectedPlan) : ($completedPlan !== "" ? "?plan=" . urlencode($completedPlan) : ""); ?>" class="text-emerald-400 hover:text-emerald-300">Create one</a>
-        </p>
+        <?php if ($canCreateAccount): ?>
+            <p class="mt-6 text-center text-sm text-slate-400">
+                Need an account?
+                <a href="register.php?plan=<?php echo urlencode($completedPlan); ?>" class="text-emerald-400 hover:text-emerald-300">Create one</a>
+            </p>
+        <?php else: ?>
+            <p class="mt-6 text-center text-sm text-slate-400">
+                Account creation becomes available after payment is complete.
+            </p>
+        <?php endif; ?>
     </div>
 </body>
 </html>
