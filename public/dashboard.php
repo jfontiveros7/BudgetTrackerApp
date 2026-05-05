@@ -8,15 +8,28 @@ $userId = (int) $_SESSION["user_id"];
 $userName = $_SESSION["user_name"] ?? "";
 $userEmail = $_SESSION["user_email"];
 $isAdmin = ($userEmail === "admin@example.com");
-require_once "../src/analytics.php";
-require_once "../src/agent.php";
-require_once "../src/transactions.php";
+$selectedPlan = strtolower((string) ($_SESSION["active_plan"] ?? $_SESSION["selected_plan"] ?? "growth"));
+$hasFullAlerts = $selectedPlan !== "starter";
+$hasAiCoach = $selectedPlan !== "starter";
+$purchaseFlash = $_SESSION["purchase_flash"] ?? "";
+unset($_SESSION["purchase_flash"]);
+require_once __DIR__ . "/../src/analytics.php";
+require_once __DIR__ . "/../src/agent.php";
+require_once __DIR__ . "/../src/transactions.php";
 
 $summary = getUserSummary($userId);
 $chartData = getUserChartData($userId);
 $agentReport = getBudgetAgentReport($userId);
 $signalSnapshot = getBudgetSignalSnapshot($userId);
-$dashboardAlerts = getDashboardAlerts($userId);
+$allDashboardAlerts = getDashboardAlerts($userId);
+$dashboardAlerts = $allDashboardAlerts;
+if (!$hasFullAlerts && !empty($allDashboardAlerts)) {
+    $dashboardAlerts = array_slice($allDashboardAlerts, 0, max(1, (int) ceil(count($allDashboardAlerts) / 2)));
+}
+$visibleAlertTypes = array_values(array_unique(array_filter(array_map(
+    static fn($alert) => (string) ($alert["type"] ?? ""),
+    $dashboardAlerts
+))));
 $recentTransactions = getRecentTransactions($userId, 50);
 ?>
 <!DOCTYPE html>
@@ -29,7 +42,13 @@ $recentTransactions = getRecentTransactions($userId, 50);
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex">
-    <aside class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col p-6">
+    <aside id="sidebar" class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col p-6 fixed md:static z-40 top-0 left-0 h-full md:h-auto transition-transform duration-200 -translate-x-full md:translate-x-0">
+            <!-- Hamburger for mobile -->
+            <button id="sidebarToggle" class="md:hidden fixed top-4 left-4 z-50 p-2 bg-slate-900 rounded shadow-lg focus:outline-none">
+                <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="text-emerald-400">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
         <h1 class="text-xl font-semibold mb-8">Budget Tracker App</h1>
 
         <nav class="space-y-2">
@@ -49,6 +68,45 @@ $recentTransactions = getRecentTransactions($userId, 50);
     </aside>
 
     <main class="flex-1 p-10">
+                        <!-- Notification Bell -->
+                        <div class="fixed top-4 right-4 z-50">
+                            <button id="notifBell" class="relative p-2 rounded-full bg-slate-900 hover:bg-slate-800 shadow-lg focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="text-emerald-400">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                </svg>
+                                <span id="notifBadge" class="absolute -top-1 -right-1 bg-rose-500 text-white text-xs rounded-full px-1.5 py-0.5 font-bold hidden">0</span>
+                            </button>
+                            <div id="notifDropdown" class="hidden absolute right-0 mt-2 w-80 max-w-xs bg-slate-900 border border-slate-700 rounded-xl shadow-xl overflow-hidden">
+                                <div class="p-4 border-b border-slate-800 font-semibold text-slate-200">Notifications</div>
+                                <div id="notifList" class="max-h-72 overflow-y-auto">
+                                    <div class="p-4 text-slate-400 text-sm">No new notifications.</div>
+                                </div>
+                            </div>
+                        </div>
+                <!-- Dashboard Customization Controls -->
+                <div class="mb-8 flex flex-wrap gap-4 items-center">
+                    <span class="font-semibold text-slate-300 mr-2">Customize Dashboard:</span>
+                    <label class="flex items-center gap-2">
+                        <input type="checkbox" id="toggleMetrics" checked>
+                        <span>Metrics</span>
+                    </label>
+                    <label class="flex items-center gap-2">
+                        <input type="checkbox" id="toggleAlerts" checked>
+                        <span>Alerts</span>
+                    </label>
+                    <label class="flex items-center gap-2">
+                        <input type="checkbox" id="toggleChart" checked>
+                        <span>Chart</span>
+                    </label>
+                    <label class="flex items-center gap-2">
+                        <input type="checkbox" id="toggleCoach" checked>
+                        <span>Coach</span>
+                    </label>
+                    <label class="flex items-center gap-2">
+                        <input type="checkbox" id="toggleTransactions" checked>
+                        <span>Recent Transactions</span>
+                    </label>
+                </div>
         <div class="app-status-strip">
             <span class="app-status-pill">ops mode: live</span>
             <span class="app-status-pill">support target: &lt;24h</span>
@@ -67,8 +125,15 @@ $recentTransactions = getRecentTransactions($userId, 50);
             </a>
         </div>
 
+        <?php if ($purchaseFlash !== ""): ?>
+            <div class="mb-8 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100">
+                <?php echo htmlspecialchars($purchaseFlash); ?>
+            </div>
+        <?php endif; ?>
+
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-            <div class="metric-card bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-xl">
+                <!-- Metrics Widget -->
+            <div class="metric-card bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-xl min-w-[220px]">
                 <p class="text-sm text-slate-400">Total Income</p>
                 <p class="text-3xl font-semibold text-emerald-400 mt-2">
                     $<?php echo number_format($summary["total_income"], 2); ?>
@@ -92,10 +157,15 @@ $recentTransactions = getRecentTransactions($userId, 50);
 
         <?php if (!empty($dashboardAlerts)): ?>
             <div class="bg-slate-900 border border-slate-800 rounded-xl p-8 shadow-xl mb-10">
+                    <!-- Chart Widget -->
+                    <!-- Alerts Widget -->
                 <div class="flex flex-col gap-2 mb-6 md:flex-row md:items-center md:justify-between">
                     <div>
                         <h3 class="text-xl font-semibold">Alerts</h3>
                         <p class="text-slate-400 text-sm mt-2">Live dashboard alerts based on your budgets, forecast, and recent spending behavior.</p>
+                        <?php if (!$hasFullAlerts && count($allDashboardAlerts) > count($dashboardAlerts)): ?>
+                            <p class="text-amber-300 text-sm mt-2">Starter shows a limited alert set. Growth includes full alert visibility.</p>
+                        <?php endif; ?>
                     </div>
                     <button
                         id="alertPreferencesToggle"
@@ -113,26 +183,36 @@ $recentTransactions = getRecentTransactions($userId, 50);
                     <p class="text-sm text-slate-400 mt-1">Your choices are saved in this browser so the dashboard stays calm and relevant.</p>
 
                     <div class="grid grid-cols-1 gap-3 mt-4 md:grid-cols-2 xl:grid-cols-5">
-                        <label class="flex items-center gap-3 rounded-lg border border-slate-800 bg-slate-900/80 px-4 py-3 text-sm text-slate-300">
-                            <input type="checkbox" data-alert-pref="overspending_risk" class="alert-pref-checkbox h-4 w-4 rounded border-slate-600 bg-slate-950 text-emerald-500 focus:ring-emerald-500">
-                            Overspending Risk
-                        </label>
-                        <label class="flex items-center gap-3 rounded-lg border border-slate-800 bg-slate-900/80 px-4 py-3 text-sm text-slate-300">
-                            <input type="checkbox" data-alert-pref="forecast" class="alert-pref-checkbox h-4 w-4 rounded border-slate-600 bg-slate-950 text-emerald-500 focus:ring-emerald-500">
-                            Forecast
-                        </label>
-                        <label class="flex items-center gap-3 rounded-lg border border-slate-800 bg-slate-900/80 px-4 py-3 text-sm text-slate-300">
-                            <input type="checkbox" data-alert-pref="budget_threshold" class="alert-pref-checkbox h-4 w-4 rounded border-slate-600 bg-slate-950 text-emerald-500 focus:ring-emerald-500">
-                            Budget Thresholds
-                        </label>
-                        <label class="flex items-center gap-3 rounded-lg border border-slate-800 bg-slate-900/80 px-4 py-3 text-sm text-slate-300">
-                            <input type="checkbox" data-alert-pref="subscription_review" class="alert-pref-checkbox h-4 w-4 rounded border-slate-600 bg-slate-950 text-emerald-500 focus:ring-emerald-500">
-                            Subscription Review
-                        </label>
-                        <label class="flex items-center gap-3 rounded-lg border border-slate-800 bg-slate-900/80 px-4 py-3 text-sm text-slate-300">
-                            <input type="checkbox" data-alert-pref="coach_recommendation" class="alert-pref-checkbox h-4 w-4 rounded border-slate-600 bg-slate-950 text-emerald-500 focus:ring-emerald-500">
-                            Coach Recommendation
-                        </label>
+                        <?php if (in_array("overspending_risk", $visibleAlertTypes, true)): ?>
+                            <label class="flex items-center gap-3 rounded-lg border border-slate-800 bg-slate-900/80 px-4 py-3 text-sm text-slate-300">
+                                <input type="checkbox" data-alert-pref="overspending_risk" class="alert-pref-checkbox h-4 w-4 rounded border-slate-600 bg-slate-950 text-emerald-500 focus:ring-emerald-500">
+                                Overspending Risk
+                            </label>
+                        <?php endif; ?>
+                        <?php if (in_array("forecast", $visibleAlertTypes, true)): ?>
+                            <label class="flex items-center gap-3 rounded-lg border border-slate-800 bg-slate-900/80 px-4 py-3 text-sm text-slate-300">
+                                <input type="checkbox" data-alert-pref="forecast" class="alert-pref-checkbox h-4 w-4 rounded border-slate-600 bg-slate-950 text-emerald-500 focus:ring-emerald-500">
+                                Forecast
+                            </label>
+                        <?php endif; ?>
+                        <?php if (in_array("budget_threshold", $visibleAlertTypes, true)): ?>
+                            <label class="flex items-center gap-3 rounded-lg border border-slate-800 bg-slate-900/80 px-4 py-3 text-sm text-slate-300">
+                                <input type="checkbox" data-alert-pref="budget_threshold" class="alert-pref-checkbox h-4 w-4 rounded border-slate-600 bg-slate-950 text-emerald-500 focus:ring-emerald-500">
+                                Budget Thresholds
+                            </label>
+                        <?php endif; ?>
+                        <?php if (in_array("subscription_review", $visibleAlertTypes, true)): ?>
+                            <label class="flex items-center gap-3 rounded-lg border border-slate-800 bg-slate-900/80 px-4 py-3 text-sm text-slate-300">
+                                <input type="checkbox" data-alert-pref="subscription_review" class="alert-pref-checkbox h-4 w-4 rounded border-slate-600 bg-slate-950 text-emerald-500 focus:ring-emerald-500">
+                                Subscription Review
+                            </label>
+                        <?php endif; ?>
+                        <?php if (in_array("coach_recommendation", $visibleAlertTypes, true)): ?>
+                            <label class="flex items-center gap-3 rounded-lg border border-slate-800 bg-slate-900/80 px-4 py-3 text-sm text-slate-300">
+                                <input type="checkbox" data-alert-pref="coach_recommendation" class="alert-pref-checkbox h-4 w-4 rounded border-slate-600 bg-slate-950 text-emerald-500 focus:ring-emerald-500">
+                                Coach Recommendation
+                            </label>
+                        <?php endif; ?>
                     </div>
 
                     <div class="mt-4">
@@ -184,25 +264,47 @@ $recentTransactions = getRecentTransactions($userId, 50);
 
         <div class="bg-slate-900 border border-slate-800 rounded-xl p-8 shadow-xl mb-10">
             <h3 class="text-xl font-semibold mb-4">Income vs Expense (Last 30 Days)</h3>
-            <canvas id="incomeExpenseChart" height="120"></canvas>
+            <div class="overflow-x-auto"><canvas id="incomeExpenseChart" height="120"></canvas></div>
         </div>
 
-        <div class="mb-10">
-            <button
-                id="coachScoreToggle"
-                type="button"
-                class="inline-flex items-center justify-center rounded-lg border border-slate-700 bg-slate-900 px-4 py-2 text-sm font-medium text-slate-200 transition hover:bg-slate-800"
-                aria-expanded="false"
-                aria-controls="coachScoreSection"
-            >
-                Show Coach Score
-            </button>
-        </div>
+        <?php if ($hasAiCoach): ?>
+        <div id="coachWorkspace" class="mb-10 space-y-6">
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-xl">
+                <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-400">AI Budget Coach</p>
+                        <h3 class="text-xl font-semibold mt-2">Score and guidance</h3>
+                        <p class="text-slate-400 text-sm mt-2">Open your coach score for a quick read on financial control, then ask follow-up questions below.</p>
+                        <p class="text-slate-500 text-xs mt-2">Coach Score is computed from your budget data and does not require the OpenAI chat connection.</p>
+                    </div>
+                    <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+                        <div class="rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-center min-w-32">
+                            <p class="text-[11px] uppercase tracking-[0.2em] text-slate-500">Coach Score</p>
+                            <p class="mt-2 text-2xl font-semibold <?php echo $agentReport["score"] >= 70 ? "text-emerald-400" : ($agentReport["score"] >= 45 ? "text-amber-400" : "text-rose-400"); ?>">
+                                <?php echo (int) $agentReport["score"]; ?>
+                            </p>
+                        </div>
+                        <span id="coachModeBadge" class="rounded-full border border-slate-700 bg-slate-950 px-3 py-1 text-xs text-slate-400">
+                            AI chat mode status appears after your first question
+                        </span>
+                        <button
+                            id="coachScoreToggle"
+                            type="button"
+                            class="inline-flex items-center justify-center rounded-lg border border-slate-700 bg-slate-950 px-4 py-2 text-sm font-medium text-slate-200 transition hover:bg-slate-800"
+                            aria-expanded="false"
+                            aria-controls="coachScoreSection"
+                            data-coach-toggle="score"
+                        >
+                            Show Coach Score
+                        </button>
+                    </div>
+                </div>
+            </div>
 
-        <div id="coachScoreSection" class="hidden bg-slate-900 border border-slate-800 rounded-xl p-8 shadow-xl mb-10">
+        <div id="coachScoreSection" class="hidden bg-slate-900 border border-slate-800 rounded-xl p-8 shadow-xl">
             <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                 <div>
-                    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-400">AI Budget Coach</p>
+                    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-400">Coach Score Details</p>
                     <h3 class="text-xl font-semibold mt-2"><?php echo htmlspecialchars($agentReport["headline"]); ?></h3>
                     <p class="text-slate-400 text-sm mt-2">A smart summary based on your recent spending, income, and transaction habits.</p>
                 </div>
@@ -353,14 +455,14 @@ $recentTransactions = getRecentTransactions($userId, 50);
             </div>
         </div>
 
-        <div class="bg-slate-900 border border-slate-800 rounded-xl p-8 shadow-xl mb-10">
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-8 shadow-xl">
             <div class="flex flex-col gap-3 mb-6 md:flex-row md:items-center md:justify-between">
                 <div>
                     <h3 class="text-xl font-semibold">Ask Budget Coach</h3>
                     <p class="text-slate-400 text-sm mt-2">Ask questions about spending, savings, cash flow, or where to improve next.</p>
                 </div>
                 <span class="rounded-full border border-slate-700 bg-slate-950 px-3 py-1 text-xs text-slate-400">
-                    AI features by Konticode Labs, available when OpenAI is configured
+                    Ask for trends, savings ideas, category analysis, or next actions
                 </span>
             </div>
 
@@ -369,6 +471,12 @@ $recentTransactions = getRecentTransactions($userId, 50);
                     <div class="rounded-lg border border-slate-800 bg-slate-900 px-4 py-3 text-sm text-slate-300">
                         Ask something like "What category is draining my money the fastest?", "How much can I safely save this month?", or "Which subscriptions should I cancel first?"
                     </div>
+                </div>
+
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <button type="button" class="coach-prompt rounded-full border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs text-slate-300 transition hover:bg-slate-800" data-prompt="What category is draining my money the fastest?">Top spending category</button>
+                    <button type="button" class="coach-prompt rounded-full border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs text-slate-300 transition hover:bg-slate-800" data-prompt="How much can I safely save this month?">Safe savings target</button>
+                    <button type="button" class="coach-prompt rounded-full border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs text-slate-300 transition hover:bg-slate-800" data-prompt="Which subscriptions should I cancel first?">Subscription cleanup</button>
                 </div>
 
                 <form id="coachForm" class="flex flex-col gap-3 md:flex-row">
@@ -387,8 +495,151 @@ $recentTransactions = getRecentTransactions($userId, 50);
                 </form>
             </div>
         </div>
+        <?php else: ?>
+        <div id="coachWorkspace" class="mb-10">
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-8 shadow-xl">
+                <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-amber-400">Starter Plan</p>
+                        <h3 class="text-xl font-semibold mt-2">AI Budget Coach is available on Growth</h3>
+                        <p class="text-slate-400 text-sm mt-2">Upgrade to Growth to unlock Coach Score visibility, AI guidance, and interactive budget questions.</p>
+                    </div>
+                    <a href="checkout.php?plan=growth" class="inline-flex items-center justify-center rounded-lg bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-[#261402] transition hover:brightness-95">
+                        Switch To Growth
+                    </a>
+                </div>
+            </div>
+        </div>
+        <?php endif; ?>
+        </div>
+
+        <script>
+            (function () {
+                const form = document.getElementById('coachForm');
+                const input = document.getElementById('coachInput');
+                const messages = document.getElementById('coachMessages');
+                const modeBadge = document.getElementById('coachModeBadge');
+                const promptButtons = Array.from(document.querySelectorAll('.coach-prompt'));
+
+                if (!form || !input || !messages || form.dataset.coachBound === 'true') {
+                    return;
+                }
+
+                function appendMessage(text, role) {
+                    const message = document.createElement('div');
+                    message.className = role === 'user'
+                        ? 'rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm text-slate-200'
+                        : 'rounded-lg border border-slate-800 bg-slate-900 px-4 py-3 text-sm text-slate-300';
+                    message.textContent = text;
+                    messages.appendChild(message);
+                }
+
+                function setModeBadge(mode) {
+                    if (!modeBadge) {
+                        return;
+                    }
+
+                    modeBadge.className = 'rounded-full border px-3 py-1 text-xs';
+
+                    if (mode === 'agent_sdk') {
+                        modeBadge.classList.add('border-emerald-500/30', 'bg-emerald-500/10', 'text-emerald-300');
+                        modeBadge.textContent = 'Coach mode: Agent SDK';
+                        return;
+                    }
+
+                    if (mode === 'openai') {
+                        modeBadge.classList.add('border-sky-500/30', 'bg-sky-500/10', 'text-sky-300');
+                        modeBadge.textContent = 'Coach mode: OpenAI';
+                        return;
+                    }
+
+                    if (mode === 'fallback') {
+                        modeBadge.classList.add('border-amber-500/30', 'bg-amber-500/10', 'text-amber-300');
+                        modeBadge.textContent = 'Coach mode: Local fallback';
+                        return;
+                    }
+
+                    modeBadge.classList.add('border-slate-700', 'bg-slate-950', 'text-slate-400');
+                    modeBadge.textContent = 'AI chat mode status appears after your first question';
+                }
+
+                async function requestReply(url, message) {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ message })
+                    });
+
+                    const rawText = await response.text();
+                    let data = null;
+
+                    try {
+                        data = JSON.parse(rawText);
+                    } catch (error) {
+                        throw new Error(`Non-JSON response from ${url}: ${rawText.slice(0, 200)}`);
+                    }
+
+                    return { response, data };
+                }
+
+                promptButtons.forEach((button) => {
+                    button.addEventListener('click', () => {
+                        input.value = button.dataset.prompt || '';
+                        input.focus();
+                    });
+                });
+
+                form.dataset.coachBound = 'true';
+                form.addEventListener('submit', async (event) => {
+                    event.preventDefault();
+
+                    const message = input.value.trim();
+                    if (!message) {
+                        return;
+                    }
+
+                    appendMessage(message, 'user');
+                    input.value = '';
+
+                    const loading = document.createElement('div');
+                    loading.className = 'rounded-lg border border-slate-800 bg-slate-900 px-4 py-3 text-sm text-slate-400';
+                    loading.textContent = 'Budget Coach is thinking...';
+                    messages.appendChild(loading);
+
+                    try {
+                        let result = null;
+
+                        try {
+                            result = await requestReply('api/agent_sdk.php', message);
+                        } catch (error) {
+                            result = null;
+                        }
+
+                        if (!result || !result.response.ok || !result.data.reply) {
+                            result = await requestReply('api/coach.php', message);
+                        }
+
+                        loading.remove();
+                        setModeBadge(result.data.mode);
+
+                        if (!result.response.ok) {
+                            appendMessage(result.data.error || 'Something went wrong while contacting Budget Coach.', 'assistant');
+                            return;
+                        }
+
+                        appendMessage(result.data.reply || 'No reply was generated.', 'assistant');
+                    } catch (error) {
+                        loading.remove();
+                        appendMessage(`Budget Coach could not be reached right now. ${error.message || ''}`.trim(), 'assistant');
+                    }
+                });
+            })();
+        </script>
 
         <div class="bg-slate-900 border border-slate-800 rounded-xl p-8 shadow-xl">
+                <!-- Transactions Widget -->
             <div class="flex flex-col gap-3 mb-6 md:flex-row md:items-center md:justify-between">
                 <div>
                     <h3 class="text-xl font-semibold">Recent Transactions</h3>
@@ -444,7 +695,7 @@ $recentTransactions = getRecentTransactions($userId, 50);
 
                 <div class="overflow-hidden rounded-xl border border-slate-800 bg-slate-900 shadow-2xl">
                     <div class="overflow-x-auto">
-                        <table class="min-w-full text-sm">
+                        <table class="min-w-full text-sm min-w-[600px]">
                             <thead class="bg-slate-800/60 backdrop-blur sticky top-0 z-10">
                                 <tr>
                                     <th class="px-5 py-3 text-left font-semibold text-slate-300">Date</th>
@@ -509,43 +760,140 @@ $recentTransactions = getRecentTransactions($userId, 50);
     </main>
 
     <script>
+                                // Sidebar mobile toggle
+                                const sidebar = document.getElementById('sidebar');
+                                const sidebarToggle = document.getElementById('sidebarToggle');
+                                sidebarToggle.addEventListener('click', () => {
+                                    sidebar.classList.toggle('-translate-x-full');
+                                });
+                                document.addEventListener('click', (e) => {
+                                    if (!sidebar.contains(e.target) && !sidebarToggle.contains(e.target) && window.innerWidth < 768) {
+                                        sidebar.classList.add('-translate-x-full');
+                                    }
+                                });
+                        // Notification Bell Logic
+                        const notifBell = document.getElementById('notifBell');
+                        const notifDropdown = document.getElementById('notifDropdown');
+                        const notifBadge = document.getElementById('notifBadge');
+                        const notifList = document.getElementById('notifList');
+                        const visibleNotificationTypes = <?php echo json_encode($visibleAlertTypes); ?>;
+                        let unreadCount = 0;
+                        function fetchNotifications() {
+                            fetch('api/alert_preferences.php')
+                                .then(res => res.json())
+                                .then(data => {
+                                    // Simulate: show all enabled alerts as notifications
+                                    const prefs = data.preferences || {};
+                                    const alerts = [
+                                        { id: 'overspending_risk', text: 'Overspending risk detected!', enabled: prefs.overspending_risk },
+                                        { id: 'forecast', text: 'New forecast available.', enabled: prefs.forecast },
+                                        { id: 'budget_threshold', text: 'Budget threshold reached.', enabled: prefs.budget_threshold },
+                                        { id: 'subscription_review', text: 'Subscription review needed.', enabled: prefs.subscription_review },
+                                        { id: 'coach_recommendation', text: 'AI Coach has new advice.', enabled: prefs.coach_recommendation },
+                                    ].filter(a => a.enabled && visibleNotificationTypes.includes(a.id));
+                                    unreadCount = alerts.length;
+                                    notifBadge.textContent = unreadCount;
+                                    notifBadge.classList.toggle('hidden', unreadCount === 0);
+                                    notifList.innerHTML = alerts.length
+                                        ? alerts.map(a => `<div class="p-4 border-b border-slate-800 text-slate-200">${a.text}</div>`).join('')
+                                        : '<div class="p-4 text-slate-400 text-sm">No new notifications.</div>';
+                                });
+                        }
+                        notifBell.addEventListener('click', () => {
+                            notifDropdown.classList.toggle('hidden');
+                            if (!notifDropdown.classList.contains('hidden')) {
+                                unreadCount = 0;
+                                notifBadge.classList.add('hidden');
+                            }
+                        });
+                        document.addEventListener('click', (e) => {
+                            if (!notifBell.contains(e.target) && !notifDropdown.contains(e.target)) {
+                                notifDropdown.classList.add('hidden');
+                            }
+                        });
+                        fetchNotifications();
+                        setInterval(fetchNotifications, 60000);
+                // Dashboard Widget Customization
+                const widgetToggles = {
+                    metrics: document.getElementById('toggleMetrics'),
+                    alerts: document.getElementById('toggleAlerts'),
+                    chart: document.getElementById('toggleChart'),
+                    coach: document.getElementById('toggleCoach'),
+                    transactions: document.getElementById('toggleTransactions'),
+                };
+                const widgetSections = {
+                    metrics: document.querySelector('.grid.grid-cols-1.md\:grid-cols-3'),
+                    alerts: document.querySelector('div.bg-slate-900.border.border-slate-800.rounded-xl.p-8.shadow-xl.mb-10'),
+                    chart: document.getElementById('incomeExpenseChart')?.closest('div.bg-slate-900'),
+                    coach: document.getElementById('coachWorkspace'),
+                    transactions: document.querySelector('div.bg-slate-900.border.border-slate-800.rounded-xl.p-8.shadow-xl:last-of-type'),
+                };
+
+                function saveWidgetPrefs() {
+                    const prefs = Object.fromEntries(Object.entries(widgetToggles).map(([k, el]) => [k, el.checked]));
+                    localStorage.setItem('dashboardWidgetPrefs', JSON.stringify(prefs));
+                }
+                function loadWidgetPrefs() {
+                    try {
+                        const prefs = JSON.parse(localStorage.getItem('dashboardWidgetPrefs'));
+                        if (prefs) {
+                            Object.entries(prefs).forEach(([k, v]) => {
+                                if (widgetToggles[k]) widgetToggles[k].checked = v;
+                            });
+                        }
+                    } catch {}
+                }
+                function applyWidgetPrefs() {
+                    Object.entries(widgetToggles).forEach(([k, el]) => {
+                        if (widgetSections[k]) widgetSections[k].style.display = el.checked ? '' : 'none';
+                    });
+                }
+                Object.values(widgetToggles).forEach(el => el.addEventListener('change', () => {
+                    saveWidgetPrefs();
+                    applyWidgetPrefs();
+                }));
+                loadWidgetPrefs();
+                applyWidgetPrefs();
         const chartLabels = <?php echo json_encode($chartData["labels"]); ?>;
         const incomeData = <?php echo json_encode($chartData["income"]); ?>;
         const expenseData = <?php echo json_encode($chartData["expense"]); ?>;
+        const incomeExpenseChartCanvas = document.getElementById('incomeExpenseChart');
 
-        new Chart(document.getElementById('incomeExpenseChart'), {
-            type: 'line',
-            data: {
-                labels: chartLabels,
-                datasets: [
-                    {
-                        label: 'Income',
-                        data: incomeData,
-                        borderColor: '#2fe39f',
-                        backgroundColor: 'rgba(47, 227, 159, 0.2)',
-                        tension: 0.4,
-                        borderWidth: 2
-                    },
-                    {
-                        label: 'Expense',
-                        data: expenseData,
-                        borderColor: '#ff8f7a',
-                        backgroundColor: 'rgba(255, 143, 122, 0.2)',
-                        tension: 0.4,
-                        borderWidth: 2
-                    }
-                ]
-            },
-            options: {
-                plugins: {
-                    legend: { labels: { color: '#d9e7f5' } }
+        if (incomeExpenseChartCanvas && typeof Chart !== 'undefined') {
+            new Chart(incomeExpenseChartCanvas, {
+                type: 'line',
+                data: {
+                    labels: chartLabels,
+                    datasets: [
+                        {
+                            label: 'Income',
+                            data: incomeData,
+                            borderColor: '#2fe39f',
+                            backgroundColor: 'rgba(47, 227, 159, 0.2)',
+                            tension: 0.4,
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'Expense',
+                            data: expenseData,
+                            borderColor: '#ff8f7a',
+                            backgroundColor: 'rgba(255, 143, 122, 0.2)',
+                            tension: 0.4,
+                            borderWidth: 2
+                        }
+                    ]
                 },
-                scales: {
-                    x: { ticks: { color: '#8ea7c0' }, grid: { color: '#223648' } },
-                    y: { ticks: { color: '#8ea7c0' }, grid: { color: '#223648' } }
+                options: {
+                    plugins: {
+                        legend: { labels: { color: '#d9e7f5' } }
+                    },
+                    scales: {
+                        x: { ticks: { color: '#8ea7c0' }, grid: { color: '#223648' } },
+                        y: { ticks: { color: '#8ea7c0' }, grid: { color: '#223648' } }
+                    }
                 }
-            }
-        });
+            });
+        }
 
         const coachForm = document.getElementById('coachForm');
         const coachInput = document.getElementById('coachInput');
@@ -564,6 +912,8 @@ $recentTransactions = getRecentTransactions($userId, 50);
         const alertPrefCheckboxes = Array.from(document.querySelectorAll('.alert-pref-checkbox'));
         const resetDismissedAlertsButton = document.getElementById('resetDismissedAlerts');
         const alertsEmptyState = document.getElementById('alertsEmptyState');
+        const coachModeBadge = document.getElementById('coachModeBadge');
+        const coachPromptButtons = Array.from(document.querySelectorAll('.coach-prompt'));
 
         const defaultAlertPreferences = {
             overspending_risk: true,
@@ -579,6 +929,7 @@ $recentTransactions = getRecentTransactions($userId, 50);
             weekly_digest_enabled: true,
             notification_cadence: 'weekly',
         };
+        let coachScoreWasToggledManually = false;
 
         async function loadAlertSettings() {
             const response = await fetch('api/alert_preferences.php');
@@ -661,6 +1012,17 @@ $recentTransactions = getRecentTransactions($userId, 50);
             aiSettingsState = { ...aiSettingsState, ...(data.ai_settings || {}) };
         }
 
+        window.saveCoachScorePreference = async function (isVisible) {
+            coachScoreWasToggledManually = true;
+            try {
+                await saveAiSettings({
+                    coach_score_default_visible: isVisible,
+                });
+            } catch (error) {
+                appendCoachMessage('Coach visibility could not be saved right now.', 'assistant');
+            }
+        };
+
         function applyAlertVisibility() {
             if (!alertCards.length) {
                 return;
@@ -691,23 +1053,23 @@ $recentTransactions = getRecentTransactions($userId, 50);
         }
 
         function setCoachScoreVisibility(isVisible) {
+            if (!coachScoreSection || !coachScoreToggle) {
+                return;
+            }
+
             coachScoreSection.classList.toggle('hidden', !isVisible);
             coachScoreToggle.setAttribute('aria-expanded', isVisible ? 'true' : 'false');
             coachScoreToggle.textContent = isVisible ? 'Hide Coach Score' : 'Show Coach Score';
         }
 
-        coachScoreToggle.addEventListener('click', async () => {
-            const isVisible = !coachScoreSection.classList.contains('hidden');
-            const nextVisible = !isVisible;
-            setCoachScoreVisibility(nextVisible);
-            try {
-                await saveAiSettings({
-                    coach_score_default_visible: nextVisible,
-                });
-            } catch (error) {
-                appendCoachMessage('Coach visibility could not be saved right now.', 'assistant');
-            }
-        });
+        if (coachScoreToggle && coachScoreSection) {
+            coachScoreToggle.addEventListener('click', () => {
+                const nextVisible = coachScoreSection.classList.contains('hidden');
+                coachScoreWasToggledManually = true;
+                setCoachScoreVisibility(nextVisible);
+                window.saveCoachScorePreference(nextVisible);
+            });
+        }
 
         if (alertPreferencesToggle && alertPreferencesPanel) {
             alertPreferencesToggle.addEventListener('click', () => {
@@ -766,6 +1128,36 @@ $recentTransactions = getRecentTransactions($userId, 50);
             coachMessages.appendChild(message);
         }
 
+        function updateCoachModeBadge(mode) {
+            if (!coachModeBadge) {
+                return;
+            }
+
+            const normalizedMode = typeof mode === 'string' ? mode : '';
+            coachModeBadge.className = 'rounded-full border px-3 py-1 text-xs';
+
+            if (normalizedMode === 'agent_sdk') {
+                coachModeBadge.classList.add('border-emerald-500/30', 'bg-emerald-500/10', 'text-emerald-300');
+                coachModeBadge.textContent = 'Coach mode: Agent SDK';
+                return;
+            }
+
+            if (normalizedMode === 'openai') {
+                coachModeBadge.classList.add('border-sky-500/30', 'bg-sky-500/10', 'text-sky-300');
+                coachModeBadge.textContent = 'Coach mode: OpenAI';
+                return;
+            }
+
+            if (normalizedMode === 'fallback') {
+                coachModeBadge.classList.add('border-amber-500/30', 'bg-amber-500/10', 'text-amber-300');
+                coachModeBadge.textContent = 'Coach mode: Local fallback';
+                return;
+            }
+
+            coachModeBadge.classList.add('border-slate-700', 'bg-slate-950', 'text-slate-400');
+            coachModeBadge.textContent = 'AI features by Konticode Labs, available when OpenAI is configured';
+        }
+
         function applyTransactionFilters() {
             if (!transactionRows.length) {
                 return;
@@ -802,7 +1194,9 @@ $recentTransactions = getRecentTransactions($userId, 50);
             } catch (error) {
                 appendCoachMessage('Account-level alert settings could not be loaded, so local defaults are being used.', 'assistant');
             }
-            setCoachScoreVisibility(Boolean(aiSettingsState.coach_score_default_visible));
+            if (!coachScoreWasToggledManually) {
+                setCoachScoreVisibility(Boolean(aiSettingsState.coach_score_default_visible));
+            }
             syncAlertPreferenceInputs();
             applyAlertVisibility();
         })();
@@ -821,69 +1215,6 @@ $recentTransactions = getRecentTransactions($userId, 50);
 
         applyTransactionFilters();
 
-        async function requestCoachReply(url, message) {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ message })
-            });
-
-            const rawText = await response.text();
-            let data = null;
-
-            try {
-                data = JSON.parse(rawText);
-            } catch (error) {
-                throw new Error(`Non-JSON response from ${url}: ${rawText.slice(0, 200)}`);
-            }
-
-            return { response, data };
-        }
-
-        coachForm.addEventListener('submit', async (event) => {
-            event.preventDefault();
-
-            const message = coachInput.value.trim();
-            if (!message) {
-                return;
-            }
-
-            appendCoachMessage(message, 'user');
-            coachInput.value = '';
-
-            const loading = document.createElement('div');
-            loading.className = 'rounded-lg border border-slate-800 bg-slate-900 px-4 py-3 text-sm text-slate-400';
-            loading.textContent = 'Budget Coach is thinking...';
-            coachMessages.appendChild(loading);
-
-            try {
-                let coachResult;
-
-                try {
-                    coachResult = await requestCoachReply('api/agent_sdk.php', message);
-                } catch (error) {
-                    coachResult = null;
-                }
-
-                if (!coachResult || !coachResult.response.ok || !coachResult.data.reply) {
-                    coachResult = await requestCoachReply('api/coach.php', message);
-                }
-
-                loading.remove();
-
-                if (!coachResult.response.ok) {
-                    appendCoachMessage(coachResult.data.error || 'Something went wrong while contacting Budget Coach.', 'assistant');
-                    return;
-                }
-
-                appendCoachMessage(coachResult.data.reply || 'No reply was generated.', 'assistant');
-            } catch (error) {
-                loading.remove();
-                appendCoachMessage('Budget Coach could not be reached right now.', 'assistant');
-            }
-        });
     </script>
 </body>
 </html>

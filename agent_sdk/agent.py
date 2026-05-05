@@ -34,6 +34,23 @@ from .repository_v2 import (
 logger = logging.getLogger(__name__)
 
 
+def _is_invalid_loopback_proxy(proxy: str | None) -> bool:
+    if not proxy:
+        return False
+
+    parsed = urlparse(proxy)
+    host = (parsed.hostname or "").lower()
+    port = parsed.port or (443 if parsed.scheme == "https" else 80)
+    return host in {"127.0.0.1", "localhost"} and port == 9
+
+
+def _clear_invalid_proxy_env() -> None:
+    for name in ("HTTPS_PROXY", "https_proxy", "ALL_PROXY", "all_proxy", "HTTP_PROXY", "http_proxy"):
+        value = os.getenv(name)
+        if _is_invalid_loopback_proxy(value):
+            os.environ.pop(name, None)
+
+
 @function_tool
 def tool_add_transaction(
     ctx: RunContextWrapper[BudgetAppContext],
@@ -175,6 +192,8 @@ root_agent = budget_coordinator_agent
 
 
 def _can_reach_openai(timeout_seconds: float = 2.0) -> bool:
+    _clear_invalid_proxy_env()
+
     if not os.getenv("OPENAI_API_KEY"):
         return False
 
@@ -506,6 +525,7 @@ def _legacy_recent_transactions(context: BudgetAppContext) -> list[dict[str, Any
 
 
 async def run_agent(user_message: str, conversation_history: list[dict[str, Any]] | None = None) -> str:
+    _clear_invalid_proxy_env()
     context = BudgetAppContext.from_env()
     history = conversation_history or []
 
@@ -540,6 +560,7 @@ async def run_agent(user_message: str, conversation_history: list[dict[str, Any]
 
 
 def run_agent_sync(user_message: str, conversation_history: list[dict[str, Any]] | None = None) -> str:
+    _clear_invalid_proxy_env()
     context = BudgetAppContext.from_env()
     history = conversation_history or []
 

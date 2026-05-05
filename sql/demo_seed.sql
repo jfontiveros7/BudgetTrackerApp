@@ -1,16 +1,14 @@
 USE budgettracker_pro;
 
-INSERT INTO users (id, name, email, password)
-VALUES (
-    1,
-    'Demo User',
-    'demo@konticodelabs.com',
-    '$2y$12$.4k7im0Oh.Xc7SwFrYWG2OxNGGWEf4d7ZpKazo9BdeAlsiICeL9zS'
-)
+INSERT INTO users (id, name, email, password, role)
+VALUES
+    (1, 'Demo Admin', 'admin@example.com', '$2y$12$RyNXX7G85SFTNV243wnJveM3sJM9XAJBC/0jUeNazLLQh9R2nCW56', 'admin'),
+    (2, 'Demo User', 'demo@konticodelabs.com', '$2y$12$RyNXX7G85SFTNV243wnJveM3sJM9XAJBC/0jUeNazLLQh9R2nCW56', 'user')
 ON DUPLICATE KEY UPDATE
     name = VALUES(name),
     email = VALUES(email),
-    password = VALUES(password);
+    password = VALUES(password),
+    role = VALUES(role);
 
 INSERT IGNORE INTO budgets (user_id, category, amount, amount_limit, period, is_active)
 VALUES

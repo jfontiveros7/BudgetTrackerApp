@@ -3,7 +3,85 @@ require_once __DIR__ . '/analytics.php';
 require_once __DIR__ . '/agent.php';
 require_once __DIR__ . '/transactions.php';
 
+function loadBudgetCoachEnvFile($path) {
+    if (!is_string($path) || $path === '' || !is_file($path) || !is_readable($path)) {
+        return;
+    }
+
+    $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    if ($lines === false) {
+        return;
+    }
+
+    foreach ($lines as $line) {
+        $trimmed = trim($line);
+        if ($trimmed === '' || str_starts_with($trimmed, '#')) {
+            continue;
+        }
+
+        $parts = explode('=', $trimmed, 2);
+        if (count($parts) !== 2) {
+            continue;
+        }
+
+        $name = trim($parts[0]);
+        $value = trim($parts[1]);
+        if ($name === '') {
+            continue;
+        }
+
+        if (
+            (getenv($name) !== false && trim((string) getenv($name)) !== '') ||
+            (isset($_ENV[$name]) && trim((string) $_ENV[$name]) !== '') ||
+            (isset($_SERVER[$name]) && trim((string) $_SERVER[$name]) !== '')
+        ) {
+            continue;
+        }
+
+        if (
+            (str_starts_with($value, '"') && str_ends_with($value, '"')) ||
+            (str_starts_with($value, "'") && str_ends_with($value, "'"))
+        ) {
+            $value = substr($value, 1, -1);
+        }
+
+        putenv($name . '=' . $value);
+        $_ENV[$name] = $value;
+        $_SERVER[$name] = $value;
+    }
+}
+
+function isInvalidLoopbackProxyValue($value) {
+    if (!is_string($value) || trim($value) === '') {
+        return false;
+    }
+
+    $parsed = parse_url(trim($value));
+    if (!is_array($parsed)) {
+        return false;
+    }
+
+    $host = strtolower((string) ($parsed['host'] ?? ''));
+    $port = (int) ($parsed['port'] ?? 0);
+
+    return in_array($host, ['127.0.0.1', 'localhost'], true) && $port === 9;
+}
+
+function clearInvalidOpenAiProxyEnv() {
+    foreach (['HTTP_PROXY', 'HTTPS_PROXY', 'ALL_PROXY', 'http_proxy', 'https_proxy', 'all_proxy'] as $name) {
+        $value = getenv($name);
+        if ($value !== false && isInvalidLoopbackProxyValue((string) $value)) {
+            putenv($name);
+            unset($_ENV[$name], $_SERVER[$name]);
+        }
+    }
+}
+
 function getOpenAiApiKey() {
+    loadBudgetCoachEnvFile(dirname(__DIR__) . '/agent_sdk/.env');
+    loadBudgetCoachEnvFile(dirname(__DIR__) . '/.env');
+    clearInvalidOpenAiProxyEnv();
+
     $candidates = [
         getenv("OPENAI_API_KEY"),
         $_ENV["OPENAI_API_KEY"] ?? null,
@@ -113,6 +191,7 @@ function askBudgetCoach($userId, $message) {
     curl_setopt_array($ch, [
         CURLOPT_POST => true,
         CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_PROXY => '',
         CURLOPT_HTTPHEADER => [
             "Content-Type: application/json",
             "Authorization: Bearer " . $apiKey,
@@ -124,7 +203,6 @@ function askBudgetCoach($userId, $message) {
     $rawResponse = curl_exec($ch);
     $curlError = curl_error($ch);
     $httpCode = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
 
     if ($rawResponse === false || $curlError) {
         return [

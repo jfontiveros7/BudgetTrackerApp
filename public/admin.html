@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard | Budget Tracker App</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --accent: #00e0d6;
+      --accent-alt: #ff2e63;
+      --button-bg: var(--accent);
+      --button-bg-alt: var(--accent-alt);
+      --button-text: #090b10;
+      --button-text-alt: #fff;
+      --button-shadow: 0 2px 8px 0 rgba(0,224,214,0.15);
+    }
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: #090b10;
+      color: #f5f2e9;
+    }
+    .mono { font-family: 'IBM Plex Mono', monospace; }
+    .konti-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5em;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 0.75em 1.5em;
+      border-radius: 0.5em;
+      border: none;
+      background: var(--button-bg);
+      color: var(--button-text);
+      box-shadow: var(--button-shadow);
+      transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.1s;
+      cursor: pointer;
+      outline: none;
+      margin-bottom: 1em;
+      letter-spacing: 0.03em;
+    }
+    .konti-btn-alt {
+      background: var(--button-bg-alt);
+      color: var(--button-text-alt);
+    }
+    .konti-btn:hover, .konti-btn:focus {
+      background: #fff;
+      color: var(--accent);
+      box-shadow: 0 4px 16px 0 rgba(0,224,214,0.25);
+      transform: translateY(-2px) scale(1.03);
+    }
+    .konti-btn-alt:hover, .konti-btn-alt:focus {
+      background: #fff;
+      color: var(--accent-alt);
+      box-shadow: 0 4px 16px 0 rgba(255,46,99,0.25);
+      transform: translateY(-2px) scale(1.03);
+    }
+    .konti-btn svg {
+      width: 1.2em;
+      height: 1.2em;
+      fill: currentColor;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex">
+    <!-- Notification Bell -->
+    <div class="fixed top-4 right-4 z-50">
+      <button id="notifBell" class="relative p-2 rounded-full bg-[#171f2b] hover:bg-[#10151e] shadow-lg focus:outline-none focus:ring-2 focus:ring-[#00e0d6]">
+        <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="text-[#00e0d6]">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+        </svg>
+        <span id="notifBadge" class="absolute -top-1 -right-1 bg-rose-500 text-white text-xs rounded-full px-1.5 py-0.5 font-bold hidden">0</span>
+      </button>
+      <div id="notifDropdown" class="hidden absolute right-0 mt-2 w-80 max-w-xs bg-[#171f2b] border border-[#2f3f57] rounded-xl shadow-xl overflow-hidden">
+        <div class="p-4 border-b border-[#2f3f57] font-semibold text-white">Notifications</div>
+        <div id="notifList" class="max-h-72 overflow-y-auto">
+          <div class="p-4 text-[#9ca9a2] text-sm">No new notifications.</div>
+        </div>
+      </div>
+    </div>
+  <!-- Sidebar (collapsible on mobile) -->
+  <aside id="sidebar" class="w-64 bg-[#11161f] border-r border-[#2f3f57] flex flex-col p-6 justify-between min-h-screen fixed md:static z-40 top-0 left-0 h-full md:h-auto transition-transform duration-200 -translate-x-full md:translate-x-0">
+    <div>
+      <h1 class="text-xl font-bold mb-8">Admin Panel</h1>
+      <nav class="flex flex-col gap-4">
+        <a href="#users" class="hover:text-[var(--accent-alt)]">Users</a>
+        <a href="#transactions" class="hover:text-[var(--accent-alt)]">Transactions</a>
+        <a href="#categories" class="hover:text-[var(--accent-alt)]">Categories</a>
+        <a href="#reports" class="hover:text-[var(--accent-alt)]">Reports</a>
+        <a href="#settings" class="hover:text-[var(--accent-alt)]">Settings</a>
+      </nav>
+    </div>
+    <div id="admin-user-info" class="flex flex-col items-start mt-8 pt-8 border-t border-[#2f3f57]">
+      <span class="text-sm text-[#00e0d6] font-mono">Logged in as:</span>
+      <span id="admin-user-email" class="text-base font-semibold text-white">...</span>
+      <form action="logout.php" method="post" class="mt-2 w-full">
+        <button type="submit" class="konti-btn konti-btn-alt w-full">Log Out</button>
+      </form>
+    </div>
+  </aside>
+  <!-- Hamburger for mobile -->
+  <button id="sidebarToggle" class="md:hidden fixed top-4 left-4 z-50 p-2 bg-[#171f2b] rounded shadow-lg focus:outline-none">
+    <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="text-[#00e0d6]">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+    </svg>
+  </button>
+  <script>
+        // Notification Bell Logic
+        const notifBell = document.getElementById('notifBell');
+        const notifDropdown = document.getElementById('notifDropdown');
+        const notifBadge = document.getElementById('notifBadge');
+        const notifList = document.getElementById('notifList');
+        let unreadCount = 0;
+        function fetchNotifications() {
+          fetch('api/alert_preferences.php')
+            .then(res => res.json())
+            .then(data => {
+              const prefs = data.preferences || {};
+              const alerts = [
+                { id: 'overspending_risk', text: 'Overspending risk detected!', enabled: prefs.overspending_risk },
+                { id: 'forecast', text: 'New forecast available.', enabled: prefs.forecast },
+                { id: 'budget_threshold', text: 'Budget threshold reached.', enabled: prefs.budget_threshold },
+                { id: 'subscription_review', text: 'Subscription review needed.', enabled: prefs.subscription_review },
+                { id: 'coach_recommendation', text: 'AI Coach has new advice.', enabled: prefs.coach_recommendation },
+              ].filter(a => a.enabled);
+              unreadCount = alerts.length;
+              notifBadge.textContent = unreadCount;
+              notifBadge.classList.toggle('hidden', unreadCount === 0);
+              notifList.innerHTML = alerts.length
+                ? alerts.map(a => `<div class=\"p-4 border-b border-[#2f3f57] text-white\">${a.text}</div>`).join('')
+                : '<div class=\"p-4 text-[#9ca9a2] text-sm\">No new notifications.</div>';
+            });
+        }
+        notifBell.addEventListener('click', () => {
+          notifDropdown.classList.toggle('hidden');
+          if (!notifDropdown.classList.contains('hidden')) {
+            unreadCount = 0;
+            notifBadge.classList.add('hidden');
+          }
+        });
+        document.addEventListener('click', (e) => {
+          if (!notifBell.contains(e.target) && !notifDropdown.contains(e.target)) {
+            notifDropdown.classList.add('hidden');
+          }
+        });
+        fetchNotifications();
+        setInterval(fetchNotifications, 60000);
+    // Fetch and display logged-in user email and role (from PHP session via AJAX)
+    fetch('api/agent_sdk.php?action=list_users')
+      .then(res => res.json())
+      .then(data => {
+        // For demo, just show the first user or demo@konticodelabs.com
+        let email = 'demo@konticodelabs.com';
+        let role = 'user';
+        if (data.users && data.users.length > 0) {
+          email = data.users[0].email;
+          role = data.users[0].role || 'user';
+        }
+        document.getElementById('admin-user-email').innerText = email;
+        // Hide admin-only sections if not admin
+        if (role !== 'admin') {
+          document.querySelectorAll('[data-admin-only]').forEach(el => el.style.display = 'none');
+        }
+      })
+      .catch(() => {
+        document.getElementById('admin-user-email').innerText = 'Unknown';
+      });
+  </script>
+
+  <!-- Main Content -->
+  <main class="flex-1 p-8 space-y-12">
+    <!-- Users Section -->
+    <section id="users" data-admin-only>
+      <h2 class="text-2xl font-semibold mb-4">Users</h2>
+      <button class="konti-btn" onclick="fetchUsers()">
+        <svg viewBox="0 0 20 20"><path d="M10 2a8 8 0 1 0 8 8h-2a6 6 0 1 1-6-6V2z"/></svg>
+        Refresh Users
+      </button>
+      <form id="create-user-form" class="flex flex-wrap gap-2 mb-4 items-end" onsubmit="createUser(event)">
+              <div class="flex gap-2 mb-2">
+                <button class="konti-btn konti-btn-alt" onclick="bulkDeleteUsers()" type="button">Bulk Delete</button>
+                <button class="konti-btn" onclick="bulkExportUsers()" type="button">Export CSV</button>
+              </div>
+        <input type="text" name="name" placeholder="Name" class="bg-[#10151e] text-white p-2 rounded" required>
+        <input type="email" name="email" placeholder="Email" class="bg-[#10151e] text-white p-2 rounded" required>
+        <input type="password" name="password" placeholder="Password" class="bg-[#10151e] text-white p-2 rounded" required>
+        <select name="role" class="bg-[#10151e] text-white p-2 rounded">
+          <option value="user">User</option>
+          <option value="admin">Admin</option>
+        </select>
+        <button type="submit" class="konti-btn">Add User</button>
+        <span id="create-user-message" class="text-green-400 ml-2"></span>
+      </form>
+      <table class="w-full text-left bg-[#171f2b] rounded">
+        <div class="overflow-x-auto">
+        <table class="w-full min-w-[600px] text-left bg-[#171f2b] rounded">
+        <thead>
+          <tr>
+            <th class="p-2"><input type="checkbox" id="select-all-users" onchange="toggleAllUsers(this.checked)"></th>
+            <th class="p-2">ID</th>
+            <th class="p-2">Name</th>
+            <th class="p-2">Email</th>
+            <th class="p-2">Role</th>
+            <th class="p-2">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="users-table">
+          <!-- Populated by JS -->
+        </tbody>
+        </table>
+        </div>
+    </section>
+
+    <!-- Transactions Section -->
+    <section id="transactions">
+            <div class="flex gap-2 mb-2">
+              <button class="konti-btn konti-btn-alt" onclick="bulkDeleteTransactions()" type="button">Bulk Delete</button>
+              <button class="konti-btn" onclick="bulkExportTransactions()" type="button">Export CSV</button>
+            </div>
+      <h2 class="text-2xl font-semibold mb-4">Transactions</h2>
+      <button class="konti-btn" onclick="fetchTransactions()">
+        <svg viewBox="0 0 20 20"><path d="M10 2a8 8 0 1 0 8 8h-2a6 6 0 1 1-6-6V2z"/></svg>
+        Refresh Transactions
+      </button>
+      <table class="w-full text-left bg-[#171f2b] rounded">
+        <div class="overflow-x-auto">
+        <table class="w-full min-w-[600px] text-left bg-[#171f2b] rounded">
+        <thead>
+          <tr>
+            <th class="p-2"><input type="checkbox" id="select-all-transactions" onchange="toggleAllTransactions(this.checked)"></th>
+            <th class="p-2">ID</th>
+            <th class="p-2">User</th>
+            <th class="p-2">Category</th>
+            <th class="p-2">Amount</th>
+            <th class="p-2">Date</th>
+            <th class="p-2">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="transactions-table">
+          <!-- Populated by JS -->
+        </tbody>
+        </table>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section id="categories" data-admin-only>
+      <h2 class="text-2xl font-semibold mb-4">Categories</h2>
+      <button class="konti-btn" onclick="fetchCategories()">
+        <svg viewBox="0 0 20 20"><path d="M10 2a8 8 0 1 0 8 8h-2a6 6 0 1 1-6-6V2z"/></svg>
+        Refresh Categories
+      </button>
+      <form id="create-category-form" class="flex flex-wrap gap-2 mb-4 items-end" onsubmit="createCategory(event)">
+        <input type="text" name="name" placeholder="Name" class="bg-[#10151e] text-white p-2 rounded" required>
+        <select name="type" class="bg-[#10151e] text-white p-2 rounded">
+          <option value="expense">Expense</option>
+          <option value="income">Income</option>
+        </select>
+        <input type="text" name="icon" placeholder="Icon (emoji or class)" class="bg-[#10151e] text-white p-2 rounded">
+        <input type="color" name="color" value="#00e0d6" class="p-1 rounded">
+        <button type="submit" class="konti-btn">Add Category</button>
+        <span id="create-category-message" class="text-green-400 ml-2"></span>
+      </form>
+      <table class="w-full text-left bg-[#171f2b] rounded">
+        <div class="overflow-x-auto">
+        <table class="w-full min-w-[600px] text-left bg-[#171f2b] rounded">
+        <thead>
+          <tr>
+            <th class="p-2">ID</th>
+            <th class="p-2">Name</th>
+            <th class="p-2">Type</th>
+            <th class="p-2">Icon</th>
+            <th class="p-2">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="categories-table">
+          <!-- Populated by JS -->
+        </tbody>
+        </table>
+        </div>
+        <!-- Removed stray CSS/JS that was being rendered as text -->
+    </section>
+
+    <!-- Reports Section -->
+    <section id="reports">
+      <h2 class="text-2xl font-semibold mb-4">Reports</h2>
+      <button class="konti-btn" onclick="fetchReports()">
+        <svg viewBox="0 0 20 20"><path d="M10 2a8 8 0 1 0 8 8h-2a6 6 0 1 1-6-6V2z"/></svg>
+        Refresh Reports
+      </button>
+      <div id="reports-content" class="bg-[#171f2b] p-4 rounded mb-6">
+        <!-- Populated by JS -->
+      </div>
+      <div class="bg-[#171f2b] p-6 rounded-xl shadow-xl mb-6">
+        <h3 class="text-lg font-semibold mb-4">Income vs Expense (Last 30 Days)</h3>
+        <canvas id="adminIncomeExpenseChart" height="120"></canvas>
+      </div>
+      <div class="bg-[#171f2b] p-6 rounded-xl shadow-xl">
+        <h3 class="text-lg font-semibold mb-4">Category Breakdown</h3>
+        <canvas id="adminCategoryBreakdownChart" height="120"></canvas>
+      </div>
+        <!-- Removed stray Chart.js and fetchReports JS code that was being rendered as text -->
+    </section>
+
+    <!-- Settings Section -->
+    <section id="settings" data-admin-only>
+      <h2 class="text-2xl font-semibold mb-4">Settings</h2>
+      <button class="konti-btn konti-btn-alt" onclick="resetDemoData()">
+        <svg viewBox="0 0 20 20"><path d="M10 2a8 8 0 1 0 8 8h-2a6 6 0 1 1-6-6V2z"/></svg>
+        Reset Demo Data
+      </button>
+      <form id="import-excel-form" class="mt-8 bg-[#171f2b] p-6 rounded-xl shadow-xl flex flex-col gap-4" enctype="multipart/form-data" onsubmit="importExcel(event)">
+        <label class="font-semibold">AI Import from Excel (.xlsx):</label>
+        <input type="file" name="file" accept=".xlsx,.xls" class="bg-[#10151e] text-white p-2 rounded" required />
+        <button type="submit" class="konti-btn">
+          <svg viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 00-1.414 0L10 10.586 4.707 5.293A1 1 0 003.293 6.707l6 6a1 1 0 001.414 0l6-6a1 1 0 000-1.414z"/></svg>
+          Import Spreadsheet
+        </button>
+        <div id="import-excel-message" class="text-green-400"></div>
+      </form>
+      <div id="settings-message" class="mt-4 text-green-400"></div>
+    </section>
+  </main>
+
+  <script>
+    // Example API call stubs
+    function fetchUsers() {
+      fetch('api/agent_sdk.php?action=list_users')
+        .then(res => res.json())
+        .then(data => {
+          const tbody = document.getElementById('users-table');
+          tbody.innerHTML = (data.users || []).map(u => `
+            <tr>
+              <td class="p-2"><input type="checkbox" class="user-checkbox" value="${u.id}"></td>
+              <td class="p-2">${u.id}</td>
+              <td class="p-2"><input type="text" value="${u.name}" onchange="updateUserField(${u.id}, 'name', this.value)" class="bg-[#10151e] text-white p-1 rounded w-28"></td>
+              <td class="p-2"><input type="email" value="${u.email}" onchange="updateUserField(${u.id}, 'email', this.value)" class="bg-[#10151e] text-white p-1 rounded w-44"></td>
+              <td class="p-2">
+                <select onchange="updateUserField(${u.id}, 'role', this.value)" class="bg-[#10151e] text-white p-1 rounded">
+                  <option value="user" ${u.role === 'user' ? 'selected' : ''}>User</option>
+                  <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Admin</option>
+                </select>
+              </td>
+              <td class="p-2 flex gap-2">
+                <button class='text-blue-400' onclick='resetUserPassword(${u.id})'>Reset Password</button>
+                <button class='text-red-400' onclick='deactivateUser(${u.id})'>Deactivate</button>
+              </td>
+            </tr>
+          `).join('');
+            function toggleAllUsers(checked) {
+              document.querySelectorAll('.user-checkbox').forEach(cb => cb.checked = checked);
+            }
+
+            function getSelectedUserIds() {
+              return Array.from(document.querySelectorAll('.user-checkbox:checked')).map(cb => parseInt(cb.value));
+            }
+
+            function bulkDeleteUsers() {
+              const ids = getSelectedUserIds();
+              if (!ids.length) return alert('Select users to delete.');
+              if (!confirm('Delete selected users?')) return;
+              fetch('api/agent_sdk.php?action=bulk_delete_users', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ids })
+              })
+                .then(res => res.json())
+                .then(data => {
+                  if (data.success) fetchUsers();
+                  else alert(data.error || 'Failed to delete users.');
+                });
+            }
+
+            function bulkExportUsers() {
+              window.open('api/agent_sdk.php?action=bulk_export_users', '_blank');
+            }
+        });
+    }
+
+    function createUser(e) {
+      e.preventDefault();
+      const form = document.getElementById('create-user-form');
+      const msg = document.getElementById('create-user-message');
+      msg.innerText = 'Creating...';
+      const data = Object.fromEntries(new FormData(form));
+      fetch('api/agent_sdk.php?action=create_user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            msg.innerText = 'User created!';
+            fetchUsers();
+            form.reset();
+          } else {
+            msg.innerText = data.error || 'Failed to create user.';
+            msg.className = 'text-red-400 ml-2';
+          }
+        })
+        .catch(() => { msg.innerText = 'Failed to create user.'; msg.className = 'text-red-400 ml-2'; });
+    }
+
+    function updateUserField(id, field, value) {
+      // Only allow update for name, email, role
+      fetch('api/agent_sdk.php?action=update_user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, [field]: value })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (!data.success) alert(data.error || 'Failed to update user.');
+        });
+    }
+
+    function deactivateUser(id) {
+      if (!confirm('Deactivate this user?')) return;
+      fetch('api/agent_sdk.php?action=deactivate_user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) fetchUsers();
+          else alert(data.error || 'Failed to deactivate user.');
+        });
+    }
+
+    function resetUserPassword(id) {
+      const password = prompt('Enter new password for this user:');
+      if (!password) return;
+      fetch('api/agent_sdk.php?action=reset_user_password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, password })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) alert('Password reset!');
+          else alert(data.error || 'Failed to reset password.');
+        });
+    }
+    function fetchTransactions() {
+      fetch('api/transactions.php')
+        .then(res => res.json())
+        .then(data => {
+          const tbody = document.getElementById('transactions-table');
+          tbody.innerHTML = (data || []).map(t => `
+            <tr>
+              <td class="p-2"><input type="checkbox" class="transaction-checkbox" value="${t.id}"></td>
+              <td class="p-2">${t.id}</td>
+              <td class="p-2">${t.description || ''}</td>
+              <td class="p-2">${t.category_name || t.category || ''}</td>
+              <td class="p-2">${t.amount}</td>
+              <td class="p-2">${t.display_date || t.created_at || ''}</td>
+              <td class="p-2"><button class='text-red-400' onclick='deleteTransaction(${t.id})'>Delete</button></td>
+            </tr>
+          `).join('');
+            function toggleAllTransactions(checked) {
+              document.querySelectorAll('.transaction-checkbox').forEach(cb => cb.checked = checked);
+            }
+
+            function getSelectedTransactionIds() {
+              return Array.from(document.querySelectorAll('.transaction-checkbox:checked')).map(cb => parseInt(cb.value));
+            }
+
+            function bulkDeleteTransactions() {
+              const ids = getSelectedTransactionIds();
+              if (!ids.length) return alert('Select transactions to delete.');
+              if (!confirm('Delete selected transactions?')) return;
+              fetch('api/transactions.php?action=bulk_delete', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ids })
+              })
+                .then(res => res.json())
+                .then(data => {
+                  if (data.success) fetchTransactions();
+                  else alert(data.error || 'Failed to delete transactions.');
+                });
+            }
+
+            function bulkExportTransactions() {
+              window.open('api/transactions.php?action=bulk_export', '_blank');
+            }
+        });
+    }
+    function fetchCategories() {
+      fetch('api/categories.php')
+        .then(res => res.json())
+        .then(data => {
+          const tbody = document.getElementById('categories-table');
+          tbody.innerHTML = (data.categories || []).map(c => `
+            <tr>
+              <td class="p-2">${c.id}</td>
+              <td class="p-2"><input type="text" value="${c.name}" onchange="updateCategoryField(${c.id}, 'name', this.value)" class="bg-[#10151e] text-white p-1 rounded w-28"></td>
+              <td class="p-2">
+                <select onchange="updateCategoryField(${c.id}, 'type', this.value)" class="bg-[#10151e] text-white p-1 rounded">
+                  <option value="expense" ${c.type === 'expense' ? 'selected' : ''}>Expense</option>
+                  <option value="income" ${c.type === 'income' ? 'selected' : ''}>Income</option>
+                </select>
+              </td>
+              <td class="p-2"><input type="text" value="${c.icon || ''}" onchange="updateCategoryField(${c.id}, 'icon', this.value)" class="bg-[#10151e] text-white p-1 rounded w-16"></td>
+              <td class="p-2 flex gap-2">
+                <button class='text-red-400' onclick='deleteCategory(${c.id})'>Delete</button>
+              </td>
+            </tr>
+          `).join('');
+        });
+    }
+
+    function createCategory(e) {
+      e.preventDefault();
+      const form = document.getElementById('create-category-form');
+      const msg = document.getElementById('create-category-message');
+      msg.innerText = 'Creating...';
+      const data = Object.fromEntries(new FormData(form));
+      fetch('api/categories.php?action=create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            msg.innerText = 'Category created!';
+            fetchCategories();
+            form.reset();
+          } else {
+            msg.innerText = data.error || 'Failed to create category.';
+            msg.className = 'text-red-400 ml-2';
+          }
+        })
+        .catch(() => { msg.innerText = 'Failed to create category.'; msg.className = 'text-red-400 ml-2'; });
+    }
+
+    function updateCategoryField(id, field, value) {
+      // Only allow update for name, type, icon
+      fetch('api/categories.php?action=update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, [field]: value })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (!data.success) alert(data.error || 'Failed to update category.');
+        });
+    }
+
+    function deleteCategory(id) {
+      if (!confirm('Delete this category?')) return;
+      fetch('api/categories.php?action=delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) fetchCategories();
+          else alert(data.error || 'Failed to delete category.');
+        });
+    }
+    function fetchReports() {
+      fetch('api/analytics.php?action=summary')
+        .then(res => res.json())
+        .then(data => {
+          // Render a styled table like Excel/PDF
+          const html = `
+            <div class="overflow-x-auto">
+              <table class="min-w-[320px] w-full border border-[#2f3f57] bg-[#10151e] rounded-xl shadow-xl">
+                <thead>
+                  <tr class="bg-[#1a2233] text-[var(--accent)]">
+                    <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider">Metric</th>
+                    <th class="px-6 py-3 text-right text-xs font-bold uppercase tracking-wider">Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="px-6 py-4 font-semibold">Total Income</td>
+                    <td class="px-6 py-4 text-right text-green-400">$${(data.total_income ?? 0).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</td>
+                  </tr>
+                  <tr>
+                    <td class="px-6 py-4 font-semibold">Total Expense</td>
+                    <td class="px-6 py-4 text-right text-red-400">$${(data.total_expense ?? 0).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</td>
+                  </tr>
+                  <tr class="bg-[#171f2b]">
+                    <td class="px-6 py-4 font-bold">Net</td>
+                    <td class="px-6 py-4 text-right font-bold ${((data.net ?? 0) >= 0) ? 'text-green-400' : 'text-red-400'}">$${(data.net ?? 0).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          `;
+          document.getElementById('reports-content').innerHTML = html;
+        });
+    }
+    function resetDemoData() {
+      fetch('api/agent_sdk.php?action=reset_demo', { method: 'POST' })
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById('settings-message').innerText = data.message || 'Demo data reset.';
+        });
+    }
+
+    function importExcel(e) {
+      e.preventDefault();
+      const form = document.getElementById('import-excel-form');
+      const msg = document.getElementById('import-excel-message');
+      msg.innerText = 'Uploading and analyzing...';
+      const formData = new FormData(form);
+      fetch('api/import_excel.php', {
+        method: 'POST',
+        body: formData
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.error) {
+            msg.innerText = 'Error: ' + data.error;
+            msg.className = 'text-red-400';
+          } else {
+            msg.innerText = data.message || 'Import complete.';
+            msg.className = 'text-green-400';
+          }
+        })
+        .catch(err => {
+          msg.innerText = 'Import failed.';
+          msg.className = 'text-red-400';
+        });
+    }
+    // Example delete stubs
+    function deleteUser(id) { alert('Delete user ' + id); }
+    function deleteTransaction(id) { alert('Delete transaction ' + id); }
+    function deleteCategory(id) { alert('Delete category ' + id); }
+  </script>
+</body>
+</html>

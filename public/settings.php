@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-require_once "../src/alert_preferences.php";
+require_once __DIR__ . "/../src/alert_preferences.php";
 
 if (!isset($_SESSION["user_id"])) {
     header("Location: login.php");

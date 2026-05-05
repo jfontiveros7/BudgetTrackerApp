@@ -1,16 +1,17 @@
 <?php
 session_start();
-require_once "../config/database.php";
+require_once __DIR__ . "/../config/database.php";
 
-if (!isset($_SESSION["user_email"])) {
+
+if (!isset($_SESSION["user_id"], $_SESSION["user_email"], $_SESSION["user_role"])) {
     header("Location: login.php");
     exit;
 }
 
 $userEmail = $_SESSION["user_email"];
+$userRole = $_SESSION["user_role"];
 
-$isAdmin = ($userEmail === "admin@example.com");
-if (!$isAdmin) {
+if ($userRole !== 'admin') {
     http_response_code(403);
     echo "Forbidden";
     exit;

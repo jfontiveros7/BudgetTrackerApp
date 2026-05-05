@@ -1,7 +1,7 @@
 <?php
 session_start();
-require_once "../src/transactions.php";
-require_once "../src/categories.php";
+require_once __DIR__ . "/../src/transactions.php";
+require_once __DIR__ . "/../src/categories.php";
 
 if (!isset($_SESSION["user_id"])) {
     header("Location: login.php");
