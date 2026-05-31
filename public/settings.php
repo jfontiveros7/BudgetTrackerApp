@@ -57,7 +57,7 @@ $aiSettings = getUserAiSettings($userId);
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Settings - Budget Tracker App</title>
+    <title>Settings - Driftwise</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="css/style.css">
     <style>
@@ -120,10 +120,16 @@ $aiSettings = getUserAiSettings($userId);
         }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex">
-    <aside class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col p-6">
-        <h1 class="text-xl font-semibold mb-8">Budget Tracker App</h1>
-        <nav class="space-y-2">
+<body class="drift-shell bg-slate-950 text-slate-100 min-h-screen flex">
+    <aside class="drift-sidebar w-64 flex flex-col p-6">
+        <div class="drift-brand mb-8">
+            <div class="drift-brand-mark">D</div>
+            <div class="drift-brand-copy">
+                <strong>Driftwise</strong>
+                <span>Budget Intelligence</span>
+            </div>
+        </div>
+        <nav class="drift-nav space-y-2">
             <a href="dashboard.php" class="block px-3 py-2 rounded hover:bg-slate-800">Dashboard</a>
             <a href="add_transaction.php" class="block px-3 py-2 rounded hover:bg-slate-800">Add Transaction</a>
             <a href="settings.php" class="block px-3 py-2 rounded bg-slate-800 text-slate-100">Settings</a>
@@ -138,16 +144,16 @@ $aiSettings = getUserAiSettings($userId);
         </div>
     </aside>
 
-    <main class="flex-1 p-10">
+    <main class="drift-main flex-1">
         <div class="app-status-strip">
             <span class="app-status-pill">preferences: account level</span>
             <span class="app-status-pill">alerts: customizable</span>
-            <span class="app-status-pill">ai profile: active</span>
+            <span class="app-status-pill">copilot profile: active</span>
         </div>
         <div class="max-w-4xl">
             <div class="mb-8">
-                <p class="app-kicker">Operations / Settings</p>
-                <h2 class="text-3xl font-semibold">Settings</h2>
+                <p class="app-kicker">Preferences / Driftwise</p>
+                <h2 class="text-3xl font-semibold">Personalize the experience</h2>
                 <p class="text-slate-400 text-sm mt-2">Control which dashboard alerts you see across your account and restore alerts you previously dismissed.</p>
             </div>
 
@@ -301,8 +307,8 @@ $aiSettings = getUserAiSettings($userId);
                         <span class="flex items-start gap-3">
                             <span class="mt-0.5 inline-flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-500/10 text-xs font-semibold uppercase tracking-[0.2em] text-emerald-300">AI</span>
                             <span>
-                                <span class="block font-medium text-slate-100">Coach Recommendation</span>
-                                <span class="block text-slate-400 mt-1">Show the most useful next step from Budget Coach directly in your dashboard alerts.</span>
+                                <span class="block font-medium text-slate-100">Copilot Recommendation</span>
+                                <span class="block text-slate-400 mt-1">Show the most useful next step from Budget Copilot directly in your dashboard alerts.</span>
                             </span>
                         </span>
                         <span class="inline-flex items-center">
