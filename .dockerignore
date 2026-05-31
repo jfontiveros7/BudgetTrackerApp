@@ -1,0 +1,14 @@
+.git
+.gitignore
+agent_sdk/.env
+config/database.local.php
+config/payments.local.php
+config/stripe.local.php
+php-server.err.log
+php-server.out.log
+tmp-local-landing.html
+tmp-ref-landing.html
+tmp-ref-main.js
+__pycache__/
+*.pyc
+*.pyo
