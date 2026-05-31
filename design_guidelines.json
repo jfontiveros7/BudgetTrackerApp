@@ -1,0 +1,158 @@
+{
+  "theme_and_archetype": {
+    "domain": "Finance/SaaS (Budget Tracker)",
+    "theme": "Light",
+    "archetype": "Hybrid: Archetype 4 (Swiss & High-Contrast) + Archetype 5 (Luxury Fintech)",
+    "description": "A blend of premium editorial fintech (sophisticated serif typography, muted warm backgrounds, deep charcoal text) combined with bold modern SaaS (asymmetric grid structures, striking electric blue color blocks, and interactive widgets)."
+  },
+  "color_palette": {
+    "background": {
+      "base": "bg-[#F9F8F6]",
+      "surface": "bg-white",
+      "surface_muted": "bg-[#F1EFEA]",
+      "dark_anchor": "bg-[#0A0A0B]"
+    },
+    "text": {
+      "primary": "text-[#0A0A0B]",
+      "secondary": "text-[#52525B]",
+      "inverse": "text-white",
+      "accent": "text-[#0052FF]"
+    },
+    "border": {
+      "light": "border-black/5",
+      "medium": "border-black/10",
+      "dark": "border-[#0A0A0B]/20"
+    },
+    "accents": {
+      "primary": "bg-[#0052FF]",
+      "primary_hover": "hover:bg-[#0040C5]",
+      "secondary": "bg-[#0A0A0B]",
+      "secondary_hover": "hover:bg-[#27272A]",
+      "highlight": "bg-[#E0E7FF]"
+    }
+  },
+  "typography": {
+    "fonts": {
+      "heading": "font-serif",
+      "heading_family_css": "font-family: 'Playfair Display', serif;",
+      "body": "font-sans",
+      "body_family_css": "font-family: 'Manrope', sans-serif;",
+      "mono": "font-mono"
+    },
+    "hierarchy": {
+      "h1": "text-5xl md:text-6xl font-serif tracking-tight leading-[1.1]",
+      "h2": "text-4xl md:text-5xl font-serif tracking-tight leading-tight",
+      "h3": "text-2xl md:text-3xl font-sans font-medium tracking-tight",
+      "body": "text-base md:text-lg font-sans leading-relaxed text-[#52525B]",
+      "overline": "text-xs md:text-sm font-mono uppercase tracking-[0.2em] font-semibold text-[#0052FF]"
+    }
+  },
+  "spacing_and_layout": {
+    "section_padding": "py-24 md:py-32",
+    "container": "max-w-7xl mx-auto px-6 md:px-12",
+    "bento_grid": "grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8",
+    "bento_spans": {
+      "hero_card": "col-span-full md:col-span-8",
+      "side_card": "col-span-full md:col-span-4",
+      "half_card": "col-span-full md:col-span-6"
+    },
+    "surfaces": {
+      "card_default": "bg-white border border-black/5 rounded-2xl shadow-sm p-8",
+      "card_highlight": "bg-white border-2 border-[#0052FF] rounded-2xl shadow-md p-8 relative",
+      "card_dark": "bg-[#0A0A0B] text-white border border-white/10 rounded-2xl p-8"
+    }
+  },
+  "components": {
+    "buttons": {
+      "primary": "bg-[#0052FF] text-white rounded-full px-6 py-3 font-medium transition-transform hover:-translate-y-0.5 hover:shadow-lg",
+      "secondary": "bg-[#0A0A0B] text-white rounded-full px-6 py-3 font-medium transition-transform hover:-translate-y-0.5",
+      "outline": "bg-transparent text-[#0A0A0B] border border-black/20 rounded-full px-6 py-3 font-medium hover:bg-black/5"
+    },
+    "interactive": {
+      "rules": "Use Shadcn components for forms, tabs, accordions, and sliders (for the ROI calculator). Use pure Tailwind for layout structures.",
+      "testing": "MUST include data-testid on all interactive elements (e.g., data-testid='roi-slider', data-testid='pricing-starter-cta')."
+    }
+  },
+  "sections": [
+    {
+      "name": "Header",
+      "layout": "Sticky, glassmorphism (backdrop-blur-xl bg-white/70), flex-between, z-50."
+    },
+    {
+      "name": "Hero",
+      "layout": "Split asymmetric. Left: Editorial typography (H1: 'Track spending. Catch drift early. Turn budget into action.'), primary + outline CTAs. Right: Hovering 3D dashboard mockup. Background: Muted warm beige with subtle noise texture.",
+      "image": "budget_app_mockup"
+    },
+    {
+      "name": "Features Bento",
+      "layout": "Grid-12. Features: Smart Categories, Budget Thresholds, Alerts, AI Coach. Use card_default with crisp iconography. Keep one large hero card (8 cols) and smaller supporting cards (4 cols)."
+    },
+    {
+      "name": "ROI Calculator",
+      "layout": "Interactive Widget. Left side: Explanation and sliders (Monthly Spend, Current Drift %). Right side: Real-time savings readout in large serif text. Use '#0052FF' for slider tracks."
+    },
+    {
+      "name": "Pricing Ladder",
+      "layout": "Asymmetric 3-Tier Grid. 1. Starter ($5/mo), 2. Growth ($10/mo) - Highlighted with border and slightly taller. 3. Scale ($19.99/mo). Include a 4th dark section below or beside for the 'Managed Service Upsell'. All CTAs link to 'https://budget.konticode.com/checkout.php'.",
+      "notes": "Middle tier (Growth) should use 'card_highlight'. Managed service should use 'card_dark'."
+    },
+    {
+      "name": "Testimonials",
+      "layout": "Horizontal scrolling carousel or masonry grid using Unsplash professional portraits. Sophisticated serif quotes."
+    },
+    {
+      "name": "Lead Capture",
+      "layout": "Muted dark surface (bg-[#0A0A0B]). Form with Name, Email, Company Size (Select), Message. Use Shadcn form components."
+    },
+    {
+      "name": "FAQ",
+      "layout": "Centered narrow column using Shadcn Accordion. Clean and minimalist."
+    },
+    {
+      "name": "Footer",
+      "layout": "Large typographic 'Let's Talk' CTA, minimal links, clean grid layout."
+    }
+  ],
+  "image_assets": {
+    "budget_app_mockup": {
+      "url": "https://static.prod-images.emergentagent.com/jobs/f21d5517-acc1-46a1-ac81-d393ac17623b/images/59654b1a36fff4a05c925efe5e8be125840b6b084718bb3e4df2527cb864429b.png",
+      "description": "Use in Hero section. Minimalist modern dashboard interface hovering.",
+      "category": "Hero"
+    },
+    "hero_abstract_finance": {
+      "url": "https://static.prod-images.emergentagent.com/jobs/f21d5517-acc1-46a1-ac81-d393ac17623b/images/0c14bdc9db992e49e3f34198fd1aa0a61b06bc93495b1bbb0914a4140392ce6b.png",
+      "description": "Use as a background overlay or in a feature card.",
+      "category": "Background/Texture"
+    },
+    "financial_texture": {
+      "url": "https://static.prod-images.emergentagent.com/jobs/f21d5517-acc1-46a1-ac81-d393ac17623b/images/4305b8b0796d5454503ee89e7de6df5d9477d0711f6b542225d57d78ff5fb320.png",
+      "description": "Macro photography of financial report. Use in ROI calculator background or as section divider.",
+      "category": "Texture"
+    },
+    "testimonials": [
+      {
+        "url": "https://images.unsplash.com/photo-1632255657991-ce622acebecd?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDN8MHwxfHNlYXJjaHw0fHxwcm9mZXNzaW9uYWwlMjBvZmZpY2UlMjBwb3J0cmFpdHxlbnwwfHx8fDE3ODAyMzMwODJ8MA&ixlib=rb-4.1.0&q=85",
+        "description": "Testimonial portrait 1",
+        "category": "Avatar"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1632255658477-9ac8f313ea41?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDN8MHwxfHNlYXJjaHwzfHxwcm9mZXNzaW9uYWwlMjBvZmZpY2UlMjBwb3J0cmFpdHxlbnwwfHx8fDE3ODAyMzMwODJ8MA&ixlib=rb-4.1.0&q=85",
+        "description": "Testimonial portrait 2",
+        "category": "Avatar"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1580894732444-8ecded7900cd?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDN8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBvZmZpY2UlMjBwb3J0cmFpdHxlbnwwfHx8fDE3ODAyMzMwODJ8MA&ixlib=rb-4.1.0&q=85",
+        "description": "Testimonial portrait 3",
+        "category": "Avatar"
+      }
+    ]
+  },
+  "instructions_to_main_agent": {
+    "1": "Use the provided image URLs exclusively. Do not use generic placeholders.",
+    "2": "For fonts, ensure Playfair Display (heading) and Manrope (body) are loaded via Google Fonts in index.html.",
+    "3": "Pricing links must hardcode 'href=\"https://budget.konticode.com/checkout.php\"' as instructed.",
+    "4": "Install framer-motion for micro-interactions, especially in the Hero Mockup.",
+    "5": "Do not skip data-testid attributes. Ensure forms are built using Shadcn Form and React Hook Form.",
+    "6": "Ensure contrast is crisp. The background should be `#F9F8F6` with `#0A0A0B` text."
+  }
+}
