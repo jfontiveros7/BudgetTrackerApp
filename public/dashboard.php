@@ -36,22 +36,28 @@ $recentTransactions = getRecentTransactions($userId, 50);
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard - Budget Tracker App</title>
+    <title>Dashboard - Driftwise</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex">
-    <aside id="sidebar" class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col p-6 fixed md:static z-40 top-0 left-0 h-full md:h-auto transition-transform duration-200 -translate-x-full md:translate-x-0">
+<body class="drift-shell bg-slate-950 text-slate-100 min-h-screen flex">
+    <aside id="sidebar" class="drift-sidebar w-64 flex flex-col p-6 fixed md:static z-40 top-0 left-0 h-full md:h-auto transition-transform duration-200 -translate-x-full md:translate-x-0">
             <!-- Hamburger for mobile -->
             <button id="sidebarToggle" class="md:hidden fixed top-4 left-4 z-50 p-2 bg-slate-900 rounded shadow-lg focus:outline-none">
                 <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="text-emerald-400">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
             </button>
-        <h1 class="text-xl font-semibold mb-8">Budget Tracker App</h1>
+        <div class="drift-brand mb-8">
+            <div class="drift-brand-mark">D</div>
+            <div class="drift-brand-copy">
+                <strong>Driftwise</strong>
+                <span>Budget Intelligence</span>
+            </div>
+        </div>
 
-        <nav class="space-y-2">
+        <nav class="drift-nav space-y-2">
             <a href="dashboard.php" class="block px-3 py-2 rounded bg-slate-800 text-slate-100">Dashboard</a>
             <a href="add_transaction.php" class="block px-3 py-2 rounded hover:bg-slate-800">Add Transaction</a>
             <a href="settings.php" class="block px-3 py-2 rounded hover:bg-slate-800">Settings</a>
@@ -67,7 +73,7 @@ $recentTransactions = getRecentTransactions($userId, 50);
         </div>
     </aside>
 
-    <main class="flex-1 p-10">
+    <main class="drift-main flex-1">
                         <!-- Notification Bell -->
                         <div class="fixed top-4 right-4 z-50">
                             <button id="notifBell" class="relative p-2 rounded-full bg-slate-900 hover:bg-slate-800 shadow-lg focus:outline-none focus:ring-2 focus:ring-emerald-500">
@@ -84,7 +90,7 @@ $recentTransactions = getRecentTransactions($userId, 50);
                             </div>
                         </div>
                 <!-- Dashboard Customization Controls -->
-                <div class="mb-8 flex flex-wrap gap-4 items-center">
+                <div class="drift-toolbar">
                     <span class="font-semibold text-slate-300 mr-2">Customize Dashboard:</span>
                     <label class="flex items-center gap-2">
                         <input type="checkbox" id="toggleMetrics" checked>
@@ -100,7 +106,7 @@ $recentTransactions = getRecentTransactions($userId, 50);
                     </label>
                     <label class="flex items-center gap-2">
                         <input type="checkbox" id="toggleCoach" checked>
-                        <span>Coach</span>
+                        <span>Copilot</span>
                     </label>
                     <label class="flex items-center gap-2">
                         <input type="checkbox" id="toggleTransactions" checked>
@@ -109,13 +115,13 @@ $recentTransactions = getRecentTransactions($userId, 50);
                 </div>
         <div class="app-status-strip">
             <span class="app-status-pill">ops mode: live</span>
-            <span class="app-status-pill">support target: &lt;24h</span>
-            <span class="app-status-pill">workspace: budget tracker</span>
+            <span class="app-status-pill">signal stream: active</span>
+            <span class="app-status-pill">workspace: driftwise</span>
         </div>
         <div class="flex flex-col gap-3 mb-10 md:flex-row md:items-center md:justify-between">
             <div>
-                <p class="app-kicker">Operations / Dashboard</p>
-                <h2 class="text-3xl font-semibold">Dashboard</h2>
+                <p class="app-kicker">Overview / Driftwise</p>
+                <h2 class="text-3xl font-semibold">Your budget flow at a glance</h2>
                 <p class="text-slate-400 text-sm mt-2">
                     Welcome back, <?php echo htmlspecialchars($userName ?: $userEmail); ?>
                 </p>
@@ -272,7 +278,7 @@ $recentTransactions = getRecentTransactions($userId, 50);
             <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-xl">
                 <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                     <div>
-                        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-400">AI Budget Coach</p>
+                        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-400">Budget Copilot</p>
                         <h3 class="text-xl font-semibold mt-2">Score and guidance</h3>
                         <p class="text-slate-400 text-sm mt-2">Open your coach score for a quick read on financial control, then ask follow-up questions below.</p>
                         <p class="text-slate-500 text-xs mt-2">Coach Score is computed from your budget data and does not require the OpenAI chat connection.</p>
@@ -304,7 +310,7 @@ $recentTransactions = getRecentTransactions($userId, 50);
         <div id="coachScoreSection" class="hidden bg-slate-900 border border-slate-800 rounded-xl p-8 shadow-xl">
             <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                 <div>
-                    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-400">Coach Score Details</p>
+                    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-400">Copilot Score Details</p>
                     <h3 class="text-xl font-semibold mt-2"><?php echo htmlspecialchars($agentReport["headline"]); ?></h3>
                     <p class="text-slate-400 text-sm mt-2">A smart summary based on your recent spending, income, and transaction habits.</p>
                 </div>
@@ -458,7 +464,7 @@ $recentTransactions = getRecentTransactions($userId, 50);
         <div class="bg-slate-900 border border-slate-800 rounded-xl p-8 shadow-xl">
             <div class="flex flex-col gap-3 mb-6 md:flex-row md:items-center md:justify-between">
                 <div>
-                    <h3 class="text-xl font-semibold">Ask Budget Coach</h3>
+                    <h3 class="text-xl font-semibold">Ask Budget Copilot</h3>
                     <p class="text-slate-400 text-sm mt-2">Ask questions about spending, savings, cash flow, or where to improve next.</p>
                 </div>
                 <span class="rounded-full border border-slate-700 bg-slate-950 px-3 py-1 text-xs text-slate-400">
@@ -483,7 +489,7 @@ $recentTransactions = getRecentTransactions($userId, 50);
                     <input
                         id="coachInput"
                         type="text"
-                        placeholder="Ask Budget Coach a question..."
+                        placeholder="Ask Budget Copilot a question..."
                         class="flex-1 rounded-lg bg-slate-950 border border-slate-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     >
                     <button
@@ -501,8 +507,8 @@ $recentTransactions = getRecentTransactions($userId, 50);
                 <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                     <div>
                         <p class="text-xs font-semibold uppercase tracking-[0.2em] text-amber-400">Starter Plan</p>
-                        <h3 class="text-xl font-semibold mt-2">AI Budget Coach is available on Growth</h3>
-                        <p class="text-slate-400 text-sm mt-2">Upgrade to Growth to unlock Coach Score visibility, AI guidance, and interactive budget questions.</p>
+                        <h3 class="text-xl font-semibold mt-2">Budget Copilot is available on Control</h3>
+                        <p class="text-slate-400 text-sm mt-2">Upgrade to Control to unlock Copilot Score visibility, AI guidance, and interactive budget questions.</p>
                     </div>
                     <a href="checkout.php?plan=growth" class="inline-flex items-center justify-center rounded-lg bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-[#261402] transition hover:brightness-95">
                         Switch To Growth

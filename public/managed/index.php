@@ -3,29 +3,81 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Managed Budget Operations | Budget Tracker App</title>
+  <title>Driftwise Ops+ | Premium budget operations support</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,700&family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f7f1e8;
+      --surface: #fffaf4;
+      --line: rgba(102, 82, 61, 0.14);
+      --line-soft: rgba(102, 82, 61, 0.08);
+      --text: #231912;
+      --muted: #6e6053;
+      --accent: #0c7a70;
+      --accent-strong: #0a655d;
+      --accent-alt: #4768de;
+      --warn: #e89a36;
+      --shadow: 0 18px 42px rgba(93, 64, 30, 0.08);
+    }
+
+    body {
+      margin: 0;
+      font-family: "Space Grotesk", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(900px 420px at 84% -10%, rgba(232, 154, 54, 0.22), transparent 56%),
+        radial-gradient(880px 500px at -6% 12%, rgba(71, 104, 222, 0.1), transparent 60%),
+        linear-gradient(180deg, #fffdf9 0%, var(--bg) 46%, #efe3d3 100%);
+    }
+
+    h1, h2 {
+      font-family: "Newsreader", serif;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 0.98;
+    }
+
+    .mono {
+      font-family: "IBM Plex Mono", monospace;
+    }
+
+    .frame {
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255, 251, 245, 0.95), rgba(251, 245, 236, 0.96));
+      box-shadow: var(--shadow);
+    }
+
+    .soft-frame {
+      border: 1px solid var(--line-soft);
+      background: rgba(255,255,255,0.68);
+    }
+  </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen">
-  <main class="max-w-3xl mx-auto px-5 py-16">
-    <p class="text-xs tracking-[0.2em] uppercase text-sky-300 mb-4">Managed Service</p>
-    <h1 class="text-3xl md:text-5xl font-semibold mb-4">Premium support for customers who want more than software</h1>
-    <p class="text-slate-300 mb-8">Use Budget Tracker App as the self-serve entry point, then close higher-ticket work with setup help, recurring reviews, workflow tuning, and advisory support.</p>
+<body class="min-h-screen">
+  <main class="max-w-4xl mx-auto px-5 py-16">
+    <section class="frame rounded-3xl p-8 md:p-10">
+    <p class="mono text-xs tracking-[0.2em] uppercase text-[var(--accent-alt)] mb-4">Driftwise Ops+</p>
+    <h1 class="text-4xl md:text-5xl mb-4">Premium support for teams that want more than a dashboard</h1>
+    <p class="text-[color:var(--muted)] mb-8 max-w-3xl leading-7">Use Driftwise as the self-serve entry point, then move higher-need customers into a premium service layer with setup help, recurring reviews, workflow tuning, and operating support.</p>
     <div class="grid gap-4 mb-8">
-      <div class="rounded-xl border border-slate-800 bg-slate-900/70 p-5">
+      <div class="soft-frame rounded-2xl p-5">
         <p class="font-semibold mb-2">Best fit for</p>
-        <p class="text-sm text-slate-300">Teams with rising transaction volume, inconsistent follow-through, or a need for weekly accountability around spending decisions.</p>
+        <p class="text-sm text-[color:var(--muted)]">Teams with rising transaction volume, inconsistent follow-through, or a need for stronger accountability around budget decisions.</p>
       </div>
-      <div class="rounded-xl border border-slate-800 bg-slate-900/70 p-5">
-        <p class="font-semibold mb-2">What this upsell does</p>
-        <p class="text-sm text-slate-300">Raises average revenue per customer without forcing every buyer into a sales call. Self-serve plans stay simple; higher-need buyers get a premium path.</p>
+      <div class="soft-frame rounded-2xl p-5">
+        <p class="font-semibold mb-2">What this service does</p>
+        <p class="text-sm text-[color:var(--muted)]">Adds a premium path for customers who want expert setup, recurring oversight, and decision support without hiring a full finance lead.</p>
       </div>
     </div>
     <div class="flex flex-wrap gap-3">
-      <a href="../pricing-sheet.php?v=20260420" class="px-5 py-3 rounded-md bg-emerald-400 text-slate-900 font-semibold">View Service Pricing</a>
-      <a href="../checkout.php?plan=scale" class="px-5 py-3 rounded-md border border-slate-700 hover:bg-slate-800 transition">Start Scale Plan</a>
-      <a href="mailto:sales@budgettrackerpro.com" class="px-5 py-3 rounded-md border border-slate-700 hover:bg-slate-800 transition">Book Discovery Call</a>
+      <a href="../pricing-sheet.php" class="px-5 py-3 rounded-md bg-[var(--accent)] text-[#fffaf2] font-semibold hover:bg-[var(--accent-strong)] transition">View Service Pricing</a>
+      <a href="../checkout.php?plan=scale" class="px-5 py-3 rounded-md border border-[rgba(105,84,63,0.16)] hover:bg-[rgba(12,122,112,0.10)] hover:border-[rgba(12,122,112,0.22)] transition">Start Command Plan</a>
+      <a href="mailto:jfontiveros7@gmail.com" class="px-5 py-3 rounded-md border border-[rgba(105,84,63,0.16)] hover:bg-[rgba(12,122,112,0.10)] hover:border-[rgba(12,122,112,0.22)] transition">Talk To The Team</a>
     </div>
+    </section>
   </main>
 </body>
 </html>

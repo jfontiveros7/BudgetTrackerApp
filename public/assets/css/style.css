@@ -1,13 +1,18 @@
 :root {
-    --kc-bg: #090c0b;
-    --kc-panel: #121614;
-    --kc-panel-soft: #171c19;
-    --kc-border: #233027;
-    --kc-text: #f2f5f3;
-    --kc-muted: #9ca9a2;
-    --kc-accent: #7fff9e;
-    --kc-accent-2: #ffb454;
-    --kc-danger: #ff5f56;
+    --kc-bg: #f5efe6;
+    --kc-bg-soft: #fff9f1;
+    --kc-panel: rgba(255, 252, 247, 0.78);
+    --kc-panel-soft: rgba(255, 248, 240, 0.66);
+    --kc-panel-strong: #fff8ef;
+    --kc-border: rgba(114, 92, 72, 0.14);
+    --kc-border-strong: rgba(114, 92, 72, 0.18);
+    --kc-text: #221a15;
+    --kc-muted: #6f6256;
+    --kc-accent: #167c72;
+    --kc-accent-2: #ef9b2d;
+    --kc-accent-3: #5d7df0;
+    --kc-danger: #d95c57;
+    --kc-shadow: 0 24px 60px rgba(80, 53, 20, 0.12);
 }
 
 html,
@@ -18,8 +23,24 @@ body {
 body {
     margin: 0;
     font-family: "Space Grotesk", sans-serif;
-    background: radial-gradient(circle at 85% 8%, #1e2b23 0%, #090c0b 38%), var(--kc-bg);
+    background:
+        radial-gradient(circle at 12% 16%, rgba(93, 125, 240, 0.14), transparent 28%),
+        radial-gradient(circle at 88% 10%, rgba(239, 155, 45, 0.14), transparent 30%),
+        radial-gradient(circle at 70% 74%, rgba(22, 124, 114, 0.12), transparent 28%),
+        linear-gradient(180deg, #fcf7f0 0%, #f6efe5 52%, #efe5d8 100%);
     color: var(--kc-text);
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.55), transparent 24%),
+        radial-gradient(circle at 80% 15%, rgba(255, 255, 255, 0.4), transparent 22%),
+        radial-gradient(circle at 70% 85%, rgba(255, 255, 255, 0.3), transparent 18%);
+    opacity: 0.55;
 }
 
 .kc-mono {
@@ -35,7 +56,7 @@ body {
 }
 
 .kc-border-glow {
-    box-shadow: 0 0 0 1px rgba(127, 255, 158, 0.22), 0 18px 42px rgba(0, 0, 0, 0.38);
+    box-shadow: 0 0 0 1px rgba(22, 124, 114, 0.08), var(--kc-shadow);
 }
 
 .kc-scanlines {
@@ -78,14 +99,14 @@ body {
 
 .kc-button-primary {
     background: var(--kc-accent);
-    color: #0b0d0c;
+    color: #fffaf2;
     border: 1px solid var(--kc-accent);
     transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 .kc-button-primary:hover {
-    background: #5ce683;
-    border-color: #5ce683;
+    background: #126b63;
+    border-color: #126b63;
 }
 
 .kc-button-secondary {
@@ -97,17 +118,22 @@ body {
 
 .kc-button-secondary:hover {
     border-color: var(--kc-accent);
-    color: var(--kc-accent);
+    color: #124f49;
+    background: rgba(22, 124, 114, 0.12);
+    box-shadow: 0 10px 24px rgba(22, 124, 114, 0.08);
 }
 
 .kc-panel {
     background: var(--kc-panel);
     border: 1px solid var(--kc-border);
+    backdrop-filter: blur(18px);
+    box-shadow: var(--kc-shadow);
 }
 
 .kc-panel-soft {
     background: var(--kc-panel-soft);
     border: 1px solid var(--kc-border);
+    backdrop-filter: blur(14px);
 }
 
 .kc-muted {
@@ -116,6 +142,301 @@ body {
 
 .kc-accent {
     color: var(--kc-accent);
+}
+
+.drift-shell {
+    position: relative;
+}
+
+.drift-shell::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at top, rgba(255, 255, 255, 0.28), transparent 30%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.16), transparent 26%);
+    opacity: 0.8;
+}
+
+.drift-sidebar {
+    background: linear-gradient(180deg, rgba(255, 251, 245, 0.92), rgba(248, 240, 230, 0.88));
+    border-right: 1px solid var(--kc-border);
+    backdrop-filter: blur(20px);
+    box-shadow: 18px 0 36px rgba(80, 53, 20, 0.08);
+}
+
+.drift-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.drift-brand-mark {
+    width: 2.6rem;
+    height: 2.6rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.95rem;
+    background: linear-gradient(135deg, var(--kc-accent-2), #ffe4a2);
+    color: #fffaf2;
+    font-weight: 700;
+    box-shadow: 0 14px 30px rgba(239, 155, 45, 0.24);
+}
+
+.drift-brand-copy strong {
+    display: block;
+    font-size: 1rem;
+    letter-spacing: -0.02em;
+}
+
+.drift-brand-copy span {
+    display: block;
+    color: var(--kc-muted);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+}
+
+.drift-nav a {
+    border: 1px solid transparent;
+    transition: transform 180ms ease, border-color 180ms ease, background-color 180ms ease;
+}
+
+.drift-nav a:hover {
+    transform: translateX(4px);
+    border-color: rgba(22, 124, 114, 0.18);
+    background: rgba(22, 124, 114, 0.1);
+    color: #124f49;
+}
+
+.drift-login-wrap {
+    width: min(1100px, calc(100% - 2rem));
+    display: grid;
+    grid-template-columns: 1.02fr 0.98fr;
+    gap: 1.5rem;
+    align-items: stretch;
+}
+
+.drift-login-promo,
+.drift-login-card,
+.drift-surface {
+    border: 1px solid var(--kc-border);
+    border-radius: 1.75rem;
+    backdrop-filter: blur(20px);
+    box-shadow: var(--kc-shadow);
+}
+
+.drift-login-promo {
+    padding: 2.5rem;
+    background:
+        radial-gradient(circle at top right, rgba(239, 155, 45, 0.16), transparent 34%),
+        radial-gradient(circle at bottom left, rgba(93, 125, 240, 0.11), transparent 28%),
+        linear-gradient(180deg, rgba(255, 252, 247, 0.86), rgba(248, 239, 230, 0.94));
+    overflow: hidden;
+}
+
+.drift-login-card {
+    padding: 2.25rem;
+    background: linear-gradient(180deg, rgba(255, 252, 247, 0.92), rgba(248, 240, 231, 0.96));
+}
+
+.drift-kicker,
+.app-kicker {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--kc-accent);
+}
+
+.drift-display {
+    font-size: clamp(2.8rem, 5vw, 4.7rem);
+    line-height: 0.95;
+    letter-spacing: -0.05em;
+    margin: 0.85rem 0 0;
+}
+
+.drift-lead {
+    color: var(--kc-muted);
+    line-height: 1.75;
+    max-width: 38rem;
+}
+
+.drift-signal-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.85rem;
+    margin-top: 1.5rem;
+}
+
+.drift-signal-card {
+    padding: 1rem;
+    border-radius: 1rem;
+    border: 1px solid var(--kc-border);
+    background: rgba(255, 255, 255, 0.42);
+}
+
+.drift-signal-card strong {
+    display: block;
+    margin-top: 0.3rem;
+    font-size: 1.1rem;
+}
+
+.app-status-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    margin-bottom: 1.4rem;
+}
+
+.app-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.8rem;
+    border-radius: 999px;
+    border: 1px solid var(--kc-border);
+    background: rgba(255, 255, 255, 0.42);
+    color: var(--kc-muted);
+    font-size: 0.74rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+}
+
+.drift-panel {
+    border: 1px solid var(--kc-border);
+    background: linear-gradient(180deg, rgba(255, 252, 247, 0.82), rgba(247, 239, 231, 0.92));
+    border-radius: 1.4rem;
+    box-shadow: var(--kc-shadow);
+    backdrop-filter: blur(18px);
+}
+
+.drift-panel-soft {
+    border: 1px solid var(--kc-border);
+    background: rgba(255, 255, 255, 0.42);
+    border-radius: 1.1rem;
+}
+
+.metric-card {
+    position: relative;
+    overflow: hidden;
+    border-color: var(--kc-border-strong) !important;
+    background:
+        radial-gradient(circle at top right, rgba(93, 125, 240, 0.12), transparent 34%),
+        linear-gradient(180deg, rgba(255, 252, 247, 0.84), rgba(247, 239, 231, 0.92)) !important;
+    backdrop-filter: blur(18px);
+    box-shadow: var(--kc-shadow);
+}
+
+.metric-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, var(--kc-accent), var(--kc-accent-3), var(--kc-accent-2));
+    opacity: 0.9;
+}
+
+.drift-main {
+    padding: 2.2rem;
+}
+
+.drift-main .bg-slate-900.border,
+.drift-main .rounded-xl.border,
+.drift-main .rounded-2xl.border {
+    border-color: var(--kc-border) !important;
+    background: linear-gradient(180deg, rgba(255, 252, 247, 0.84), rgba(247, 239, 231, 0.92)) !important;
+    backdrop-filter: blur(16px);
+    box-shadow: var(--kc-shadow);
+}
+
+.drift-main .bg-slate-950,
+.drift-main .bg-slate-950\/60,
+.drift-main .bg-slate-900\/80,
+.drift-main .bg-slate-900\/70 {
+    background-color: rgba(255, 255, 255, 0.44) !important;
+}
+
+.drift-main .border-slate-800,
+.drift-main .border-slate-700 {
+    border-color: var(--kc-border) !important;
+}
+
+.drift-main .bg-emerald-500,
+.drift-main .hover\:bg-emerald-400:hover {
+    background-color: var(--kc-accent) !important;
+    color: #fffaf2 !important;
+}
+
+.drift-main .hover\:bg-slate-800:hover,
+.drift-main .hover\:bg-slate-700:hover,
+.drift-main .hover\:bg-slate-800\/40:hover {
+    background-color: rgba(22, 124, 114, 0.12) !important;
+    color: var(--kc-text) !important;
+    box-shadow: 0 10px 24px rgba(22, 124, 114, 0.08);
+}
+
+.drift-main .hover\:bg-slate-800:hover svg,
+.drift-main .hover\:bg-slate-700:hover svg {
+    color: var(--kc-accent) !important;
+}
+
+.drift-main .text-emerald-400,
+.drift-main .text-emerald-300 {
+    color: var(--kc-accent) !important;
+}
+
+.drift-main .text-sky-300 {
+    color: var(--kc-accent-3) !important;
+}
+
+.drift-main .text-amber-300 {
+    color: var(--kc-accent-2) !important;
+}
+
+.drift-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem 1.2rem;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding: 1rem 1.1rem;
+    border-radius: 1rem;
+    border: 1px solid var(--kc-border);
+    background: rgba(255, 255, 255, 0.42);
+}
+
+.drift-toolbar label {
+    color: var(--kc-muted);
+    font-size: 0.92rem;
+}
+
+.drift-toolbar input {
+    accent-color: var(--kc-accent);
+}
+
+.drift-empty-card {
+    padding: 1.2rem;
+    border-radius: 1rem;
+    border: 1px solid var(--kc-border);
+    background: rgba(255, 255, 255, 0.42);
+}
+
+@media (max-width: 960px) {
+    .drift-login-wrap {
+        grid-template-columns: 1fr;
+    }
+
+    .drift-signal-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .drift-main {
+        padding: 1rem;
+    }
 }
 
 @keyframes kcFadeUp {
