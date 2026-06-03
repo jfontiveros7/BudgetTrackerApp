@@ -451,7 +451,7 @@
                   </div>
                   <span class="mini-label text-[#52525B] ml-2">budgettracker / overview</span>
                 </div>
-                <span class="mini-label text-[#52525B]">Dec · 2025</span>
+                <span class="mini-label text-[#52525B]">Aug · 2026</span>
               </div>
 
               <div class="flex items-end justify-between border-b border-black/5 pb-5">
