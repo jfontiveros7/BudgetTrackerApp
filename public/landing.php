@@ -404,7 +404,7 @@
           <h1 class="text-5xl md:text-7xl lg:text-[78px] mt-5 max-w-5xl">
             Track spending.<br />
             <span class="italic text-black/55">Catch drift.</span><br />
-            Turn budget into <span class="relative inline-block">action<span class="absolute left-0 right-0 bottom-1 h-3 bg-[#E0E7FF] -z-0"></span></span>.
+            Turn budget into action.
           </h1>
           <p class="mt-6 text-lg md:text-xl leading-relaxed text-black/68 max-w-2xl">
             Budget Tracker helps solo operators and growing teams monitor category limits, review spending trends, and act before overspending compounds, starting at $5/mo.
@@ -844,44 +844,47 @@
           </div>
         </div>
         <div class="lg:col-span-7">
-          <form class="bg-white/5 border border-white/10 rounded-2xl p-7 md:p-10 backdrop-blur-sm">
+          <form id="lead-form" data-budget-contact-form action="/api/contact.php" method="post" class="bg-white/5 border border-white/10 rounded-2xl p-7 md:p-10 backdrop-blur-sm">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
                 <label for="lead-name-input" class="text-white/70 mono text-[10px] uppercase tracking-widest">Name</label>
-                <input id="lead-name-input" class="form-input" placeholder="Avery Tan" />
+                <input id="lead-name-input" name="name" class="form-input" placeholder="Avery Tan" autocomplete="name" required />
               </div>
               <div>
                 <label for="lead-email-input" class="text-white/70 mono text-[10px] uppercase tracking-widest">Work email</label>
-                <input id="lead-email-input" type="email" class="form-input" placeholder="you@company.com" />
+                <input id="lead-email-input" name="email" type="email" class="form-input" placeholder="you@company.com" autocomplete="email" required />
               </div>
               <div>
                 <label for="lead-company-size" class="text-white/70 mono text-[10px] uppercase tracking-widest">Company size</label>
-                <select id="lead-company-size" class="form-select">
-                  <option>Select team size</option>
-                  <option>1-5</option>
-                  <option>6-15</option>
-                  <option>16-50</option>
-                  <option>50+</option>
+                <select id="lead-company-size" name="company_size" class="form-select">
+                  <option value="">Select team size</option>
+                  <option value="1-5">1-5</option>
+                  <option value="6-15">6-15</option>
+                  <option value="16-50">16-50</option>
+                  <option value="50+">50+</option>
                 </select>
               </div>
               <div>
                 <label for="lead-plan-interest" class="text-white/70 mono text-[10px] uppercase tracking-widest">Plan interest</label>
-                <select id="lead-plan-interest" class="form-select">
-                  <option>Pick a plan</option>
-                  <option>Starter</option>
-                  <option>Growth</option>
-                  <option>Scale</option>
-                  <option>Managed service</option>
+                <select id="lead-plan-interest" name="plan_interest" class="form-select">
+                  <option value="">Pick a plan</option>
+                  <option value="Starter">Starter</option>
+                  <option value="Growth">Growth</option>
+                  <option value="Scale">Scale</option>
+                  <option value="Managed service">Managed service</option>
                 </select>
               </div>
             </div>
             <div class="mt-5">
               <label for="lead-message-input" class="text-white/70 mono text-[10px] uppercase tracking-widest">What are you trying to control?</label>
-              <textarea id="lead-message-input" rows="4" class="form-textarea" placeholder="Contractor spend, marketing drift, monthly close cadence..."></textarea>
+              <textarea id="lead-message-input" name="message" rows="4" class="form-textarea" placeholder="Contractor spend, marketing drift, monthly close cadence..." required></textarea>
             </div>
             <div class="mt-7 flex flex-wrap items-center justify-between gap-4">
-              <span class="text-xs text-white/50">We&apos;ll never share your details. Reply within one business day.</span>
-              <a href="mailto:sales@budgettrackerpro.com?subject=Managed%20service%20inquiry" class="cta-primary px-6 py-3 text-sm">Send message</a>
+              <div>
+                <span class="text-xs text-white/50">We&apos;ll never share your details. Reply within one business day.</span>
+                <p id="lead-form-status" data-budget-contact-status class="mt-2 text-sm text-white/70 hidden"></p>
+              </div>
+              <button id="lead-submit-button" type="submit" class="cta-primary px-6 py-3 text-sm">Send message</button>
             </div>
           </form>
         </div>
@@ -1041,6 +1044,79 @@
       });
 
       render();
+    })();
+
+    (function () {
+      const form = document.querySelector("[data-budget-contact-form]");
+      const status = document.querySelector("[data-budget-contact-status]");
+      const submitButton = document.getElementById("lead-submit-button");
+
+      if (!form || !status || !submitButton) {
+        return;
+      }
+
+      async function postLead(url, payload) {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        let data = {};
+        try {
+          data = await response.json();
+        } catch (error) {
+          data = { error: "Unexpected response from the server." };
+        }
+
+        return { response, data };
+      }
+
+      function setStatus(message, tone) {
+        status.textContent = message;
+        status.classList.remove("hidden", "text-emerald-300", "text-rose-300", "text-white/70");
+        status.classList.add(tone);
+      }
+
+      form.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        submitButton.disabled = true;
+        submitButton.textContent = "Sending...";
+        setStatus("Sending your message...", "text-white/70");
+
+        const payload = {
+          name: document.getElementById("lead-name-input").value.trim(),
+          email: document.getElementById("lead-email-input").value.trim(),
+          company_size: document.getElementById("lead-company-size").value.trim(),
+          plan_interest: document.getElementById("lead-plan-interest").value.trim(),
+          message: document.getElementById("lead-message-input").value.trim()
+        };
+
+        try {
+          let result = await postLead("/api/contact", payload);
+          if (result.response.status === 404 || result.response.status === 405) {
+            result = await postLead("/api/contact.php", payload);
+          }
+
+          const response = result.response;
+          const data = result.data;
+
+          if (!response.ok || !data.ok) {
+            throw new Error(data.error || "Something went wrong.");
+          }
+
+          form.reset();
+          setStatus(data.message || "Thanks. We'll be in touch within one business day.", "text-emerald-300");
+        } catch (error) {
+          setStatus(error.message || "Unable to send your message right now.", "text-rose-300");
+        } finally {
+          submitButton.disabled = false;
+          submitButton.textContent = "Send message";
+        }
+      });
     })();
   </script>
 </body>

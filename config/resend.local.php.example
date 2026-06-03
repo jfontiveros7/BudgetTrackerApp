@@ -1,0 +1,6 @@
+<?php
+$resendApiKey = "re_your_resend_api_key";
+$resendWebhookSigningSecret = "whsec_your_resend_webhook_secret";
+$budgetContactToEmail = "hello@konticode.com";
+$budgetContactFromEmail = "Budget Tracker <contact@budget.konticode.com>";
+?>
