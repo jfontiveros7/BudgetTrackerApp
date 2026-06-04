@@ -2,11 +2,32 @@
 session_start();
 define("BT_ALLOW_DB_DEGRADED", true);
 require_once __DIR__ . "/../src/auth.php";
+require_once __DIR__ . "/../src/purchases.php";
 
 $error = "";
-$email = "";
+$email = trim((string) ($_SESSION["completed_purchase_email"] ?? ""));
 $selectedPlan = normalizePlan($_GET["plan"] ?? "", "");
 $completedPlan = normalizePlan($_SESSION["completed_purchase_plan"] ?? "", "");
+$purchaseToken = trim((string) ($_POST["purchase_token"] ?? ($_GET["purchase_token"] ?? ($_SESSION["completed_purchase_token"] ?? ""))));
+$purchaseEmail = trim((string) ($_SESSION["completed_purchase_email"] ?? ""));
+$purchaseClaim = $purchaseToken !== "" ? btGetPurchaseClaimByToken($purchaseToken) : null;
+if ($purchaseClaim) {
+    $claimPlan = normalizePlan((string) ($purchaseClaim["plan"] ?? ""), "");
+    if ($selectedPlan === "" && $claimPlan !== "") {
+        $selectedPlan = $claimPlan;
+    }
+    if ($completedPlan === "" && $claimPlan !== "") {
+        $completedPlan = $claimPlan;
+        $_SESSION["completed_purchase_plan"] = $claimPlan;
+    }
+    if ($purchaseEmail === "" && !empty($purchaseClaim["stripe_customer_email"])) {
+        $purchaseEmail = trim((string) $purchaseClaim["stripe_customer_email"]);
+        $_SESSION["completed_purchase_email"] = $purchaseEmail;
+        if ($email === "") {
+            $email = $purchaseEmail;
+        }
+    }
+}
 $planLabels = [
     "starter" => "Starter",
     "growth" => "Growth",
@@ -41,9 +62,14 @@ if ($requestMethod === "POST") {
         if ($user) {
             session_regenerate_id(true);
             if ($completedPlan !== "" && ($postedPlan === "" || $postedPlan === $completedPlan)) {
-                updateUserPlan((int) $user["id"], $completedPlan);
-                unset($_SESSION["completed_purchase_plan"], $_SESSION["pending_plan"]);
-                $_SESSION["purchase_flash"] = $planLabels[$completedPlan] . " access is now active on your account.";
+                $claimedPurchase = btClaimPurchaseForUser((int) $user["id"], $email, $purchaseToken, $completedPlan);
+                $activatedPlan = $completedPlan;
+                if (!empty($claimedPurchase["ok"]) && !empty($claimedPurchase["plan"])) {
+                    $activatedPlan = normalizePlan($claimedPurchase["plan"], $completedPlan);
+                }
+                updateUserPlan((int) $user["id"], $activatedPlan);
+                unset($_SESSION["completed_purchase_plan"], $_SESSION["pending_plan"], $_SESSION["completed_purchase_token"], $_SESSION["pending_purchase_token"], $_SESSION["completed_purchase_email"]);
+                $_SESSION["purchase_flash"] = $planLabels[$activatedPlan] . " access is now active on your account.";
                 header("Location: dashboard.php");
                 exit;
             }
@@ -304,6 +330,7 @@ if ($requestMethod === "POST") {
 
                         <form method="POST" class="space-y-4">
                             <input type="hidden" name="plan" value="<?php echo htmlspecialchars($selectedPlan); ?>">
+                            <input type="hidden" name="purchase_token" value="<?php echo htmlspecialchars($purchaseToken); ?>">
                             <div>
                                 <label class="mono text-[10px] uppercase tracking-[0.22em] text-black/55">Email</label>
                                 <input
@@ -315,6 +342,9 @@ if ($requestMethod === "POST") {
                                     class="field mt-2"
                                     placeholder="you@company.com"
                                 >
+                                <?php if ($purchaseEmail !== ""): ?>
+                                    <p class="mt-2 text-xs text-black/45">Payment email on file: <?php echo htmlspecialchars($purchaseEmail); ?></p>
+                                <?php endif; ?>
                             </div>
                             <div>
                                 <label class="mono text-[10px] uppercase tracking-[0.22em] text-black/55">Password</label>
@@ -347,7 +377,7 @@ if ($requestMethod === "POST") {
                                 <p class="mt-3 text-sm text-white/74 leading-6">
                                     Your purchase is ready to attach. Create the account with the same email you used for checkout.
                                 </p>
-                                <a href="register.php?plan=<?php echo urlencode($completedPlan); ?>" class="cta-primary mt-5 px-5 py-3 text-sm">
+                                <a href="register.php?plan=<?php echo urlencode($completedPlan); ?><?php echo $purchaseToken !== "" ? "&purchase_token=" . urlencode($purchaseToken) : ""; ?>" class="cta-primary mt-5 px-5 py-3 text-sm">
                                     Create Account
                                 </a>
                             <?php else: ?>

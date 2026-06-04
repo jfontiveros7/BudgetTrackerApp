@@ -2,6 +2,7 @@
 session_start();
 define("BT_ALLOW_DB_DEGRADED", true);
 require_once __DIR__ . "/../src/auth.php";
+require_once __DIR__ . "/../src/purchases.php";
 
 
 if (isset($_SESSION["user_id"])) {
@@ -11,9 +12,29 @@ if (isset($_SESSION["user_id"])) {
 
 $error = "";
 $name = "";
-$email = "";
+$email = trim((string) ($_SESSION["completed_purchase_email"] ?? ""));
 $selectedPlan = normalizePlan($_POST["plan"] ?? ($_GET["plan"] ?? ($_SESSION["completed_purchase_plan"] ?? "")), "");
 $completedPlan = normalizePlan($_SESSION["completed_purchase_plan"] ?? "", "");
+$purchaseToken = trim((string) ($_POST["purchase_token"] ?? ($_GET["purchase_token"] ?? ($_SESSION["completed_purchase_token"] ?? ""))));
+$purchaseEmail = trim((string) ($_SESSION["completed_purchase_email"] ?? ""));
+$purchaseClaim = $purchaseToken !== "" ? btGetPurchaseClaimByToken($purchaseToken) : null;
+if ($purchaseClaim) {
+    $claimPlan = normalizePlan((string) ($purchaseClaim["plan"] ?? ""), "");
+    if ($selectedPlan === "" && $claimPlan !== "") {
+        $selectedPlan = $claimPlan;
+    }
+    if ($completedPlan === "" && $claimPlan !== "") {
+        $completedPlan = $claimPlan;
+        $_SESSION["completed_purchase_plan"] = $claimPlan;
+    }
+    if ($purchaseEmail === "" && !empty($purchaseClaim["stripe_customer_email"])) {
+        $purchaseEmail = trim((string) $purchaseClaim["stripe_customer_email"]);
+        $_SESSION["completed_purchase_email"] = $purchaseEmail;
+        if ($email === "") {
+            $email = $purchaseEmail;
+        }
+    }
+}
 $planLabels = [
     "starter" => "Starter",
     "growth" => "Growth",
@@ -42,10 +63,16 @@ if ($requestMethod === "POST") {
         $user = loginUser($email, $password);
         if ($user) {
             session_regenerate_id(true);
-            if ($selectedPlan !== "") {
-                updateUserPlan((int) $user["id"], $selectedPlan);
-                unset($_SESSION["completed_purchase_plan"], $_SESSION["pending_plan"]);
-                $_SESSION["purchase_flash"] = $planLabels[$selectedPlan] . " access is now active on your account.";
+            $claimedPurchase = btClaimPurchaseForUser((int) $user["id"], $email, $purchaseToken, $selectedPlan);
+            $activatedPlan = $selectedPlan;
+            if (!empty($claimedPurchase["ok"]) && !empty($claimedPurchase["plan"])) {
+                $activatedPlan = normalizePlan($claimedPurchase["plan"], $selectedPlan);
+            }
+
+            if ($activatedPlan !== "") {
+                updateUserPlan((int) $user["id"], $activatedPlan);
+                unset($_SESSION["completed_purchase_plan"], $_SESSION["pending_plan"], $_SESSION["completed_purchase_token"], $_SESSION["pending_purchase_token"], $_SESSION["completed_purchase_email"]);
+                $_SESSION["purchase_flash"] = $planLabels[$activatedPlan] . " access is now active on your account.";
             }
             header("Location: dashboard.php");
             exit;
@@ -93,6 +120,7 @@ if ($requestMethod === "POST") {
 
         <form method="POST" class="space-y-4">
             <input type="hidden" name="plan" value="<?php echo htmlspecialchars($selectedPlan); ?>">
+            <input type="hidden" name="purchase_token" value="<?php echo htmlspecialchars($purchaseToken); ?>">
             <div>
                 <label class="block text-sm mb-1">Name</label>
                 <input type="text" name="name" value="<?php echo htmlspecialchars($name); ?>" required
@@ -104,6 +132,9 @@ if ($requestMethod === "POST") {
                 <input type="email" name="email" value="<?php echo htmlspecialchars($email); ?>" required
                     <?php echo !$authAvailable ? "disabled" : ""; ?>
                     class="w-full rounded-lg bg-slate-950 border border-slate-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                <?php if ($purchaseEmail !== ""): ?>
+                    <p class="mt-2 text-xs text-slate-400">Use the same email as your payment receipt: <?php echo htmlspecialchars($purchaseEmail); ?></p>
+                <?php endif; ?>
             </div>
             <div>
                 <label class="block text-sm mb-1">Password</label>
@@ -120,7 +151,7 @@ if ($requestMethod === "POST") {
 
         <p class="mt-6 text-center text-sm text-slate-400">
             Already have an account?
-            <a href="login.php<?php echo $selectedPlan !== "" ? "?plan=" . urlencode($selectedPlan) : ""; ?>" class="text-emerald-400 hover:text-emerald-300">Sign in</a>
+            <a href="login.php<?php echo $selectedPlan !== "" ? "?plan=" . urlencode($selectedPlan) . ($purchaseToken !== "" ? "&purchase_token=" . urlencode($purchaseToken) : "") : ""; ?>" class="text-emerald-400 hover:text-emerald-300">Sign in</a>
         </p>
     </div>
 </body>

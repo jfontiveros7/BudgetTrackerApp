@@ -3,6 +3,7 @@ session_start();
 
 require_once __DIR__ . "/../config/payments.php";
 require_once __DIR__ . "/../config/stripe.php";
+require_once __DIR__ . "/../src/purchases.php";
 
 $plan = strtolower(trim($_GET["plan"] ?? ($_SESSION["pending_plan"] ?? "")));
 $planLabels = [
@@ -37,6 +38,13 @@ if ($planLabel === null) {
 }
 
 $_SESSION["pending_plan"] = $plan;
+$purchaseToken = $_SESSION["pending_purchase_token"] ?? "";
+if (!is_string($purchaseToken) || $purchaseToken === "") {
+    $purchaseToken = btCreatePurchaseClaim($plan) ?? "";
+    if ($purchaseToken !== "") {
+        $_SESSION["pending_purchase_token"] = $purchaseToken;
+    }
+}
 $checkoutDestination = "";
 $checkoutModeLabel = "";
 $checkoutError = "";
@@ -50,9 +58,13 @@ if (btStripeCheckoutReadyForPlan($plan)) {
     $baseUrl = btResolveAppBaseUrl();
     $successUrl = $baseUrl . "/purchase_success.php?plan=" . rawurlencode($plan) . "&session_id={CHECKOUT_SESSION_ID}";
     $cancelUrl = $baseUrl . "/checkout.php?plan=" . rawurlencode($plan) . "&canceled=1";
+    if ($purchaseToken !== "") {
+        $successUrl .= "&purchase_token=" . rawurlencode($purchaseToken);
+        $cancelUrl .= "&purchase_token=" . rawurlencode($purchaseToken);
+    }
 
     try {
-        $session = \Stripe\Checkout\Session::create([
+        $checkoutParams = [
             "mode" => "subscription",
             "line_items" => [[
                 "price" => $stripePriceIds[$plan],
@@ -62,11 +74,20 @@ if (btStripeCheckoutReadyForPlan($plan)) {
             "cancel_url" => $cancelUrl,
             "metadata" => [
                 "plan" => $plan,
+                "purchase_token" => $purchaseToken,
             ],
-        ]);
+        ];
+        if ($purchaseToken !== "") {
+            $checkoutParams["client_reference_id"] = $purchaseToken;
+        }
+
+        $session = \Stripe\Checkout\Session::create($checkoutParams);
 
         $checkoutDestination = $session->url;
         $checkoutModeLabel = "Stripe Checkout";
+        if ($purchaseToken !== "") {
+            btStorePurchaseClaimStripeSession($purchaseToken, (string) $session->id);
+        }
     } catch (\Throwable $e) {
         $checkoutError = $e->getMessage();
     }

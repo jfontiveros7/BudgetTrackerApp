@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(150) UNIQUE,
     password VARCHAR(255),
     role ENUM('admin','user') NOT NULL DEFAULT 'user',
-    selected_plan ENUM('starter','growth') NOT NULL DEFAULT 'growth',
+    selected_plan ENUM('starter','growth','scale') NOT NULL DEFAULT 'growth',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -111,6 +111,24 @@ CREATE TABLE IF NOT EXISTS user_ai_settings (
         ON DELETE CASCADE
     );
 
+CREATE TABLE IF NOT EXISTS purchase_claims (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    claim_token VARCHAR(64) NOT NULL UNIQUE,
+    plan ENUM('starter','growth','scale') NOT NULL,
+    stripe_checkout_session_id VARCHAR(255) DEFAULT NULL UNIQUE,
+    stripe_customer_email VARCHAR(255) DEFAULT NULL,
+    payment_status ENUM('initiated','paid','claimed') NOT NULL DEFAULT 'initiated',
+    claimed_user_id INT DEFAULT NULL,
+    metadata_json TEXT DEFAULT NULL,
+    paid_at DATETIME DEFAULT NULL,
+    claimed_at DATETIME DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_purchase_claims_user
+        FOREIGN KEY (claimed_user_id) REFERENCES users(id)
+        ON DELETE SET NULL
+);
+
 -- Seed default categories
 INSERT IGNORE INTO categories (name, type) VALUES
     ('Salary', 'income'),
@@ -142,3 +160,5 @@ CREATE INDEX idx_user_alert_dismissals_user ON user_alert_dismissals(user_id);
 CREATE INDEX idx_user_ai_settings_user ON user_ai_settings(user_id);
 CREATE INDEX idx_password_resets_user_id ON password_resets(user_id);
 CREATE INDEX idx_password_resets_expires_at ON password_resets(expires_at);
+CREATE INDEX idx_purchase_claims_customer_email ON purchase_claims(stripe_customer_email);
+CREATE INDEX idx_purchase_claims_status_paid ON purchase_claims(payment_status, paid_at);

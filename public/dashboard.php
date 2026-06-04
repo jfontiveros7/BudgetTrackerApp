@@ -36,12 +36,222 @@ $recentTransactions = getRecentTransactions($userId, 50);
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard - Driftwise</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Budget Tracker</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        :root {
+            --bt-bg: #f9f8f6;
+            --bt-panel: rgba(255, 255, 255, 0.9);
+            --bt-panel-strong: #ffffff;
+            --bt-panel-soft: rgba(255, 255, 255, 0.72);
+            --bt-ink: #0a0a0b;
+            --bt-muted: #5b5b61;
+            --bt-line: rgba(10, 10, 11, 0.08);
+            --bt-line-strong: rgba(10, 10, 11, 0.14);
+            --bt-accent: #0052ff;
+            --bt-accent-strong: #0040c5;
+            --bt-shadow: 0 24px 70px rgba(17, 24, 39, 0.08);
+        }
+
+        body.dashboard-page {
+            margin: 0;
+            font-family: "Manrope", sans-serif;
+            background:
+                radial-gradient(520px 240px at 84% 4%, rgba(0, 82, 255, 0.09), transparent 60%),
+                radial-gradient(420px 220px at 10% 16%, rgba(10, 10, 11, 0.03), transparent 60%),
+                var(--bt-bg) !important;
+            color: var(--bt-ink) !important;
+        }
+
+        .dashboard-page h1,
+        .dashboard-page h2,
+        .dashboard-page h3,
+        .dashboard-page h4 {
+            font-family: "Playfair Display", serif;
+            letter-spacing: -0.035em;
+            line-height: 0.98;
+        }
+
+        .dashboard-page .app-kicker,
+        .dashboard-page .mono-kicker,
+        .dashboard-page .drift-brand-copy span,
+        .dashboard-page .app-status-pill {
+            font-family: "JetBrains Mono", monospace;
+        }
+
+        .dashboard-page .drift-shell::after {
+            background:
+                radial-gradient(circle at top, rgba(255, 255, 255, 0.22), transparent 32%),
+                linear-gradient(180deg, rgba(255, 255, 255, 0.12), transparent 26%);
+            opacity: 0.8;
+        }
+
+        .dashboard-page .drift-sidebar {
+            background: rgba(249, 248, 246, 0.86);
+            border-right: 1px solid var(--bt-line);
+            box-shadow: 18px 0 36px rgba(17, 24, 39, 0.06);
+            backdrop-filter: blur(18px);
+        }
+
+        .dashboard-page .drift-brand-mark {
+            width: 2.75rem;
+            height: 2.75rem;
+            border-radius: 0.95rem;
+            background: #0a0a0b;
+            box-shadow: none;
+            position: relative;
+            color: transparent;
+        }
+
+        .dashboard-page .drift-brand-mark::before {
+            content: "";
+            width: 0.82rem;
+            height: 0.82rem;
+            border-radius: 0.18rem;
+            background: var(--bt-accent);
+            transform: rotate(12deg);
+            display: block;
+        }
+
+        .dashboard-page .drift-brand-copy strong {
+            font-family: "Playfair Display", serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--bt-ink);
+        }
+
+        .dashboard-page .drift-brand-copy span {
+            color: var(--bt-muted);
+            letter-spacing: 0.2em;
+        }
+
+        .dashboard-page .drift-nav a {
+            color: var(--bt-muted);
+            border-radius: 999px;
+            padding: 0.72rem 0.95rem;
+        }
+
+        .dashboard-page .drift-nav a:hover,
+        .dashboard-page .drift-nav a.nav-active {
+            background: rgba(0, 82, 255, 0.08) !important;
+            border-color: rgba(0, 82, 255, 0.12);
+            color: var(--bt-ink) !important;
+            transform: translateX(0);
+        }
+
+        .dashboard-page .drift-main {
+            padding: 2rem;
+        }
+
+        .dashboard-page .drift-toolbar,
+        .dashboard-page .app-status-pill,
+        .dashboard-page .bg-slate-950,
+        .dashboard-page .bg-slate-950\/60,
+        .dashboard-page .bg-slate-900\/80,
+        .dashboard-page .bg-slate-900\/70 {
+            background: var(--bt-panel-soft) !important;
+        }
+
+        .dashboard-page .drift-toolbar,
+        .dashboard-page .metric-card,
+        .dashboard-page .drift-main .bg-slate-900.border,
+        .dashboard-page .drift-main .rounded-xl.border,
+        .dashboard-page .drift-main .rounded-2xl.border {
+            border-color: var(--bt-line) !important;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.88)) !important;
+            box-shadow: var(--bt-shadow) !important;
+            backdrop-filter: blur(18px);
+        }
+
+        .dashboard-page .metric-card::before {
+            background: linear-gradient(90deg, var(--bt-accent), #0a0a0b, #8bb3ff);
+        }
+
+        .dashboard-page .border-slate-800,
+        .dashboard-page .border-slate-700 {
+            border-color: var(--bt-line) !important;
+        }
+
+        .dashboard-page .text-slate-100,
+        .dashboard-page .text-slate-200,
+        .dashboard-page .text-slate-300 {
+            color: var(--bt-ink) !important;
+        }
+
+        .dashboard-page .text-slate-400,
+        .dashboard-page .text-slate-500 {
+            color: var(--bt-muted) !important;
+        }
+
+        .dashboard-page .text-emerald-400,
+        .dashboard-page .text-emerald-300 {
+            color: var(--bt-accent) !important;
+        }
+
+        .dashboard-page .bg-emerald-500,
+        .dashboard-page .hover\:bg-emerald-400:hover {
+            background: var(--bt-accent) !important;
+            color: #ffffff !important;
+        }
+
+        .dashboard-page .text-slate-950 {
+            color: #ffffff !important;
+        }
+
+        .dashboard-page .hover\:bg-slate-800:hover,
+        .dashboard-page .hover\:bg-slate-700:hover,
+        .dashboard-page .hover\:bg-slate-800\/40:hover {
+            background: rgba(10, 10, 11, 0.04) !important;
+            color: var(--bt-ink) !important;
+            box-shadow: none;
+        }
+
+        .dashboard-page .app-status-pill {
+            border: 1px solid var(--bt-line);
+            color: var(--bt-muted);
+            letter-spacing: 0.14em;
+        }
+
+        .dashboard-page .app-kicker {
+            color: var(--bt-accent);
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            font-size: 0.72rem;
+        }
+
+        .dashboard-page #notifDropdown {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.92));
+            border-color: var(--bt-line);
+            box-shadow: var(--bt-shadow);
+        }
+
+        .dashboard-page #notifBell,
+        .dashboard-page #sidebarToggle {
+            background: var(--bt-panel-strong) !important;
+            border: 1px solid var(--bt-line);
+            box-shadow: var(--bt-shadow);
+        }
+
+        .dashboard-page #notifBell svg,
+        .dashboard-page #sidebarToggle svg {
+            color: var(--bt-accent) !important;
+        }
+
+        @media (max-width: 960px) {
+            .dashboard-page .drift-main {
+                padding: 1rem;
+                padding-top: 5rem;
+            }
+        }
+    </style>
 </head>
-<body class="drift-shell bg-slate-950 text-slate-100 min-h-screen flex">
+<body class="dashboard-page drift-shell min-h-screen flex">
     <aside id="sidebar" class="drift-sidebar w-64 flex flex-col p-6 fixed md:static z-40 top-0 left-0 h-full md:h-auto transition-transform duration-200 -translate-x-full md:translate-x-0">
             <!-- Hamburger for mobile -->
             <button id="sidebarToggle" class="md:hidden fixed top-4 left-4 z-50 p-2 bg-slate-900 rounded shadow-lg focus:outline-none">
@@ -52,13 +262,13 @@ $recentTransactions = getRecentTransactions($userId, 50);
         <div class="drift-brand mb-8">
             <div class="drift-brand-mark">D</div>
             <div class="drift-brand-copy">
-                <strong>Driftwise</strong>
+                <strong>Budget Tracker</strong>
                 <span>Budget Intelligence</span>
             </div>
         </div>
 
         <nav class="drift-nav space-y-2">
-            <a href="dashboard.php" class="block px-3 py-2 rounded bg-slate-800 text-slate-100">Dashboard</a>
+            <a href="dashboard.php" class="nav-active block px-3 py-2 rounded bg-slate-800 text-slate-100">Dashboard</a>
             <a href="add_transaction.php" class="block px-3 py-2 rounded hover:bg-slate-800">Add Transaction</a>
             <a href="settings.php" class="block px-3 py-2 rounded hover:bg-slate-800">Settings</a>
             <?php if ($isAdmin): ?>
@@ -116,11 +326,11 @@ $recentTransactions = getRecentTransactions($userId, 50);
         <div class="app-status-strip">
             <span class="app-status-pill">ops mode: live</span>
             <span class="app-status-pill">signal stream: active</span>
-            <span class="app-status-pill">workspace: driftwise</span>
+            <span class="app-status-pill">workspace: budget tracker</span>
         </div>
         <div class="flex flex-col gap-3 mb-10 md:flex-row md:items-center md:justify-between">
             <div>
-                <p class="app-kicker">Overview / Driftwise</p>
+                <p class="app-kicker">Overview / Budget Tracker</p>
                 <h2 class="text-3xl font-semibold">Your budget flow at a glance</h2>
                 <p class="text-slate-400 text-sm mt-2">
                     Welcome back, <?php echo htmlspecialchars($userName ?: $userEmail); ?>
@@ -874,16 +1084,16 @@ $recentTransactions = getRecentTransactions($userId, 50);
                         {
                             label: 'Income',
                             data: incomeData,
-                            borderColor: '#2fe39f',
-                            backgroundColor: 'rgba(47, 227, 159, 0.2)',
+                            borderColor: '#0052ff',
+                            backgroundColor: 'rgba(0, 82, 255, 0.12)',
                             tension: 0.4,
                             borderWidth: 2
                         },
                         {
                             label: 'Expense',
                             data: expenseData,
-                            borderColor: '#ff8f7a',
-                            backgroundColor: 'rgba(255, 143, 122, 0.2)',
+                            borderColor: '#0a0a0b',
+                            backgroundColor: 'rgba(10, 10, 11, 0.08)',
                             tension: 0.4,
                             borderWidth: 2
                         }
@@ -891,11 +1101,11 @@ $recentTransactions = getRecentTransactions($userId, 50);
                 },
                 options: {
                     plugins: {
-                        legend: { labels: { color: '#d9e7f5' } }
+                        legend: { labels: { color: '#0a0a0b' } }
                     },
                     scales: {
-                        x: { ticks: { color: '#8ea7c0' }, grid: { color: '#223648' } },
-                        y: { ticks: { color: '#8ea7c0' }, grid: { color: '#223648' } }
+                        x: { ticks: { color: '#5b5b61' }, grid: { color: 'rgba(10, 10, 11, 0.08)' } },
+                        y: { ticks: { color: '#5b5b61' }, grid: { color: 'rgba(10, 10, 11, 0.08)' } }
                     }
                 }
             });
