@@ -106,7 +106,7 @@ $retryUrl = "checkout.php?plan=" . urlencode($plan);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($planDisplayName); ?> Checkout - Budget Tracker</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/assets/css/tailwind.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -146,7 +146,7 @@ $retryUrl = "checkout.php?plan=" . urlencode($plan);
                 <span class="text-xl tracking-tight" style="font-family: 'Playfair Display', serif;">Budget Tracker</span>
             </a>
             <div class="hidden md:flex items-center gap-3">
-                <a href="landing.php#pricing" class="cta-secondary px-4 py-2.5 text-sm">Pricing</a>
+                <a href="landing.php#pricing" class="cta-secondary px-4 py-2.5 text-sm">See pricing</a>
                 <a href="login.php?plan=<?php echo urlencode($plan); ?>" class="cta-secondary px-4 py-2.5 text-sm">Client Login</a>
             </div>
         </div>
@@ -209,7 +209,7 @@ $retryUrl = "checkout.php?plan=" . urlencode($plan);
 
                             <div class="mt-6 flex flex-col gap-3 sm:flex-row">
                                 <a href="<?php echo htmlspecialchars($checkoutDestination); ?>" class="cta-primary px-5 py-3 text-sm">Continue to Stripe</a>
-                                <a href="landing.php#pricing" class="cta-secondary px-5 py-3 text-sm">Back to Pricing</a>
+                                <a href="landing.php#pricing" class="cta-secondary px-5 py-3 text-sm">See pricing</a>
                             </div>
 
                             <p class="mt-4 text-xs text-black/45">You are leaving Budget Tracker briefly to complete payment on Stripe and will return here when finished.</p>
@@ -248,7 +248,7 @@ $retryUrl = "checkout.php?plan=" . urlencode($plan);
 
                             <div class="mt-6 flex flex-col gap-3 sm:flex-row">
                                 <a href="<?php echo htmlspecialchars($retryUrl); ?>" class="cta-primary px-5 py-3 text-sm"><?php echo $canceled ? "Retry Checkout" : "Reload Checkout"; ?></a>
-                                <a href="landing.php#pricing" class="cta-secondary px-5 py-3 text-sm">Back to Pricing</a>
+                                <a href="landing.php#pricing" class="cta-secondary px-5 py-3 text-sm">See pricing</a>
                                 <a href="login.php?plan=<?php echo urlencode($plan); ?>" class="cta-secondary px-5 py-3 text-sm">Already Have An Account</a>
                             </div>
                         <?php endif; ?>

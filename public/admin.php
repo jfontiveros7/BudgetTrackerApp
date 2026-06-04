@@ -25,7 +25,7 @@ $totalTransactions = $conn->query("SELECT COUNT(*) AS c FROM transactions")->fet
 <head>
     <meta charset="UTF-8">
     <title>Admin - Budget Tracker App</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/assets/css/tailwind.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex">

@@ -34,7 +34,7 @@ function btRenderDatabaseUnavailablePage() {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Service Temporarily Unavailable</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/assets/css/tailwind.css">
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center p-6">
     <div class="w-full max-w-2xl rounded-2xl border border-amber-500/30 bg-slate-900 p-8 shadow-2xl">

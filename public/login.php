@@ -93,7 +93,7 @@ if ($requestMethod === "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Client Login - Budget Tracker</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/assets/css/tailwind.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -249,7 +249,7 @@ if ($requestMethod === "POST") {
                 <span class="text-xl tracking-tight" style="font-family: 'Playfair Display', serif;">Budget Tracker</span>
             </a>
             <div class="hidden md:flex items-center gap-3">
-                <a href="landing.php#pricing" class="cta-secondary px-4 py-2.5 text-sm">Pricing</a>
+                <a href="landing.php#pricing" class="cta-secondary px-4 py-2.5 text-sm">See pricing</a>
                 <a href="landing.php#faq" class="cta-secondary px-4 py-2.5 text-sm">FAQ</a>
             </div>
         </div>
@@ -385,7 +385,7 @@ if ($requestMethod === "POST") {
                                     Account creation opens after a completed purchase so we know which plan to activate for you.
                                 </p>
                                 <a href="landing.php#pricing" class="cta-secondary mt-5 px-5 py-3 text-sm text-white border-white/20 bg-white/5">
-                                    View Pricing
+                                    See pricing
                                 </a>
                             <?php endif; ?>
                         </div>

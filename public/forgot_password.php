@@ -38,7 +38,7 @@ if ($requestMethod === "POST") {
 <head>
     <meta charset="UTF-8">
     <title>Forgot Password - Budget Tracker App</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/assets/css/tailwind.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center px-4">

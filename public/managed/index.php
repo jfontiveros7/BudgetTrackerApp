@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Driftwise Ops+ | Premium budget operations support</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Budget Tracker Managed Service | Premium budget operations support</title>
+  <link rel="stylesheet" href="/assets/css/tailwind.css">
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,700&family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -59,9 +59,9 @@
 <body class="min-h-screen">
   <main class="max-w-4xl mx-auto px-5 py-16">
     <section class="frame rounded-3xl p-8 md:p-10">
-    <p class="mono text-xs tracking-[0.2em] uppercase text-[var(--accent-alt)] mb-4">Driftwise Ops+</p>
+    <p class="mono text-xs tracking-[0.2em] uppercase text-[var(--accent-alt)] mb-4">Budget Tracker Managed Service</p>
     <h1 class="text-4xl md:text-5xl mb-4">Premium support for teams that want more than a dashboard</h1>
-    <p class="text-[color:var(--muted)] mb-8 max-w-3xl leading-7">Use Driftwise as the self-serve entry point, then move higher-need customers into a premium service layer with setup help, recurring reviews, workflow tuning, and operating support.</p>
+    <p class="text-[color:var(--muted)] mb-8 max-w-3xl leading-7">Start with Budget Tracker for everyday visibility, then add a premium service layer when your team needs hands-on support, recurring reviews, and stronger follow-through.</p>
     <div class="grid gap-4 mb-8">
       <div class="soft-frame rounded-2xl p-5">
         <p class="font-semibold mb-2">Best fit for</p>
@@ -73,8 +73,8 @@
       </div>
     </div>
     <div class="flex flex-wrap gap-3">
-      <a href="../pricing-sheet.php" class="px-5 py-3 rounded-md bg-[var(--accent)] text-[#fffaf2] font-semibold hover:bg-[var(--accent-strong)] transition">View Service Pricing</a>
-      <a href="../checkout.php?plan=scale" class="px-5 py-3 rounded-md border border-[rgba(105,84,63,0.16)] hover:bg-[rgba(12,122,112,0.10)] hover:border-[rgba(12,122,112,0.22)] transition">Start Command Plan</a>
+      <a href="../landing.php#pricing" class="px-5 py-3 rounded-md bg-[var(--accent)] text-[#fffaf2] font-semibold hover:bg-[var(--accent-strong)] transition">See pricing</a>
+      <a href="../checkout.php?plan=scale" class="px-5 py-3 rounded-md border border-[rgba(105,84,63,0.16)] hover:bg-[rgba(12,122,112,0.10)] hover:border-[rgba(12,122,112,0.22)] transition">Start Scale</a>
       <a href="mailto:jfontiveros7@gmail.com" class="px-5 py-3 rounded-md border border-[rgba(105,84,63,0.16)] hover:bg-[rgba(12,122,112,0.10)] hover:border-[rgba(12,122,112,0.22)] transition">Talk To The Team</a>
     </div>
     </section>

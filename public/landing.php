@@ -8,7 +8,7 @@
     content="Budget Tracker App - Track spending, catch drift early, and turn your budget into action with smart categories, alerts, AI Coach, and managed support."
   />
   <title>Budget Tracker - Turn budget visibility into better decisions</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/assets/css/tailwind.css">
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -290,6 +290,41 @@
       animation: bt-float 6s ease-in-out infinite;
     }
 
+    .fit-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      border: 1px solid rgba(10, 10, 11, 0.12);
+      background: rgba(255, 255, 255, 0.78);
+      color: rgba(10, 10, 11, 0.74);
+      padding: 0.85rem 1.1rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: all 180ms ease;
+    }
+
+    .fit-chip:hover {
+      border-color: rgba(0, 82, 255, 0.24);
+      color: var(--ink);
+      transform: translateY(-1px);
+    }
+
+    .fit-chip.is-active {
+      border-color: rgba(0, 82, 255, 0.22);
+      background: #0A0A0B;
+      color: white;
+      box-shadow: 0 18px 36px rgba(17, 24, 39, 0.12);
+    }
+
+    .fit-panel {
+      display: none;
+    }
+
+    .fit-panel.is-active {
+      display: block;
+    }
+
     .mockup-shell {
       position: relative;
     }
@@ -407,12 +442,12 @@
             Turn budget into action.
           </h1>
           <p class="mt-6 text-lg md:text-xl leading-relaxed text-black/68 max-w-2xl">
-            Budget Tracker helps solo operators and growing teams monitor category limits, review spending trends, and act before overspending compounds, starting at $5/mo.
+            Budget Tracker helps small teams spot overspending sooner, stay aligned on budget decisions, and take action before small misses become expensive habits.
           </p>
           <div class="mt-8 flex flex-wrap gap-3">
-            <a href="checkout.php?plan=growth" class="cta-primary px-6 py-3.5 text-sm md:text-base">Start Growth - $10/mo</a>
-            <a href="#pricing" class="cta-secondary px-6 py-3.5 text-sm md:text-base">Pricing Sheet</a>
-            <a href="#interactive-demo" class="cta-secondary px-6 py-3.5 text-sm md:text-base">Product Demo</a>
+            <a href="checkout.php?plan=growth" class="cta-primary px-6 py-3.5 text-sm md:text-base">Start Growth for $10/mo</a>
+            <a href="#pricing" class="cta-secondary px-6 py-3.5 text-sm md:text-base">See pricing</a>
+            <a href="#interactive-demo" class="cta-secondary px-6 py-3.5 text-sm md:text-base">See demo</a>
           </div>
           <div class="mt-12 grid grid-cols-3 gap-6 max-w-lg">
             <div class="border-l border-black/10 pl-4">
@@ -438,7 +473,7 @@
             </div>
             <div class="callout-chip dark bottom-right">
               <span class="mini-label text-white/55">Drift</span>
-              <span style="font-family: 'Playfair Display', serif; font-size: 1rem;">−$412 saved</span>
+              <span style="font-family: 'Playfair Display', serif; font-size: 1rem;">-$412 saved</span>
             </div>
 
             <div class="panel hero-grid rounded-[28px] p-5 md:p-6 overflow-hidden bt-float">
@@ -530,29 +565,20 @@
       </div>
     </section>
 
-    <section class="section-divider py-6 overflow-hidden">
+    <section class="section-divider py-10 md:py-12">
       <div class="shell">
-        <div class="flex items-center gap-4">
-          <span class="mono text-[10px] uppercase tracking-[0.22em] text-[#52525B] shrink-0">Trusted by lean operators</span>
-          <div class="relative overflow-hidden flex-1">
-            <div class="logo-track">
-              <span class="text-xl md:text-2xl text-[#0A0A0B]/55 hover:text-[#0A0A0B] transition-colors" style="font-family: 'Playfair Display', serif;">Northwind Studio</span>
-              <span class="text-xl md:text-2xl text-[#0A0A0B]/55 hover:text-[#0A0A0B] transition-colors" style="font-family: 'Playfair Display', serif;">Helios Labs</span>
-              <span class="text-xl md:text-2xl text-[#0A0A0B]/55 hover:text-[#0A0A0B] transition-colors" style="font-family: 'Playfair Display', serif;">Atlas &amp; Co.</span>
-              <span class="text-xl md:text-2xl text-[#0A0A0B]/55 hover:text-[#0A0A0B] transition-colors" style="font-family: 'Playfair Display', serif;">Pinepoint</span>
-              <span class="text-xl md:text-2xl text-[#0A0A0B]/55 hover:text-[#0A0A0B] transition-colors" style="font-family: 'Playfair Display', serif;">Foundry Seven</span>
-              <span class="text-xl md:text-2xl text-[#0A0A0B]/55 hover:text-[#0A0A0B] transition-colors" style="font-family: 'Playfair Display', serif;">Mercatus</span>
-              <span class="text-xl md:text-2xl text-[#0A0A0B]/55 hover:text-[#0A0A0B] transition-colors" style="font-family: 'Playfair Display', serif;">Ember Holdings</span>
-              <span class="text-xl md:text-2xl text-[#0A0A0B]/55 hover:text-[#0A0A0B] transition-colors" style="font-family: 'Playfair Display', serif;">Quintile</span>
-              <span class="text-xl md:text-2xl text-[#0A0A0B]/55 hover:text-[#0A0A0B] transition-colors" style="font-family: 'Playfair Display', serif;">Northwind Studio</span>
-              <span class="text-xl md:text-2xl text-[#0A0A0B]/55 hover:text-[#0A0A0B] transition-colors" style="font-family: 'Playfair Display', serif;">Helios Labs</span>
-              <span class="text-xl md:text-2xl text-[#0A0A0B]/55 hover:text-[#0A0A0B] transition-colors" style="font-family: 'Playfair Display', serif;">Atlas &amp; Co.</span>
-              <span class="text-xl md:text-2xl text-[#0A0A0B]/55 hover:text-[#0A0A0B] transition-colors" style="font-family: 'Playfair Display', serif;">Pinepoint</span>
-              <span class="text-xl md:text-2xl text-[#0A0A0B]/55 hover:text-[#0A0A0B] transition-colors" style="font-family: 'Playfair Display', serif;">Foundry Seven</span>
-              <span class="text-xl md:text-2xl text-[#0A0A0B]/55 hover:text-[#0A0A0B] transition-colors" style="font-family: 'Playfair Display', serif;">Mercatus</span>
-              <span class="text-xl md:text-2xl text-[#0A0A0B]/55 hover:text-[#0A0A0B] transition-colors" style="font-family: 'Playfair Display', serif;">Ember Holdings</span>
-              <span class="text-xl md:text-2xl text-[#0A0A0B]/55 hover:text-[#0A0A0B] transition-colors" style="font-family: 'Playfair Display', serif;">Quintile</span>
-            </div>
+        <div class="grid gap-6 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+          <div>
+            <p class="mono text-[10px] uppercase tracking-[0.22em] text-[#52525B]">Built for focused teams</p>
+            <h2 class="text-3xl md:text-4xl mt-3">Made for the people who actually carry budget discipline week to week.</h2>
+          </div>
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <div class="panel-soft rounded-2xl px-4 py-4 text-sm text-black/68">Founders watching every dollar</div>
+            <div class="panel-soft rounded-2xl px-4 py-4 text-sm text-black/68">Operations leads keeping spending on pace</div>
+            <div class="panel-soft rounded-2xl px-4 py-4 text-sm text-black/68">Finance managers reducing monthly surprises</div>
+            <div class="panel-soft rounded-2xl px-4 py-4 text-sm text-black/68">Agencies balancing payroll, tools, and client work</div>
+            <div class="panel-soft rounded-2xl px-4 py-4 text-sm text-black/68">Service businesses tightening category control</div>
+            <div class="panel-soft rounded-2xl px-4 py-4 text-sm text-black/68">Growing teams adding structure before drift compounds</div>
           </div>
         </div>
       </div>
@@ -564,11 +590,11 @@
           <p class="eyebrow text-[var(--accent)]">Interactive Demo</p>
           <h2 class="text-4xl md:text-6xl mt-4">See how budget visibility becomes a weekly operating rhythm.</h2>
           <p class="mt-5 text-lg leading-relaxed text-black/64 max-w-xl">
-            The reference site leans hard into movement and proof. This version mirrors that with a focused demo section that shows alerts, review cadence, and AI Coach guidance working together.
+            See how alerts, review cadence, and AI Coach guidance work together to help your team catch drift earlier and act with more confidence.
           </p>
           <div class="mt-8 flex flex-wrap gap-3">
-            <a href="#interactive-demo" class="cta-primary px-6 py-3.5 text-sm md:text-base">Watch Product Demo</a>
-            <a href="#pricing" class="cta-secondary px-6 py-3.5 text-sm md:text-base">Open Pricing Sheet</a>
+            <a href="#interactive-demo" class="cta-primary px-6 py-3.5 text-sm md:text-base">See demo</a>
+            <a href="#pricing" class="cta-secondary px-6 py-3.5 text-sm md:text-base">See pricing</a>
           </div>
         </div>
         <div class="lg:col-span-7">
@@ -602,7 +628,7 @@
                 <div class="mt-5 space-y-3 text-sm text-white/72">
                   <div class="rounded-2xl border border-white/10 px-4 py-3">Biweekly reviews on Growth</div>
                   <div class="rounded-2xl border border-white/10 px-4 py-3">Weekly check-ins on Scale</div>
-                  <div class="rounded-2xl border border-white/10 px-4 py-3">Managed service path for higher-need teams</div>
+                  <div class="rounded-2xl border border-white/10 px-4 py-3">Managed service support when your team needs more help</div>
                 </div>
                 <a href="#managed-service" class="inline-flex items-center gap-2 mt-6 text-sm text-[#7aa2ff] hover:text-white transition">Explore managed service</a>
               </div>
@@ -617,7 +643,7 @@
         <p class="eyebrow text-[var(--accent)]">Features</p>
         <h2 class="text-4xl md:text-6xl mt-4">Everything you need to manage budget drift without getting buried in spreadsheets.</h2>
         <p class="mt-5 text-lg leading-relaxed text-black/64">
-          The experience is built for lean operators who want earlier signals, less ambiguity, and a clear path from self-serve software into deeper support when the business gets more complex.
+          Budget Tracker gives growing teams earlier signals, clearer decisions, and the confidence to stay ahead of drift before it turns into a bigger problem.
         </p>
       </div>
 
@@ -635,12 +661,12 @@
         <article class="feature-card panel-soft rounded-3xl p-6">
           <p class="eyebrow text-[var(--accent)]">03</p>
           <h3 class="text-2xl mt-3">AI Coach</h3>
-          <p class="mt-3 text-sm leading-6 text-black/62">Move from dashboards to decisions with generated recommendations and practical follow-up prompts.</p>
+          <p class="mt-3 text-sm leading-6 text-black/62">Move from dashboards to decisions with prioritized review prompts, next-step recommendations, and a clearer picture of what deserves attention first.</p>
         </article>
         <article class="feature-card panel-soft rounded-3xl p-6">
           <p class="eyebrow text-[var(--accent)]">04</p>
           <h3 class="text-2xl mt-3">Managed Path</h3>
-          <p class="mt-3 text-sm leading-6 text-black/62">Offer software and premium service from one product funnel, with a clear step-up path for higher-need teams.</p>
+          <p class="mt-3 text-sm leading-6 text-black/62">Start with software, then add hands-on help for setup, recurring reviews, and stronger follow-through when your budget process needs more support.</p>
         </article>
       </div>
     </section>
@@ -651,7 +677,7 @@
           <p class="eyebrow text-[var(--accent)]">ROI Calculator</p>
           <h2 class="text-4xl md:text-6xl mt-4">Estimate what one saved overspend cycle is worth.</h2>
           <p class="mt-5 text-lg leading-relaxed text-black/64 max-w-xl">
-            The reference site includes an ROI calculator to make the pricing feel small compared with the cost of missed drift. This version mirrors that idea with a lightweight live calculator.
+            Compare the cost of your plan with the value of catching overspend earlier, before a small drift turns into a larger operating problem.
           </p>
         </div>
         <div class="lg:col-span-7">
@@ -700,25 +726,110 @@
           <p class="eyebrow text-[#7aa2ff]">How it Works</p>
           <h2 class="text-4xl md:text-6xl mt-4">Three plans, one clean path from visibility to support.</h2>
           <p class="mt-6 text-lg leading-relaxed text-white/70 max-w-xl">
-            Most teams start with Growth. It gives them enough monitoring, review rhythm, and guidance to feel real value quickly. Scale is there when the stakes, pace, or support needs go up.
+            Most teams start with Growth for the right mix of visibility, review cadence, and guidance. Scale adds faster support and deeper planning when the pace and stakes increase.
           </p>
         </div>
         <div class="lg:col-span-7 grid md:grid-cols-3 gap-4">
           <article class="rounded-3xl border border-white/10 bg-white/5 p-6">
             <p class="eyebrow text-white/45">Starter</p>
             <h3 class="text-3xl mt-4">$5<span class="text-lg text-white/45">/mo</span></h3>
-            <p class="mt-4 text-white/72 text-sm leading-6">The lower-friction entry step for solo operators who want basic visibility and early warning signals.</p>
+            <p class="mt-4 text-white/72 text-sm leading-6">A simple starting point for smaller teams that want visibility and early warning signals without added complexity.</p>
           </article>
           <article class="rounded-3xl border border-[#0052FF] bg-[#0052FF]/10 p-6 shadow-[0_18px_40px_-25px_rgba(0,82,255,0.4)]">
             <p class="eyebrow text-[#7aa2ff]">Growth</p>
             <h3 class="text-3xl mt-4">$10<span class="text-lg text-white/45">/mo</span></h3>
-            <p class="mt-4 text-white/82 text-sm leading-6">The strongest default plan with biweekly reviews, full alerts, and AI Coach access.</p>
+            <p class="mt-4 text-white/82 text-sm leading-6">Our most popular plan, with biweekly reviews, full alerts, and AI Coach access.</p>
           </article>
           <article class="rounded-3xl border border-white/10 bg-white/5 p-6">
             <p class="eyebrow text-white/45">Scale</p>
             <h3 class="text-3xl mt-4">$19.99<span class="text-lg text-white/45">/mo</span></h3>
-            <p class="mt-4 text-white/72 text-sm leading-6">For customers who want faster support, more planning help, and a stronger bridge into managed service.</p>
+            <p class="mt-4 text-white/72 text-sm leading-6">For teams that want faster support, deeper planning help, and a closer working relationship.</p>
           </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-divider py-20 md:py-28">
+      <div class="shell grid lg:grid-cols-12 gap-8 items-start">
+        <div class="lg:col-span-5">
+          <p class="eyebrow text-[var(--accent)]">Start Here</p>
+          <h2 class="text-4xl md:text-6xl mt-4">A clearer path from signup to a working budget rhythm.</h2>
+          <p class="mt-5 text-lg leading-relaxed text-black/64 max-w-xl">
+            Buyers usually want three things before they commit: confidence that this is for a team like theirs, clarity on what happens right after checkout, and a practical picture of what extra guidance actually looks like.
+          </p>
+          <div class="mt-8 flex flex-wrap gap-3">
+            <button type="button" class="fit-chip is-active" data-fit-target="fit-growth">Most teams</button>
+            <button type="button" class="fit-chip" data-fit-target="fit-scale">Fast-moving teams</button>
+            <button type="button" class="fit-chip" data-fit-target="fit-managed">Need hands-on help</button>
+          </div>
+        </div>
+        <div class="lg:col-span-7">
+          <div id="fit-growth" class="fit-panel is-active panel rounded-[30px] p-6 md:p-8">
+            <div class="grid md:grid-cols-[1.1fr_0.9fr] gap-6">
+              <div>
+                <p class="eyebrow text-[var(--accent)]">Best fit right now</p>
+                <h3 class="text-3xl md:text-4xl mt-3">Growth is the right starting point for most small teams with real monthly spend.</h3>
+                <p class="mt-4 text-base leading-7 text-black/68">Choose this if one person is carrying budget accountability, reviews happen inconsistently, and you want earlier alerts without adding a lot of process.</p>
+                <div class="mt-6 grid gap-3 text-sm text-black/70">
+                  <div class="panel-soft rounded-2xl px-4 py-4">Best for founders, operators, and finance leads managing roughly 5 to 50 people.</div>
+                  <div class="panel-soft rounded-2xl px-4 py-4">Good when marketing, software, contractors, or travel start drifting faster than your team can spot manually.</div>
+                </div>
+              </div>
+              <div class="rounded-[26px] bg-[#0A0A0B] text-white p-6">
+                <p class="eyebrow text-[#7aa2ff]">What happens after signup</p>
+                <ol class="mt-5 space-y-4 text-sm text-white/78 leading-6">
+                  <li>1. Pay securely through Stripe and create your account.</li>
+                  <li>2. Land in your dashboard and choose the categories you care about most.</li>
+                  <li>3. Start seeing drift signals and use AI Coach to decide what to review first.</li>
+                  <li>4. Build a repeatable weekly or biweekly review habit without starting from scratch.</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <div id="fit-scale" class="fit-panel panel rounded-[30px] p-6 md:p-8">
+            <div class="grid md:grid-cols-[1.1fr_0.9fr] gap-6">
+              <div>
+                <p class="eyebrow text-[var(--accent)]">When to move up</p>
+                <h3 class="text-3xl md:text-4xl mt-3">Scale is for teams that need quicker follow-through and deeper planning support.</h3>
+                <p class="mt-4 text-base leading-7 text-black/68">Choose this when the cost of delay is higher, spending decisions are spread across more people, or you need a tighter review rhythm than Growth provides.</p>
+                <div class="mt-6 grid gap-3 text-sm text-black/70">
+                  <div class="panel-soft rounded-2xl px-4 py-4">Best for teams with more moving parts, more approvals, or higher stakes around forecast accuracy.</div>
+                  <div class="panel-soft rounded-2xl px-4 py-4">Includes weekly advisor check-ins, deeper planning help, and a faster support lane.</div>
+                </div>
+              </div>
+              <div class="rounded-[26px] bg-[#0A0A0B] text-white p-6">
+                <p class="eyebrow text-[#7aa2ff]">What AI Coach means in practice</p>
+                <ul class="mt-5 space-y-4 text-sm text-white/78 leading-6">
+                  <li>It flags which categories deserve attention first instead of making you hunt through the dashboard.</li>
+                  <li>It suggests next actions like pausing a spend line, reviewing contractor scope, or tightening a threshold.</li>
+                  <li>It helps turn alerts into a review list your team can actually act on that week.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div id="fit-managed" class="fit-panel panel rounded-[30px] p-6 md:p-8">
+            <div class="grid md:grid-cols-[1.1fr_0.9fr] gap-6">
+              <div>
+                <p class="eyebrow text-[var(--accent)]">Higher-touch support</p>
+                <h3 class="text-3xl md:text-4xl mt-3">Managed service is for teams that want a second pair of eyes, not just another tool.</h3>
+                <p class="mt-4 text-base leading-7 text-black/68">Choose this when the budget process is already straining, owners need accountability, or someone wants help translating alerts into a cleaner operating rhythm.</p>
+                <div class="mt-6 grid gap-3 text-sm text-black/70">
+                  <div class="panel-soft rounded-2xl px-4 py-4">Best for teams that want support around setup, recurring reviews, planning decisions, and follow-through.</div>
+                  <div class="panel-soft rounded-2xl px-4 py-4">A good fit when you know you need more structure but are not ready for a full finance hire.</div>
+                </div>
+              </div>
+              <div class="rounded-[26px] bg-[#0A0A0B] text-white p-6">
+                <p class="eyebrow text-[#7aa2ff]">What managed service includes</p>
+                <ul class="mt-5 space-y-4 text-sm text-white/78 leading-6">
+                  <li>Hands-on setup help so the right categories, thresholds, and review cadence are in place.</li>
+                  <li>Recurring budget reviews with a clearer list of what changed, what matters, and what to do next.</li>
+                  <li>Support tightening the process around approvals, category ownership, and monthly decision-making.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -726,31 +837,31 @@
     <section id="pricing" class="shell py-20 md:py-28">
       <div class="max-w-3xl">
         <p class="eyebrow text-[var(--accent)]">Pricing</p>
-        <h2 class="text-4xl md:text-6xl mt-4">Choose the level of support your team actually needs.</h2>
-        <p class="mt-5 text-lg leading-relaxed text-black/64">
-          Growth is the strongest default. It includes alerts, AI Coach access, and enough ongoing value to justify a monthly subscription for solo operators and small teams.
-        </p>
+          <h2 class="text-4xl md:text-6xl mt-4">Start with the plan that fits today, then grow when you need more support.</h2>
+          <p class="mt-5 text-lg leading-relaxed text-black/64">
+          Most teams should begin with Growth. It gives you the visibility, alerts, and guidance to stay ahead without adding unnecessary complexity.
+          </p>
       </div>
 
       <div class="grid lg:grid-cols-3 gap-5 mt-12">
         <article class="price-card panel rounded-[28px] p-7 flex flex-col">
           <p class="eyebrow text-black/42">Starter</p>
           <h3 class="text-4xl mt-4">$5<span class="text-lg text-black/45">/mo</span></h3>
-          <p class="mt-4 text-sm text-black/62 leading-6">A low-friction starting point that works like the paid trial step for the product.</p>
+          <p class="mt-4 text-sm text-black/62 leading-6">A simple way to start tracking spend, reviewing trends, and catching early signs of drift.</p>
           <ul class="mt-6 space-y-3 text-sm text-black/68 flex-1">
             <li>Core dashboard access</li>
             <li>Monthly budget health report</li>
             <li>Early drift visibility by category</li>
             <li>Limited alerts and threshold monitoring</li>
-            <li>Best for solo operators testing the workflow</li>
+            <li>Best for smaller teams getting started</li>
           </ul>
-          <a href="checkout.php?plan=starter" class="cta-secondary mt-8 px-5 py-3 text-sm font-semibold">Start Starter</a>
+          <a href="checkout.php?plan=starter" class="cta-secondary mt-8 px-5 py-3 text-sm font-semibold">Choose Starter</a>
         </article>
 
         <article class="price-card rounded-[28px] border border-[#0052FF] bg-[#0A0A0B] text-white p-7 flex flex-col shadow-[0_24px_60px_-30px_rgba(0,82,255,0.5)]">
           <p class="eyebrow text-[#7aa2ff]">Best Value</p>
           <h3 class="text-4xl mt-4">Growth<span class="block text-2xl mt-1">$10/mo</span></h3>
-          <p class="mt-4 text-sm text-white/72 leading-6">Most teams should start here. It is the strongest mix of alerts, cadence, and guided action.</p>
+          <p class="mt-4 text-sm text-white/72 leading-6">The best fit for most teams, with the right mix of alerts, review cadence, and practical guidance.</p>
           <ul class="mt-6 space-y-3 text-sm text-white/80 flex-1">
             <li>Biweekly spend and variance reviews</li>
             <li>Full dashboard alerts</li>
@@ -758,22 +869,28 @@
             <li>Monthly action plan</li>
             <li>AI Coach guidance</li>
           </ul>
-          <a href="checkout.php?plan=growth" class="cta-primary mt-8 px-5 py-3 text-sm">Start Growth</a>
+          <div class="mt-6 rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-sm text-white/74 leading-6">
+            AI Coach helps you decide what to review first, what changed, and what action to take next when drift starts building.
+          </div>
+          <a href="checkout.php?plan=growth" class="cta-primary mt-8 px-5 py-3 text-sm">Choose Growth</a>
         </article>
 
         <article class="price-card panel rounded-[28px] p-7 flex flex-col">
           <p class="eyebrow text-black/42">Scale</p>
           <h3 class="text-4xl mt-4">$19.99<span class="text-lg text-black/45">/mo</span></h3>
-          <p class="mt-4 text-sm text-black/62 leading-6">For customers who need faster support, planning help, or a stepping stone into managed finance operations.</p>
+          <p class="mt-4 text-sm text-black/62 leading-6">For teams that want faster support, deeper planning help, and a more hands-on working rhythm.</p>
           <ul class="mt-6 space-y-3 text-sm text-black/68 flex-1">
             <li>Weekly advisor check-ins</li>
             <li>Forecasting and scenario planning</li>
             <li>Priority support lane</li>
             <li>Custom workflow guidance</li>
-            <li>Best bridge into managed service</li>
+            <li>Best fit for teams that want deeper support</li>
           </ul>
+          <div class="mt-6 rounded-2xl border border-black/10 bg-black/[0.02] px-4 py-4 text-sm text-black/66 leading-6">
+            Scale adds a closer working rhythm for teams that want more planning help and quicker follow-through before moving into managed service.
+          </div>
           <div class="mt-8 grid gap-3">
-            <a href="checkout.php?plan=scale" class="cta-secondary px-5 py-3 text-sm font-semibold">Start Scale</a>
+            <a href="checkout.php?plan=scale" class="cta-secondary px-5 py-3 text-sm font-semibold">Choose Scale</a>
             <a href="#managed-service" class="cta-secondary px-5 py-3 text-sm font-semibold">Explore Managed Service</a>
           </div>
         </article>
@@ -782,24 +899,24 @@
 
     <section class="shell py-20 md:py-28">
       <div class="max-w-3xl">
-        <p class="eyebrow text-[var(--accent)]">Testimonials</p>
-        <h2 class="text-4xl md:text-6xl mt-4">Built for lean operators who need clarity, not finance theater.</h2>
+        <p class="eyebrow text-[var(--accent)]">Use Cases</p>
+        <h2 class="text-4xl md:text-6xl mt-4">Where teams usually feel the value first.</h2>
       </div>
       <div class="grid md:grid-cols-3 gap-4 mt-12">
         <article class="quote-card panel-soft rounded-3xl p-6 transition">
-          <p class="text-lg leading-8 text-black/72">&ldquo;The alerts gave us something actionable before the month was gone. That alone justified the subscription.&rdquo;</p>
-          <p class="mt-6 font-semibold">Operations lead</p>
-          <p class="text-sm text-black/52 mt-1">8-person services team</p>
+          <p class="eyebrow text-[var(--accent)]">Marketing spend</p>
+          <h3 class="text-3xl mt-3">Catch overspend before campaigns outrun the plan.</h3>
+          <p class="mt-4 text-base leading-7 text-black/72">Track category pace, see threshold pressure early, and make changes while there is still time to protect the month.</p>
         </article>
         <article class="quote-card panel-soft rounded-3xl p-6 transition">
-          <p class="text-lg leading-8 text-black/72">&ldquo;Growth felt like the right middle ground. Enough structure to stay ahead, not so much that it slowed us down.&rdquo;</p>
-          <p class="mt-6 font-semibold">Founder</p>
-          <p class="text-sm text-black/52 mt-1">Bootstrapped SaaS company</p>
+          <p class="eyebrow text-[var(--accent)]">Monthly review</p>
+          <h3 class="text-3xl mt-3">Give your team a simple rhythm for better budget decisions.</h3>
+          <p class="mt-4 text-base leading-7 text-black/72">Use recurring reviews, alerts, and AI Coach guidance to turn scattered information into a clear weekly and monthly routine.</p>
         </article>
         <article class="quote-card panel-soft rounded-3xl p-6 transition">
-          <p class="text-lg leading-8 text-black/72">&ldquo;We started self-serve and moved into managed support when the team got busier. The path up felt natural.&rdquo;</p>
-          <p class="mt-6 font-semibold">Finance manager</p>
-          <p class="text-sm text-black/52 mt-1">Growing agency</p>
+          <p class="eyebrow text-[var(--accent)]">Growing complexity</p>
+          <h3 class="text-3xl mt-3">Add support when the budget process starts to strain.</h3>
+          <p class="mt-4 text-base leading-7 text-black/72">Start with the software, then step into managed help when you need more accountability, planning support, and follow-through.</p>
         </article>
       </div>
     </section>
@@ -808,13 +925,13 @@
       <div class="shell grid lg:grid-cols-12 gap-8 items-center">
         <div class="lg:col-span-7">
           <p class="eyebrow text-[var(--accent)]">Managed Service</p>
-          <h2 class="text-4xl md:text-6xl mt-4">Need a second pair of eyes instead of another dashboard?</h2>
+          <h2 class="text-4xl md:text-6xl mt-4">Need more support than software alone can give?</h2>
           <p class="mt-5 text-lg leading-relaxed text-black/64 max-w-3xl">
-            Use Budget Tracker as the self-serve entry point, then move higher-need customers into a premium service layer with setup help, recurring reviews, workflow tuning, and operating support.
+            Start with Budget Tracker, then add hands-on support when your team wants help with setup, recurring reviews, workflow tuning, and ongoing operating discipline.
           </p>
           <div class="mt-8 flex flex-wrap gap-3">
             <a href="#managed-service-contact" class="cta-primary px-6 py-3.5 text-sm md:text-base">Explore Managed Service</a>
-            <a href="#pricing" class="cta-secondary px-6 py-3.5 text-sm md:text-base">Open Pricing Sheet</a>
+            <a href="#pricing" class="cta-secondary px-6 py-3.5 text-sm md:text-base">See pricing</a>
           </div>
         </div>
         <div class="lg:col-span-5">
@@ -822,9 +939,9 @@
             <p class="eyebrow text-[#7aa2ff]">Why teams upgrade</p>
             <ul class="mt-6 space-y-4 text-white/72">
               <li>Weekly support replaces biweekly cadence</li>
-              <li>Planning help goes deeper than software prompts</li>
+              <li>Planning help goes deeper than on-screen recommendations</li>
               <li>Stronger accountability around follow-through</li>
-              <li>Cleaner bridge from self-serve into premium ops support</li>
+              <li>A smoother move into higher-touch support</li>
             </ul>
           </div>
         </div>
@@ -836,11 +953,11 @@
         <div class="lg:col-span-5">
           <p class="eyebrow text-[#7aa2ff]">Managed service</p>
           <h2 class="text-5xl md:text-6xl mt-4">Need a second pair of eyes?</h2>
-          <p class="text-white/70 mt-6 text-lg leading-relaxed max-w-md">Tell us about your team. We&apos;ll point you to the right plan or open a managed service conversation if that&apos;s a better fit.</p>
+          <p class="text-white/70 mt-6 text-lg leading-relaxed max-w-md">Tell us about your team. We&apos;ll recommend the right plan or help you decide whether managed support is the better fit.</p>
           <div class="mt-10 space-y-3 text-sm text-white/70">
             <div class="flex items-center gap-2"><span class="text-[#0052FF]">●</span>One business day response</div>
-            <div class="flex items-center gap-2"><span class="text-[#0052FF]">●</span>No sales pressure - straight recommendation</div>
-            <div class="flex items-center gap-2"><span class="text-[#0052FF]">●</span>Honest path from self-serve to managed</div>
+            <div class="flex items-center gap-2"><span class="text-[#0052FF]">●</span>No sales pressure, just a clear recommendation</div>
+            <div class="flex items-center gap-2"><span class="text-[#0052FF]">●</span>Guidance on when extra support is worth it</div>
           </div>
         </div>
         <div class="lg:col-span-7">
@@ -903,21 +1020,42 @@
             <span>Which plan should most people buy?</span>
             <span class="faq-icon" aria-hidden="true"></span>
           </summary>
-          <div class="faq-content">Growth is the strongest default. It includes alerts, AI Coach access, and enough ongoing value to justify a monthly subscription for solo operators and small teams.</div>
+          <div class="faq-content">Growth is the best fit for most teams because it combines alerts, AI Coach access, and a steady review rhythm without overcomplicating the process.</div>
         </details>
         <details class="faq-item">
           <summary class="faq-summary">
             <span>What is Scale for?</span>
             <span class="faq-icon" aria-hidden="true"></span>
           </summary>
-          <div class="faq-content">Scale is for customers who need faster support, planning help, or a stepping stone into managed finance operations. Weekly check-ins replace the biweekly cadence on Growth.</div>
+          <div class="faq-content">Scale is for teams that want faster support, deeper planning help, and weekly check-ins instead of the biweekly cadence on Growth.</div>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-summary">
+            <span>What happens right after I sign up?</span>
+            <span class="faq-icon" aria-hidden="true"></span>
+          </summary>
+          <div class="faq-content">You complete checkout, create or log into your account, and land in the dashboard ready to start tracking the categories that matter most. From there, alerts, review prompts, and your chosen plan support level start guiding the rhythm.</div>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-summary">
+            <span>What does AI Coach actually do?</span>
+            <span class="faq-icon" aria-hidden="true"></span>
+          </summary>
+          <div class="faq-content">AI Coach helps you turn raw budget signals into decisions by highlighting what needs attention first, suggesting practical next steps, and helping your team stay consistent in reviews and follow-through.</div>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-summary">
+            <span>What does managed service include?</span>
+            <span class="faq-icon" aria-hidden="true"></span>
+          </summary>
+          <div class="faq-content">Managed service adds hands-on help with setup, recurring reviews, planning support, and stronger accountability so your team is not left to figure out the process alone.</div>
         </details>
         <details class="faq-item">
           <summary class="faq-summary">
             <span>Can I sell both software and services?</span>
             <span class="faq-icon" aria-hidden="true"></span>
           </summary>
-          <div class="faq-content">Yes. The funnel supports low-ticket self-serve subscriptions and a premium service upsell from the same site. Managed clients usually graduate from Growth or Scale.</div>
+          <div class="faq-content">Yes. Many teams begin with the software, then add managed support when they want more hands-on help with setup, reviews, and follow-through.</div>
         </details>
         <details class="faq-item">
           <summary class="faq-summary">
@@ -931,14 +1069,14 @@
             <span>Is there a free trial?</span>
             <span class="faq-icon" aria-hidden="true"></span>
           </summary>
-          <div class="faq-content">Starter is intentionally priced at $5/mo as the trial step. It is lower friction than a free trial and proves the workflow before you commit to Growth.</div>
+          <div class="faq-content">Starter gives you a low-risk way to get real visibility first, then move up to Growth when you want fuller alerts and more guidance.</div>
         </details>
         <details class="faq-item">
           <summary class="faq-summary">
             <span>What do I need before taking payments?</span>
             <span class="faq-icon" aria-hidden="true"></span>
           </summary>
-          <div class="faq-content">Add your Stripe Payment Links in <code>config/payments.local.php</code> or set the matching <code>BT_STRIPE_*_LINK</code> environment variables. Checkout works the moment links are configured.</div>
+          <div class="faq-content">Just choose the plan that fits your team and complete checkout securely with Stripe. If you need help selecting the right starting point, we can guide you before you buy.</div>
         </details>
       </div>
     </section>
@@ -952,7 +1090,7 @@
           <h2 class="text-5xl md:text-7xl lg:text-[88px] mt-5">Turn budget visibility into <span class="italic text-white/55">better decisions.</span></h2>
           <div class="mt-9 flex flex-wrap gap-3">
             <a href="checkout.php?plan=growth" class="cta-primary px-6 py-3.5 text-sm md:text-base">Start Growth - $10/mo</a>
-            <a href="pricing-sheet.php" class="cta-secondary px-6 py-3.5 text-sm md:text-base text-white border-white/20 bg-white/5">Pricing Sheet</a>
+            <a href="#pricing" class="cta-secondary px-6 py-3.5 text-sm md:text-base text-white border-white/20 bg-white/5">See pricing</a>
           </div>
         </div>
 
@@ -963,15 +1101,15 @@
               <li><a href="#features" class="hover:text-white">Features</a></li>
               <li><a href="#calculator" class="hover:text-white">ROI calculator</a></li>
               <li><a href="#pricing" class="hover:text-white">Pricing</a></li>
-              <li><a href="#pricing" class="hover:text-white">Pricing Sheet</a></li>
-              <li><a href="#interactive-demo" class="hover:text-white">Product demo</a></li>
+              <li><a href="#pricing" class="hover:text-white">See pricing</a></li>
+              <li><a href="#interactive-demo" class="hover:text-white">See demo</a></li>
             </ul>
           </div>
           <div>
             <div class="mono text-[10px] uppercase tracking-[0.22em] text-white/40 mb-4">Company</div>
             <ul class="space-y-3 text-white/74">
               <li><a href="#managed-service" class="hover:text-white">Managed service</a></li>
-              <li><a href="mailto:sales@budgettrackerpro.com" class="hover:text-white">Contact sales</a></li>
+              <li><a href="mailto:contact@budget.konticode.com" class="hover:text-white">Contact us</a></li>
               <li><a href="#faq" class="hover:text-white">FAQ</a></li>
               <li><a href="login.php" class="hover:text-white">Client Login</a></li>
             </ul>
@@ -987,13 +1125,39 @@
           <span>&copy; <?php echo date("Y"); ?> Budget Tracker &middot; Konticode</span>
         </div>
         <div class="flex flex-wrap gap-6">
-          <span>Built for lean operators.</span>
+          <span>Built for focused teams.</span>
           <a href="#top" class="hover:text-white transition">budget.konticode.com</a>
         </div>
       </div>
     </div>
   </footer>
   <script>
+    (function () {
+      const chips = Array.from(document.querySelectorAll("[data-fit-target]"));
+      const panels = Array.from(document.querySelectorAll(".fit-panel"));
+
+      if (!chips.length || !panels.length) {
+        return;
+      }
+
+      function activate(targetId) {
+        chips.forEach(function (chip) {
+          const isActive = chip.getAttribute("data-fit-target") === targetId;
+          chip.classList.toggle("is-active", isActive);
+        });
+
+        panels.forEach(function (panel) {
+          panel.classList.toggle("is-active", panel.id === targetId);
+        });
+      }
+
+      chips.forEach(function (chip) {
+        chip.addEventListener("click", function () {
+          activate(chip.getAttribute("data-fit-target"));
+        });
+      });
+    })();
+
     (function () {
       const budget = document.getElementById("calc-budget");
       const drift = document.getElementById("calc-drift");
@@ -1121,3 +1285,4 @@
   </script>
 </body>
 </html>
+

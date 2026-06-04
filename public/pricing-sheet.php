@@ -12,8 +12,8 @@ header("Expires: 0");
     name="description"
     content="Budget Tracker pricing sheet for Starter, Growth, Scale, and managed service support."
   />
-  <title>Budget Tracker - Pricing Sheet</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Budget Tracker - Pricing</title>
+  <link rel="stylesheet" href="/assets/css/tailwind.css">
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -172,9 +172,9 @@ header("Expires: 0");
       </a>
       <nav class="hidden md:flex items-center gap-7 text-sm text-black/70">
         <a href="landing.php#features" class="hover:text-[#0052FF] transition">Features</a>
-        <a href="landing.php#pricing" class="hover:text-[#0052FF] transition">Pricing</a>
+        <a href="landing.php#pricing" class="hover:text-[#0052FF] transition">See pricing</a>
         <a href="landing.php#faq" class="hover:text-[#0052FF] transition">FAQ</a>
-        <a href="landing.php#managed-service" class="hover:text-[#0052FF] transition">Managed Service</a>
+        <a href="landing.php#managed-service" class="hover:text-[#0052FF] transition">Explore Managed Service</a>
       </nav>
       <div class="flex items-center gap-2">
         <a href="login.php" class="hidden sm:inline-flex cta-secondary px-4 py-2.5 text-sm font-medium">Client Login</a>
@@ -189,7 +189,7 @@ header("Expires: 0");
     <section class="relative mx-auto max-w-7xl px-6 pt-10 pb-8 md:px-10 md:pt-16 md:pb-12">
       <div class="panel rounded-[32px] p-7 md:p-10">
         <div class="flex flex-wrap items-center gap-3">
-          <span class="eyebrow text-[#0052FF]">Budget Tracker · Pricing Sheet</span>
+          <span class="eyebrow text-[#0052FF]">Budget Tracker · Pricing</span>
           <span class="h-px w-20 bg-black/10"></span>
           <span class="mono rounded-full border border-black/10 px-3 py-1 text-[11px] text-black/52">Updated for current plans</span>
         </div>
@@ -217,7 +217,7 @@ header("Expires: 0");
         </div>
 
         <div class="no-print mt-8 flex flex-wrap gap-3">
-          <a href="landing.php" class="cta-secondary px-5 py-3 text-sm">Back To Landing</a>
+          <a href="landing.php#pricing" class="cta-secondary px-5 py-3 text-sm">See pricing</a>
           <a href="checkout.php?plan=growth" class="cta-primary px-5 py-3 text-sm">Start Growth</a>
           <button onclick="window.print()" class="cta-secondary px-5 py-3 text-sm">Print Or Save PDF</button>
         </div>
@@ -330,7 +330,7 @@ header("Expires: 0");
         </div>
 
         <div class="mt-8 flex flex-wrap gap-3">
-          <a href="landing.php#managed-service-contact" class="cta-primary px-5 py-3 text-sm">Request Managed Service</a>
+          <a href="landing.php#managed-service-contact" class="cta-primary px-5 py-3 text-sm">Explore Managed Service</a>
           <a href="landing.php#faq" class="cta-secondary px-5 py-3 text-sm" style="color: white; border-color: rgba(255,255,255,0.2);">Read FAQ</a>
         </div>
       </div>
