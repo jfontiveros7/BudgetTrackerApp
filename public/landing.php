@@ -345,16 +345,80 @@ $shareImage = "https://budget.konticode.com/assets/media/layout-video/01-landing
       display: block;
     }
 
-    .mobile-quick-nav {
-      display: flex;
-      gap: 0.65rem;
-      overflow-x: auto;
-      padding-bottom: 0.15rem;
-      scrollbar-width: none;
-      -ms-overflow-style: none;
+    .mobile-nav-shell {
+      display: grid;
+      gap: 0.75rem;
     }
 
-    .mobile-quick-nav::-webkit-scrollbar {
+    .mobile-nav-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      gap: 0.75rem;
+      border-radius: 1.1rem;
+      border: 1px solid rgba(10, 10, 11, 0.12);
+      background: rgba(255, 255, 255, 0.82);
+      color: rgba(10, 10, 11, 0.74);
+      padding: 0.9rem 1rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: all 180ms ease;
+    }
+
+    .mobile-nav-toggle:hover {
+      border-color: rgba(0, 82, 255, 0.18);
+      background: rgba(255, 255, 255, 0.94);
+    }
+
+    .mobile-nav-toggle.is-open {
+      border-color: rgba(0, 82, 255, 0.18);
+      background: white;
+      box-shadow: 0 16px 32px rgba(17, 24, 39, 0.12);
+    }
+
+    .mobile-nav-current {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.18rem;
+      min-width: 0;
+    }
+
+    .mobile-nav-current-label {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(91, 91, 97, 0.7);
+    }
+
+    .mobile-nav-current-value {
+      color: #0A0A0B;
+      font-size: 0.95rem;
+      line-height: 1.2;
+    }
+
+    .mobile-nav-chevron {
+      width: 1rem;
+      height: 1rem;
+      flex: 0 0 auto;
+      color: rgba(91, 91, 97, 0.82);
+      transition: transform 180ms ease;
+    }
+
+    .mobile-nav-toggle.is-open .mobile-nav-chevron {
+      transform: rotate(180deg);
+    }
+
+    .mobile-nav-panel {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.65rem;
+      padding: 0.2rem 0 0;
+    }
+
+    .mobile-nav-panel[hidden] {
       display: none;
     }
 
@@ -362,13 +426,14 @@ $shareImage = "https://budget.konticode.com/assets/media/layout-video/01-landing
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      white-space: nowrap;
-      border-radius: 999px;
-      border: 1px solid rgba(10, 10, 11, 0.12);
-      background: rgba(255, 255, 255, 0.82);
+      text-align: center;
+      min-height: 3rem;
+      border-radius: 1rem;
+      border: 1px solid rgba(10, 10, 11, 0.1);
+      background: rgba(255, 255, 255, 0.86);
       color: rgba(10, 10, 11, 0.74);
-      padding: 0.72rem 1rem;
-      font-size: 0.85rem;
+      padding: 0.8rem 0.9rem;
+      font-size: 0.84rem;
       font-weight: 600;
       transition: all 180ms ease;
     }
@@ -505,12 +570,21 @@ $shareImage = "https://budget.konticode.com/assets/media/layout-video/01-landing
         </div>
       </div>
       <div class="md:hidden mt-4 pt-4 border-t border-black/5">
-        <div class="mobile-quick-nav" aria-label="Mobile section navigation">
-          <a href="#features" class="mobile-quick-link is-active" data-mobile-nav-link="features">Features</a>
-          <a href="#interactive-demo" class="mobile-quick-link" data-mobile-nav-link="interactive-demo">See demo</a>
-          <a href="#pricing" class="mobile-quick-link" data-mobile-nav-link="pricing">Pricing</a>
-          <a href="#managed-service" class="mobile-quick-link" data-mobile-nav-link="managed-service">Managed Service</a>
-          <a href="#faq" class="mobile-quick-link" data-mobile-nav-link="faq">FAQ</a>
+        <div class="mobile-nav-shell">
+          <button type="button" class="mobile-nav-toggle" id="mobile-nav-toggle" aria-expanded="false" aria-controls="mobile-nav-panel">
+            <span class="mobile-nav-current">
+              <span class="mobile-nav-current-label">Current section</span>
+              <span class="mobile-nav-current-value" id="mobile-nav-current">Features</span>
+            </span>
+            <span class="mobile-nav-chevron" aria-hidden="true">⌄</span>
+          </button>
+          <div class="mobile-nav-panel" id="mobile-nav-panel" aria-label="Mobile section navigation" hidden>
+            <a href="#features" class="mobile-quick-link is-active" data-mobile-nav-link="features" data-mobile-nav-label="Features">Features</a>
+            <a href="#interactive-demo" class="mobile-quick-link" data-mobile-nav-link="interactive-demo" data-mobile-nav-label="See demo">See demo</a>
+            <a href="#pricing" class="mobile-quick-link" data-mobile-nav-link="pricing" data-mobile-nav-label="Pricing">Pricing</a>
+            <a href="#managed-service" class="mobile-quick-link" data-mobile-nav-link="managed-service" data-mobile-nav-label="Managed Service">Managed Service</a>
+            <a href="#faq" class="mobile-quick-link" data-mobile-nav-link="faq" data-mobile-nav-label="FAQ">FAQ</a>
+          </div>
         </div>
       </div>
     </div>
@@ -1223,6 +1297,9 @@ $shareImage = "https://budget.konticode.com/assets/media/layout-video/01-landing
   <script>
     (function () {
       const mobileLinks = Array.from(document.querySelectorAll("[data-mobile-nav-link]"));
+      const mobileToggle = document.getElementById("mobile-nav-toggle");
+      const mobilePanel = document.getElementById("mobile-nav-panel");
+      const mobileCurrent = document.getElementById("mobile-nav-current");
 
       if (!mobileLinks.length || !("IntersectionObserver" in window)) {
         return;
@@ -1244,7 +1321,20 @@ $shareImage = "https://budget.konticode.com/assets/media/layout-video/01-landing
         mobileLinks.forEach(function (link) {
           const isActive = link.getAttribute("data-mobile-nav-link") === id;
           link.classList.toggle("is-active", isActive);
+          if (isActive && mobileCurrent) {
+            mobileCurrent.textContent = link.getAttribute("data-mobile-nav-label") || link.textContent.trim();
+          }
         });
+      }
+
+      function setMobilePanelOpen(isOpen) {
+        if (!mobileToggle || !mobilePanel) {
+          return;
+        }
+
+        mobileToggle.classList.toggle("is-open", isOpen);
+        mobileToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        mobilePanel.hidden = !isOpen;
       }
 
       const observer = new IntersectionObserver(function (entries) {
@@ -1271,8 +1361,18 @@ $shareImage = "https://budget.konticode.com/assets/media/layout-video/01-landing
       mobileLinks.forEach(function (link) {
         link.addEventListener("click", function () {
           setActiveMobileLink(link.getAttribute("data-mobile-nav-link"));
+          setMobilePanelOpen(false);
         });
       });
+
+      if (mobileToggle && mobilePanel) {
+        mobileToggle.addEventListener("click", function () {
+          const isOpen = mobileToggle.getAttribute("aria-expanded") === "true";
+          setMobilePanelOpen(!isOpen);
+        });
+      }
+
+      setMobilePanelOpen(false);
     })();
 
     (function () {
