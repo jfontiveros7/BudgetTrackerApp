@@ -1,4 +1,10 @@
 ﻿<!DOCTYPE html>
+<?php
+$canonicalUrl = "https://budget.konticode.com/";
+$shareTitle = "Budget Tracker - Turn budget visibility into better decisions";
+$shareDescription = "Track spending, catch drift early, and turn budget into action with smart categories, alerts, AI Coach, and managed support.";
+$shareImage = "https://budget.konticode.com/assets/media/layout-video/01-landing.png";
+?>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -1458,10 +1464,3 @@
   </script>
 </body>
 </html>
-
-<?php
-$canonicalUrl = "https://budget.konticode.com/";
-$shareTitle = "Budget Tracker - Turn budget visibility into better decisions";
-$shareDescription = "Track spending, catch drift early, and turn budget into action with smart categories, alerts, AI Coach, and managed support.";
-$shareImage = "https://budget.konticode.com/assets/media/layout-video/01-landing.png";
-?>
