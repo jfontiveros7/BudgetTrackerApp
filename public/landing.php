@@ -374,6 +374,28 @@
       box-shadow: 0 16px 32px rgba(17, 24, 39, 0.12);
     }
 
+    .skip-link {
+      position: absolute;
+      left: 1rem;
+      top: -3.5rem;
+      z-index: 60;
+      border-radius: 999px;
+      background: #0A0A0B;
+      color: white;
+      padding: 0.8rem 1rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      box-shadow: 0 18px 36px rgba(17, 24, 39, 0.16);
+      transition: top 180ms ease;
+    }
+
+    .skip-link:focus {
+      top: 1rem;
+      outline: 3px solid rgba(0, 82, 255, 0.28);
+      outline-offset: 2px;
+    }
+
     .mockup-shell {
       position: relative;
     }
@@ -455,6 +477,7 @@
   </style>
 </head>
 <body id="top">
+  <a href="#main-content" class="skip-link">Skip to content</a>
   <header class="sticky top-0 z-30 border-b border-black/5 glass">
     <div class="shell py-4">
       <div class="flex items-center justify-between gap-4">
@@ -487,7 +510,7 @@
     </div>
   </header>
 
-  <main>
+  <main id="main-content" tabindex="-1">
     <section class="shell pt-10 md:pt-16 pb-12 md:pb-20 relative overflow-hidden">
       <div class="hero-mesh"></div>
       <div class="grid lg:grid-cols-12 gap-8 lg:gap-10 items-center relative">
@@ -817,14 +840,14 @@
           <p class="mt-5 text-lg leading-relaxed text-black/64 max-w-xl">
             Buyers usually want three things before they commit: confidence that this is for a team like theirs, clarity on what happens right after checkout, and a practical picture of what extra guidance actually looks like.
           </p>
-          <div class="mt-8 flex flex-wrap gap-3">
-            <button type="button" class="fit-chip is-active" data-fit-target="fit-growth" aria-pressed="true">Most teams</button>
-            <button type="button" class="fit-chip" data-fit-target="fit-scale" aria-pressed="false">Fast-moving teams</button>
-            <button type="button" class="fit-chip" data-fit-target="fit-managed" aria-pressed="false">Need hands-on help</button>
+          <div class="mt-8 flex flex-wrap gap-3" role="tablist" aria-label="Choose the plan-fit view">
+            <button type="button" id="fit-tab-growth" class="fit-chip is-active" data-fit-target="fit-growth" role="tab" aria-selected="true" aria-controls="fit-growth" tabindex="0">Most teams</button>
+            <button type="button" id="fit-tab-scale" class="fit-chip" data-fit-target="fit-scale" role="tab" aria-selected="false" aria-controls="fit-scale" tabindex="-1">Fast-moving teams</button>
+            <button type="button" id="fit-tab-managed" class="fit-chip" data-fit-target="fit-managed" role="tab" aria-selected="false" aria-controls="fit-managed" tabindex="-1">Need hands-on help</button>
           </div>
         </div>
         <div class="lg:col-span-7">
-          <div id="fit-growth" class="fit-panel is-active panel rounded-[30px] p-6 md:p-8" data-fit-panel aria-hidden="false">
+          <div id="fit-growth" class="fit-panel is-active panel rounded-[30px] p-6 md:p-8" data-fit-panel role="tabpanel" aria-labelledby="fit-tab-growth" aria-hidden="false">
             <div class="grid md:grid-cols-[1.1fr_0.9fr] gap-6">
               <div>
                 <p class="eyebrow text-[var(--accent)]">Best fit right now</p>
@@ -847,7 +870,7 @@
             </div>
           </div>
 
-          <div id="fit-scale" class="fit-panel panel rounded-[30px] p-6 md:p-8" data-fit-panel aria-hidden="true" hidden>
+          <div id="fit-scale" class="fit-panel panel rounded-[30px] p-6 md:p-8" data-fit-panel role="tabpanel" aria-labelledby="fit-tab-scale" aria-hidden="true" hidden>
             <div class="grid md:grid-cols-[1.1fr_0.9fr] gap-6">
               <div>
                 <p class="eyebrow text-[var(--accent)]">When to move up</p>
@@ -869,7 +892,7 @@
             </div>
           </div>
 
-          <div id="fit-managed" class="fit-panel panel rounded-[30px] p-6 md:p-8" data-fit-panel aria-hidden="true" hidden>
+          <div id="fit-managed" class="fit-panel panel rounded-[30px] p-6 md:p-8" data-fit-panel role="tabpanel" aria-labelledby="fit-tab-managed" aria-hidden="true" hidden>
             <div class="grid md:grid-cols-[1.1fr_0.9fr] gap-6">
               <div>
                 <p class="eyebrow text-[var(--accent)]">Higher-touch support</p>
@@ -1254,11 +1277,17 @@
         return;
       }
 
-      function activate(targetId) {
+      function activate(targetId, options) {
+        const shouldFocus = options && options.focusTab;
+
         chips.forEach(function (chip) {
           const isActive = chip.getAttribute("data-fit-target") === targetId;
           chip.classList.toggle("is-active", isActive);
-          chip.setAttribute("aria-pressed", isActive ? "true" : "false");
+          chip.setAttribute("aria-selected", isActive ? "true" : "false");
+          chip.tabIndex = isActive ? 0 : -1;
+          if (isActive && shouldFocus) {
+            chip.focus();
+          }
         });
 
         panels.forEach(function (panel) {
@@ -1269,13 +1298,37 @@
         });
       }
 
-      chips.forEach(function (chip) {
+      function moveTab(currentIndex, direction) {
+        const nextIndex = (currentIndex + direction + chips.length) % chips.length;
+        const nextChip = chips[nextIndex];
+        if (nextChip) {
+          activate(nextChip.getAttribute("data-fit-target"), { focusTab: true });
+        }
+      }
+
+      chips.forEach(function (chip, index) {
         chip.addEventListener("click", function () {
-          activate(chip.getAttribute("data-fit-target"));
+          activate(chip.getAttribute("data-fit-target"), { focusTab: false });
+        });
+
+        chip.addEventListener("keydown", function (event) {
+          if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+            event.preventDefault();
+            moveTab(index, 1);
+          } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+            event.preventDefault();
+            moveTab(index, -1);
+          } else if (event.key === "Home") {
+            event.preventDefault();
+            activate(chips[0].getAttribute("data-fit-target"), { focusTab: true });
+          } else if (event.key === "End") {
+            event.preventDefault();
+            activate(chips[chips.length - 1].getAttribute("data-fit-target"), { focusTab: true });
+          }
         });
       });
 
-      activate("fit-growth");
+      activate("fit-growth", { focusTab: false });
     })();
 
     (function () {
