@@ -383,6 +383,7 @@ $shareImage = "https://budget.konticode.com/assets/media/layout-video/01-landing
       align-items: flex-start;
       gap: 0.18rem;
       min-width: 0;
+      flex: 1 1 auto;
     }
 
     .mobile-nav-current-label {
@@ -397,6 +398,22 @@ $shareImage = "https://budget.konticode.com/assets/media/layout-video/01-landing
       color: #0A0A0B;
       font-size: 0.95rem;
       line-height: 1.2;
+    }
+
+    .mobile-nav-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      border-radius: 999px;
+      border: 1px solid rgba(10, 10, 11, 0.08);
+      background: rgba(10, 10, 11, 0.04);
+      color: rgba(10, 10, 11, 0.68);
+      padding: 0.45rem 0.7rem;
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
     }
 
     .mobile-nav-chevron {
@@ -416,6 +433,27 @@ $shareImage = "https://budget.konticode.com/assets/media/layout-video/01-landing
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 0.65rem;
       padding: 0.2rem 0 0;
+    }
+
+    .mobile-nav-panel-header {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 0.15rem 0 0.1rem;
+    }
+
+    .mobile-nav-panel-title {
+      color: #0A0A0B;
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .mobile-nav-panel-subtitle {
+      color: rgba(91, 91, 97, 0.78);
+      font-size: 0.8rem;
+      line-height: 1.35;
     }
 
     .mobile-nav-panel[hidden] {
@@ -573,12 +611,19 @@ $shareImage = "https://budget.konticode.com/assets/media/layout-video/01-landing
         <div class="mobile-nav-shell">
           <button type="button" class="mobile-nav-toggle" id="mobile-nav-toggle" aria-expanded="false" aria-controls="mobile-nav-panel">
             <span class="mobile-nav-current">
-              <span class="mobile-nav-current-label">Current section</span>
+              <span class="mobile-nav-current-label">Page sections</span>
               <span class="mobile-nav-current-value" id="mobile-nav-current">Features</span>
             </span>
+            <span class="mobile-nav-action">Browse</span>
             <span class="mobile-nav-chevron" aria-hidden="true">⌄</span>
           </button>
           <div class="mobile-nav-panel" id="mobile-nav-panel" aria-label="Mobile section navigation" hidden>
+            <div class="mobile-nav-panel-header">
+              <div>
+                <div class="mobile-nav-panel-title">Jump to a section</div>
+                <div class="mobile-nav-panel-subtitle">Move through the page without losing your place.</div>
+              </div>
+            </div>
             <a href="#features" class="mobile-quick-link is-active" data-mobile-nav-link="features" data-mobile-nav-label="Features">Features</a>
             <a href="#interactive-demo" class="mobile-quick-link" data-mobile-nav-link="interactive-demo" data-mobile-nav-label="See demo">See demo</a>
             <a href="#pricing" class="mobile-quick-link" data-mobile-nav-link="pricing" data-mobile-nav-label="Pricing">Pricing</a>
