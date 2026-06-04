@@ -317,6 +317,17 @@ if ($requestMethod === "POST") {
                             <div class="mb-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900">
                                 Your <strong><?php echo htmlspecialchars($completedPlanLabel); ?></strong> payment is complete. Sign in to activate it on your account.
                             </div>
+                            <div class="mb-6 rounded-[24px] border border-black/8 bg-[#F9F8F6] p-5">
+                                <p class="eyebrow text-[var(--accent)]">Activate your access</p>
+                                <h2 class="text-3xl mt-3">Choose the fastest next step for this paid plan.</h2>
+                                <p class="mt-3 text-sm text-black/62 leading-6">
+                                    If you are brand new, create the account you want to own this <?php echo htmlspecialchars($completedPlanLabel); ?> access. If you already have an account, sign in below and we will attach the plan automatically.
+                                </p>
+                                <div class="mt-5 flex flex-col gap-3 sm:flex-row">
+                                    <a href="<?php echo htmlspecialchars($registerUrl); ?>" class="cta-primary px-5 py-3 text-sm">Create account now</a>
+                                    <a href="#sign-in-form" class="cta-secondary px-5 py-3 text-sm">I already have an account</a>
+                                </div>
+                            </div>
                         <?php elseif ($selectedPlanLabel !== null): ?>
                             <div class="mb-4 rounded-2xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-900">
                                 You selected the <strong><?php echo htmlspecialchars($selectedPlanLabel); ?></strong> plan. Sign in to continue your purchase flow.
@@ -333,7 +344,7 @@ if ($requestMethod === "POST") {
                             </div>
                         <?php endif; ?>
 
-                        <form method="POST" class="space-y-4">
+                        <form id="sign-in-form" method="POST" class="space-y-4">
                             <input type="hidden" name="plan" value="<?php echo htmlspecialchars($selectedPlan); ?>">
                             <input type="hidden" name="purchase_token" value="<?php echo htmlspecialchars($purchaseToken); ?>">
                             <div>
