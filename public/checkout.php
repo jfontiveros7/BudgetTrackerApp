@@ -183,7 +183,7 @@ $retryUrl = "checkout.php?plan=" . urlencode($plan);
                         <div class="rounded-3xl border border-black/6 bg-white/70 p-5">
                             <p class="mono text-[11px] font-semibold uppercase tracking-[0.2em] text-[#0052FF]">Why Stripe</p>
                             <h2 class="mt-3 text-2xl">Protected</h2>
-                            <p class="mt-3 text-sm leading-6 text-black/62">Card entry, receipts, and subscription handling stay inside Stripe's hosted checkout.</p>
+                            <p class="mt-3 text-sm leading-6 text-black/62">Card entry, receipts, and subscription handling stay inside Stripe's hosted checkout. You may see <strong>Konticode Budget App</strong> there because it is the billing name behind Budget Tracker.</p>
                         </div>
                         <div class="rounded-3xl border border-black/6 bg-white/70 p-5">
                             <p class="mono text-[11px] font-semibold uppercase tracking-[0.2em] text-[#0052FF]">After payment</p>
@@ -218,7 +218,7 @@ $retryUrl = "checkout.php?plan=" . urlencode($plan);
                                 <a href="landing.php#pricing" class="cta-secondary px-5 py-3 text-sm">See pricing</a>
                             </div>
 
-                            <p class="mt-4 text-xs text-black/45">You are leaving Budget Tracker briefly to complete payment on Stripe and will return here when finished.</p>
+                            <p class="mt-4 text-xs text-black/45">You are leaving Budget Tracker briefly to complete payment on Stripe. Stripe may show <strong>Konticode Budget App</strong> as the billing name, and you will return here when finished.</p>
                         <?php else: ?>
                             <div class="flex items-center gap-3 mb-6">
                                 <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-[#0A0A0B]">
