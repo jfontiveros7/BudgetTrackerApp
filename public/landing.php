@@ -1283,11 +1283,17 @@ $shareImage = "https://budget.konticode.com/assets/media/layout-video/01-landing
         return;
       }
 
+      const validTargets = new Set(chips.map(function (chip) {
+        return chip.getAttribute("data-fit-target");
+      }));
+
       function activate(targetId, options) {
         const shouldFocus = options && options.focusTab;
+        const shouldUpdateHash = !options || options.updateHash !== false;
+        const safeTargetId = validTargets.has(targetId) ? targetId : "fit-growth";
 
         chips.forEach(function (chip) {
-          const isActive = chip.getAttribute("data-fit-target") === targetId;
+          const isActive = chip.getAttribute("data-fit-target") === safeTargetId;
           chip.classList.toggle("is-active", isActive);
           chip.setAttribute("aria-selected", isActive ? "true" : "false");
           chip.tabIndex = isActive ? 0 : -1;
@@ -1297,11 +1303,25 @@ $shareImage = "https://budget.konticode.com/assets/media/layout-video/01-landing
         });
 
         panels.forEach(function (panel) {
-          const isActive = panel.id === targetId;
+          const isActive = panel.id === safeTargetId;
           panel.classList.toggle("is-active", isActive);
           panel.hidden = !isActive;
+          panel.style.display = isActive ? "block" : "none";
           panel.setAttribute("aria-hidden", isActive ? "false" : "true");
+          if (isActive) {
+            panel.removeAttribute("hidden");
+          } else {
+            panel.setAttribute("hidden", "hidden");
+          }
         });
+
+        if (shouldUpdateHash) {
+          if (window.history && typeof window.history.replaceState === "function") {
+            window.history.replaceState(null, "", "#" + safeTargetId);
+          } else {
+            window.location.hash = safeTargetId;
+          }
+        }
       }
 
       function moveTab(currentIndex, direction) {
@@ -1334,7 +1354,18 @@ $shareImage = "https://budget.konticode.com/assets/media/layout-video/01-landing
         });
       });
 
-      activate("fit-growth", { focusTab: false });
+      window.addEventListener("hashchange", function () {
+        const hashTarget = (window.location.hash || "").replace(/^#/, "");
+        if (validTargets.has(hashTarget)) {
+          activate(hashTarget, { focusTab: false, updateHash: false });
+        }
+      });
+
+      const initialTarget = (window.location.hash || "").replace(/^#/, "");
+      activate(validTargets.has(initialTarget) ? initialTarget : "fit-growth", {
+        focusTab: false,
+        updateHash: validTargets.has(initialTarget)
+      });
     })();
 
     (function () {
