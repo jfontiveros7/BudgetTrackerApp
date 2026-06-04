@@ -742,7 +742,7 @@
           </article>
           <article class="rounded-3xl border border-white/10 bg-white/5 p-6">
             <p class="eyebrow text-white/45">Scale</p>
-            <h3 class="text-3xl mt-4">$19.99<span class="text-lg text-white/45">/mo</span></h3>
+            <h3 class="text-3xl mt-4">$20<span class="text-lg text-white/45">/mo</span></h3>
             <p class="mt-4 text-white/72 text-sm leading-6">For teams that want faster support, deeper planning help, and a closer working relationship.</p>
           </article>
         </div>
@@ -877,7 +877,7 @@
 
         <article class="price-card panel rounded-[28px] p-7 flex flex-col">
           <p class="eyebrow text-black/42">Scale</p>
-          <h3 class="text-4xl mt-4">$19.99<span class="text-lg text-black/45">/mo</span></h3>
+          <h3 class="text-4xl mt-4">$20<span class="text-lg text-black/45">/mo</span></h3>
           <p class="mt-4 text-sm text-black/62 leading-6">For teams that want faster support, deeper planning help, and a more hands-on working rhythm.</p>
           <ul class="mt-6 space-y-3 text-sm text-black/68 flex-1">
             <li>Weekly advisor check-ins</li>

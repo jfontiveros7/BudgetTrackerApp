@@ -256,7 +256,7 @@ header("Expires: 0");
 
         <article class="price-card panel rounded-[28px] p-7 flex flex-col">
           <p class="eyebrow text-black/42">Scale</p>
-          <h2 class="mt-4 text-4xl">$19.99<span class="text-lg text-black/45">/mo</span></h2>
+          <h2 class="mt-4 text-4xl">$20<span class="text-lg text-black/45">/mo</span></h2>
           <p class="mt-4 text-sm leading-6 text-black/62">For customers who need faster support, more planning help, and a stronger bridge into managed service.</p>
           <ul class="mt-6 space-y-3 text-sm text-black/68 flex-1">
             <li>Weekly advisor check-ins</li>

@@ -6,11 +6,6 @@ require_once __DIR__ . "/../config/stripe.php";
 require_once __DIR__ . "/../src/purchases.php";
 
 $plan = strtolower(trim($_GET["plan"] ?? ($_SESSION["pending_plan"] ?? "")));
-$planLabels = [
-    "starter" => "Monitor",
-    "growth" => "Control",
-    "scale" => "Command",
-];
 $planDisplayNames = [
     "starter" => "Starter",
     "growth" => "Growth",
@@ -21,9 +16,14 @@ $planPrices = [
     "growth" => "$10/mo",
     "scale" => "$20/mo",
 ];
-$planLabel = $planLabels[$plan] ?? null;
 $planDisplayName = $planDisplayNames[$plan] ?? "Plan";
 $planPrice = $planPrices[$plan] ?? "";
+$planTaglines = [
+    "starter" => "A simple starting point for teams that want earlier visibility.",
+    "growth" => "The best fit for most teams that want alerts, guidance, and a cleaner review rhythm.",
+    "scale" => "Higher-touch support for teams that want faster follow-through and deeper planning help.",
+];
+$planTagline = $planTaglines[$plan] ?? "";
 $paymentLink = $paymentLinks[$plan] ?? "";
 $planPriceConfigLabels = [
     "starter" => '$starterStripePriceId',
@@ -32,7 +32,7 @@ $planPriceConfigLabels = [
 ];
 $planPriceConfigLabel = $planPriceConfigLabels[$plan] ?? '$stripePriceId';
 
-if ($planLabel === null) {
+if (!array_key_exists($plan, $planDisplayNames)) {
     header("Location: landing.php#pricing");
     exit;
 }
@@ -72,6 +72,11 @@ if (btStripeCheckoutReadyForPlan($plan)) {
             ]],
             "success_url" => $successUrl,
             "cancel_url" => $cancelUrl,
+            "custom_text" => [
+                "submit" => [
+                    "message" => "You're starting Budget Tracker " . $planDisplayName . " at " . $planPrice . ".",
+                ],
+            ],
             "metadata" => [
                 "plan" => $plan,
                 "purchase_token" => $purchaseToken,
@@ -173,6 +178,7 @@ $retryUrl = "checkout.php?plan=" . urlencode($plan);
                             <p class="mono text-[11px] font-semibold uppercase tracking-[0.2em] text-[#0052FF]">Plan</p>
                             <h2 class="mt-3 text-2xl"><?php echo htmlspecialchars($planDisplayName); ?></h2>
                             <p class="mt-3 text-sm leading-6 text-black/62"><?php echo htmlspecialchars($planPrice); ?> with a secure Stripe checkout and instant return to your account flow.</p>
+                            <p class="mt-3 text-sm leading-6 text-black/52"><?php echo htmlspecialchars($planTagline); ?></p>
                         </div>
                         <div class="rounded-3xl border border-black/6 bg-white/70 p-5">
                             <p class="mono text-[11px] font-semibold uppercase tracking-[0.2em] text-[#0052FF]">Why Stripe</p>
@@ -204,7 +210,7 @@ $retryUrl = "checkout.php?plan=" . urlencode($plan);
                                     <h2 class="text-3xl"><?php echo htmlspecialchars($planDisplayName); ?></h2>
                                     <span class="mono text-sm text-black/55"><?php echo htmlspecialchars($planPrice); ?></span>
                                 </div>
-                                <p class="mt-4 text-sm leading-6 text-black/62">If the redirect does not happen automatically, use the button below to continue securely to Stripe.</p>
+                                <p class="mt-4 text-sm leading-6 text-black/62">If the redirect does not happen automatically, use the button below to continue securely to Stripe for Budget Tracker <?php echo htmlspecialchars($planDisplayName); ?>.</p>
                             </div>
 
                             <div class="mt-6 flex flex-col gap-3 sm:flex-row">
