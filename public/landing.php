@@ -758,13 +758,13 @@
             Buyers usually want three things before they commit: confidence that this is for a team like theirs, clarity on what happens right after checkout, and a practical picture of what extra guidance actually looks like.
           </p>
           <div class="mt-8 flex flex-wrap gap-3">
-            <button type="button" class="fit-chip is-active" data-fit-target="fit-growth">Most teams</button>
-            <button type="button" class="fit-chip" data-fit-target="fit-scale">Fast-moving teams</button>
-            <button type="button" class="fit-chip" data-fit-target="fit-managed">Need hands-on help</button>
+            <button type="button" class="fit-chip is-active" data-fit-target="fit-growth" aria-pressed="true">Most teams</button>
+            <button type="button" class="fit-chip" data-fit-target="fit-scale" aria-pressed="false">Fast-moving teams</button>
+            <button type="button" class="fit-chip" data-fit-target="fit-managed" aria-pressed="false">Need hands-on help</button>
           </div>
         </div>
         <div class="lg:col-span-7">
-          <div id="fit-growth" class="fit-panel is-active panel rounded-[30px] p-6 md:p-8">
+          <div id="fit-growth" class="fit-panel is-active panel rounded-[30px] p-6 md:p-8" data-fit-panel aria-hidden="false">
             <div class="grid md:grid-cols-[1.1fr_0.9fr] gap-6">
               <div>
                 <p class="eyebrow text-[var(--accent)]">Best fit right now</p>
@@ -787,7 +787,7 @@
             </div>
           </div>
 
-          <div id="fit-scale" class="fit-panel panel rounded-[30px] p-6 md:p-8">
+          <div id="fit-scale" class="fit-panel panel rounded-[30px] p-6 md:p-8" data-fit-panel aria-hidden="true" hidden>
             <div class="grid md:grid-cols-[1.1fr_0.9fr] gap-6">
               <div>
                 <p class="eyebrow text-[var(--accent)]">When to move up</p>
@@ -809,7 +809,7 @@
             </div>
           </div>
 
-          <div id="fit-managed" class="fit-panel panel rounded-[30px] p-6 md:p-8">
+          <div id="fit-managed" class="fit-panel panel rounded-[30px] p-6 md:p-8" data-fit-panel aria-hidden="true" hidden>
             <div class="grid md:grid-cols-[1.1fr_0.9fr] gap-6">
               <div>
                 <p class="eyebrow text-[var(--accent)]">Higher-touch support</p>
@@ -1134,7 +1134,7 @@
   <script>
     (function () {
       const chips = Array.from(document.querySelectorAll("[data-fit-target]"));
-      const panels = Array.from(document.querySelectorAll(".fit-panel"));
+      const panels = Array.from(document.querySelectorAll("[data-fit-panel]"));
 
       if (!chips.length || !panels.length) {
         return;
@@ -1144,10 +1144,14 @@
         chips.forEach(function (chip) {
           const isActive = chip.getAttribute("data-fit-target") === targetId;
           chip.classList.toggle("is-active", isActive);
+          chip.setAttribute("aria-pressed", isActive ? "true" : "false");
         });
 
         panels.forEach(function (panel) {
-          panel.classList.toggle("is-active", panel.id === targetId);
+          const isActive = panel.id === targetId;
+          panel.classList.toggle("is-active", isActive);
+          panel.hidden = !isActive;
+          panel.setAttribute("aria-hidden", isActive ? "false" : "true");
         });
       }
 
@@ -1156,6 +1160,8 @@
           activate(chip.getAttribute("data-fit-target"));
         });
       });
+
+      activate("fit-growth");
     })();
 
     (function () {
