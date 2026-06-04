@@ -5,9 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta
     name="description"
-    content="Budget Tracker App - Track spending, catch drift early, and turn your budget into action with smart categories, alerts, AI Coach, and managed support."
+    content="<?php echo htmlspecialchars($shareDescription, ENT_QUOTES, 'UTF-8'); ?>"
   />
-  <title>Budget Tracker - Turn budget visibility into better decisions</title>
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="<?php echo htmlspecialchars($canonicalUrl, ENT_QUOTES, 'UTF-8'); ?>" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Budget Tracker" />
+  <meta property="og:url" content="<?php echo htmlspecialchars($canonicalUrl, ENT_QUOTES, 'UTF-8'); ?>" />
+  <meta property="og:title" content="<?php echo htmlspecialchars($shareTitle, ENT_QUOTES, 'UTF-8'); ?>" />
+  <meta property="og:description" content="<?php echo htmlspecialchars($shareDescription, ENT_QUOTES, 'UTF-8'); ?>" />
+  <meta property="og:image" content="<?php echo htmlspecialchars($shareImage, ENT_QUOTES, 'UTF-8'); ?>" />
+  <meta property="og:image:alt" content="Budget Tracker landing page preview" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="<?php echo htmlspecialchars($shareTitle, ENT_QUOTES, 'UTF-8'); ?>" />
+  <meta name="twitter:description" content="<?php echo htmlspecialchars($shareDescription, ENT_QUOTES, 'UTF-8'); ?>" />
+  <meta name="twitter:image" content="<?php echo htmlspecialchars($shareImage, ENT_QUOTES, 'UTF-8'); ?>" />
+  <meta name="twitter:image:alt" content="Budget Tracker landing page preview" />
+  <title><?php echo htmlspecialchars($shareTitle, ENT_QUOTES, 'UTF-8'); ?></title>
   <link rel="stylesheet" href="/assets/css/tailwind.css">
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -325,6 +339,41 @@
       display: block;
     }
 
+    .mobile-quick-nav {
+      display: flex;
+      gap: 0.65rem;
+      overflow-x: auto;
+      padding-bottom: 0.15rem;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .mobile-quick-nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    .mobile-quick-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+      border-radius: 999px;
+      border: 1px solid rgba(10, 10, 11, 0.12);
+      background: rgba(255, 255, 255, 0.82);
+      color: rgba(10, 10, 11, 0.74);
+      padding: 0.72rem 1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: all 180ms ease;
+    }
+
+    .mobile-quick-link.is-active {
+      border-color: rgba(0, 82, 255, 0.18);
+      background: #0A0A0B;
+      color: white;
+      box-shadow: 0 16px 32px rgba(17, 24, 39, 0.12);
+    }
+
     .mockup-shell {
       position: relative;
     }
@@ -407,22 +456,33 @@
 </head>
 <body id="top">
   <header class="sticky top-0 z-30 border-b border-black/5 glass">
-    <div class="shell py-4 flex items-center justify-between gap-6">
-      <a href="#top" class="flex items-center gap-3">
-        <span class="w-9 h-9 rounded-xl bg-[#0A0A0B] flex items-center justify-center">
-          <span class="block w-3 h-3 bg-[#0052FF] rounded-sm rotate-12"></span>
-        </span>
-        <span class="text-xl tracking-tight" style="font-family: 'Playfair Display', serif;">Budget Tracker</span>
-      </a>
-      <nav class="hidden md:flex items-center gap-7 text-sm text-black/70">
-        <a href="#features" class="hover:text-[var(--accent)] transition">Features</a>
-        <a href="#pricing" class="hover:text-[var(--accent)] transition">Pricing</a>
-        <a href="#faq" class="hover:text-[var(--accent)] transition">FAQ</a>
-        <a href="#managed-service" class="hover:text-[var(--accent)] transition">Managed Service</a>
-      </nav>
-      <div class="flex items-center gap-2">
-        <a href="login.php" class="hidden sm:inline-flex cta-secondary px-4 py-2.5 text-sm font-medium">Client Login</a>
-        <a href="checkout.php?plan=growth" class="cta-primary px-4 py-2.5 text-sm">Start Growth</a>
+    <div class="shell py-4">
+      <div class="flex items-center justify-between gap-4">
+        <a href="#top" class="flex items-center gap-3">
+          <span class="w-9 h-9 rounded-xl bg-[#0A0A0B] flex items-center justify-center">
+            <span class="block w-3 h-3 bg-[#0052FF] rounded-sm rotate-12"></span>
+          </span>
+          <span class="text-xl tracking-tight" style="font-family: 'Playfair Display', serif;">Budget Tracker</span>
+        </a>
+        <nav class="hidden md:flex items-center gap-7 text-sm text-black/70">
+          <a href="#features" class="hover:text-[var(--accent)] transition">Features</a>
+          <a href="#pricing" class="hover:text-[var(--accent)] transition">Pricing</a>
+          <a href="#faq" class="hover:text-[var(--accent)] transition">FAQ</a>
+          <a href="#managed-service" class="hover:text-[var(--accent)] transition">Managed Service</a>
+        </nav>
+        <div class="flex items-center gap-2">
+          <a href="login.php" class="hidden sm:inline-flex cta-secondary px-4 py-2.5 text-sm font-medium">Client Login</a>
+          <a href="checkout.php?plan=growth" class="cta-primary px-4 py-2.5 text-sm">Start Growth</a>
+        </div>
+      </div>
+      <div class="md:hidden mt-4 pt-4 border-t border-black/5">
+        <div class="mobile-quick-nav" aria-label="Mobile section navigation">
+          <a href="#features" class="mobile-quick-link is-active" data-mobile-nav-link="features">Features</a>
+          <a href="#interactive-demo" class="mobile-quick-link" data-mobile-nav-link="interactive-demo">See demo</a>
+          <a href="#pricing" class="mobile-quick-link" data-mobile-nav-link="pricing">Pricing</a>
+          <a href="#managed-service" class="mobile-quick-link" data-mobile-nav-link="managed-service">Managed Service</a>
+          <a href="#faq" class="mobile-quick-link" data-mobile-nav-link="faq">FAQ</a>
+        </div>
       </div>
     </div>
   </header>
@@ -1133,6 +1193,60 @@
   </footer>
   <script>
     (function () {
+      const mobileLinks = Array.from(document.querySelectorAll("[data-mobile-nav-link]"));
+
+      if (!mobileLinks.length || !("IntersectionObserver" in window)) {
+        return;
+      }
+
+      const sectionIds = mobileLinks
+        .map(function (link) {
+          return link.getAttribute("data-mobile-nav-link");
+        })
+        .filter(Boolean);
+
+      const sections = sectionIds
+        .map(function (id) {
+          return document.getElementById(id);
+        })
+        .filter(Boolean);
+
+      function setActiveMobileLink(id) {
+        mobileLinks.forEach(function (link) {
+          const isActive = link.getAttribute("data-mobile-nav-link") === id;
+          link.classList.toggle("is-active", isActive);
+        });
+      }
+
+      const observer = new IntersectionObserver(function (entries) {
+        const visible = entries
+          .filter(function (entry) {
+            return entry.isIntersecting;
+          })
+          .sort(function (a, b) {
+            return b.intersectionRatio - a.intersectionRatio;
+          });
+
+        if (visible.length) {
+          setActiveMobileLink(visible[0].target.id);
+        }
+      }, {
+        rootMargin: "-20% 0px -55% 0px",
+        threshold: [0.2, 0.45, 0.7]
+      });
+
+      sections.forEach(function (section) {
+        observer.observe(section);
+      });
+
+      mobileLinks.forEach(function (link) {
+        link.addEventListener("click", function () {
+          setActiveMobileLink(link.getAttribute("data-mobile-nav-link"));
+        });
+      });
+    })();
+
+    (function () {
       const chips = Array.from(document.querySelectorAll("[data-fit-target]"));
       const panels = Array.from(document.querySelectorAll("[data-fit-panel]"));
 
@@ -1292,3 +1406,9 @@
 </body>
 </html>
 
+<?php
+$canonicalUrl = "https://budget.konticode.com/";
+$shareTitle = "Budget Tracker - Turn budget visibility into better decisions";
+$shareDescription = "Track spending, catch drift early, and turn budget into action with smart categories, alerts, AI Coach, and managed support.";
+$shareImage = "https://budget.konticode.com/assets/media/layout-video/01-landing.png";
+?>
