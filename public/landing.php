@@ -927,69 +927,25 @@ $shareImage = "https://budget.konticode.com/assets/media/layout-video/01-landing
           </div>
         </div>
         <div class="lg:col-span-7">
-          <div id="fit-growth" class="fit-panel is-active panel rounded-[30px] p-6 md:p-8" data-fit-panel role="tabpanel" aria-labelledby="fit-tab-growth" aria-hidden="false">
+          <div id="fit-panel-surface" class="panel rounded-[30px] p-6 md:p-8" role="tabpanel" aria-labelledby="fit-tab-growth" tabindex="-1">
             <div class="grid md:grid-cols-[1.1fr_0.9fr] gap-6">
               <div>
-                <p class="eyebrow text-[var(--accent)]">Best fit right now</p>
-                <h3 class="text-3xl md:text-4xl mt-3">Growth is the right starting point for most small teams with real monthly spend.</h3>
-                <p class="mt-4 text-base leading-7 text-black/68">Choose this if one person is carrying budget accountability, reviews happen inconsistently, and you want earlier alerts without adding a lot of process.</p>
-                <div class="mt-6 grid gap-3 text-sm text-black/70">
+                <p id="fit-panel-eyebrow" class="eyebrow text-[var(--accent)]">Best fit right now</p>
+                <h3 id="fit-panel-title" class="text-3xl md:text-4xl mt-3">Growth is the right starting point for most small teams with real monthly spend.</h3>
+                <p id="fit-panel-body" class="mt-4 text-base leading-7 text-black/68">Choose this if one person is carrying budget accountability, reviews happen inconsistently, and you want earlier alerts without adding a lot of process.</p>
+                <div id="fit-panel-points" class="mt-6 grid gap-3 text-sm text-black/70">
                   <div class="panel-soft rounded-2xl px-4 py-4">Best for founders, operators, and finance leads managing roughly 5 to 50 people.</div>
                   <div class="panel-soft rounded-2xl px-4 py-4">Good when marketing, software, contractors, or travel start drifting faster than your team can spot manually.</div>
                 </div>
               </div>
               <div class="rounded-[26px] bg-[#0A0A0B] text-white p-6">
-                <p class="eyebrow text-[#7aa2ff]">What happens after signup</p>
-                <ol class="mt-5 space-y-4 text-sm text-white/78 leading-6">
-                  <li>1. Pay securely through Stripe and create your account.</li>
-                  <li>2. Land in your dashboard and choose the categories you care about most.</li>
-                  <li>3. Start seeing drift signals and use AI Coach to decide what to review first.</li>
-                  <li>4. Build a repeatable weekly or biweekly review habit without starting from scratch.</li>
-                </ol>
-              </div>
-            </div>
-          </div>
-
-          <div id="fit-scale" class="fit-panel panel rounded-[30px] p-6 md:p-8" data-fit-panel role="tabpanel" aria-labelledby="fit-tab-scale" aria-hidden="true" hidden>
-            <div class="grid md:grid-cols-[1.1fr_0.9fr] gap-6">
-              <div>
-                <p class="eyebrow text-[var(--accent)]">When to move up</p>
-                <h3 class="text-3xl md:text-4xl mt-3">Scale is for teams that need quicker follow-through and deeper planning support.</h3>
-                <p class="mt-4 text-base leading-7 text-black/68">Choose this when the cost of delay is higher, spending decisions are spread across more people, or you need a tighter review rhythm than Growth provides.</p>
-                <div class="mt-6 grid gap-3 text-sm text-black/70">
-                  <div class="panel-soft rounded-2xl px-4 py-4">Best for teams with more moving parts, more approvals, or higher stakes around forecast accuracy.</div>
-                  <div class="panel-soft rounded-2xl px-4 py-4">Includes weekly advisor check-ins, deeper planning help, and a faster support lane.</div>
+                <p id="fit-panel-side-eyebrow" class="eyebrow text-[#7aa2ff]">What happens after signup</p>
+                <div id="fit-panel-side-content" class="mt-5 space-y-4 text-sm text-white/78 leading-6">
+                  <div>1. Pay securely through Stripe and create your account.</div>
+                  <div>2. Land in your dashboard and choose the categories you care about most.</div>
+                  <div>3. Start seeing drift signals and use AI Coach to decide what to review first.</div>
+                  <div>4. Build a repeatable weekly or biweekly review habit without starting from scratch.</div>
                 </div>
-              </div>
-              <div class="rounded-[26px] bg-[#0A0A0B] text-white p-6">
-                <p class="eyebrow text-[#7aa2ff]">What AI Coach means in practice</p>
-                <ul class="mt-5 space-y-4 text-sm text-white/78 leading-6">
-                  <li>It flags which categories deserve attention first instead of making you hunt through the dashboard.</li>
-                  <li>It suggests next actions like pausing a spend line, reviewing contractor scope, or tightening a threshold.</li>
-                  <li>It helps turn alerts into a review list your team can actually act on that week.</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          <div id="fit-managed" class="fit-panel panel rounded-[30px] p-6 md:p-8" data-fit-panel role="tabpanel" aria-labelledby="fit-tab-managed" aria-hidden="true" hidden>
-            <div class="grid md:grid-cols-[1.1fr_0.9fr] gap-6">
-              <div>
-                <p class="eyebrow text-[var(--accent)]">Higher-touch support</p>
-                <h3 class="text-3xl md:text-4xl mt-3">Managed service is for teams that want a second pair of eyes, not just another tool.</h3>
-                <p class="mt-4 text-base leading-7 text-black/68">Choose this when the budget process is already straining, owners need accountability, or someone wants help translating alerts into a cleaner operating rhythm.</p>
-                <div class="mt-6 grid gap-3 text-sm text-black/70">
-                  <div class="panel-soft rounded-2xl px-4 py-4">Best for teams that want support around setup, recurring reviews, planning decisions, and follow-through.</div>
-                  <div class="panel-soft rounded-2xl px-4 py-4">A good fit when you know you need more structure but are not ready for a full finance hire.</div>
-                </div>
-              </div>
-              <div class="rounded-[26px] bg-[#0A0A0B] text-white p-6">
-                <p class="eyebrow text-[#7aa2ff]">What managed service includes</p>
-                <ul class="mt-5 space-y-4 text-sm text-white/78 leading-6">
-                  <li>Hands-on setup help so the right categories, thresholds, and review cadence are in place.</li>
-                  <li>Recurring budget reviews with a clearer list of what changed, what matters, and what to do next.</li>
-                  <li>Support tightening the process around approvals, category ownership, and monthly decision-making.</li>
-                </ul>
               </div>
             </div>
           </div>
@@ -1377,11 +1333,66 @@ $shareImage = "https://budget.konticode.com/assets/media/layout-video/01-landing
 
     (function () {
       const chips = Array.from(document.querySelectorAll("[data-fit-target]"));
-      const panels = Array.from(document.querySelectorAll("[data-fit-panel]"));
+      const panelSurface = document.getElementById("fit-panel-surface");
+      const panelEyebrow = document.getElementById("fit-panel-eyebrow");
+      const panelTitle = document.getElementById("fit-panel-title");
+      const panelBody = document.getElementById("fit-panel-body");
+      const panelPoints = document.getElementById("fit-panel-points");
+      const panelSideEyebrow = document.getElementById("fit-panel-side-eyebrow");
+      const panelSideContent = document.getElementById("fit-panel-side-content");
 
-      if (!chips.length || !panels.length) {
+      if (!chips.length || !panelSurface || !panelEyebrow || !panelTitle || !panelBody || !panelPoints || !panelSideEyebrow || !panelSideContent) {
         return;
       }
+
+      const fitContent = {
+        "fit-growth": {
+          eyebrow: "Best fit right now",
+          title: "Growth is the right starting point for most small teams with real monthly spend.",
+          body: "Choose this if one person is carrying budget accountability, reviews happen inconsistently, and you want earlier alerts without adding a lot of process.",
+          points: [
+            "Best for founders, operators, and finance leads managing roughly 5 to 50 people.",
+            "Good when marketing, software, contractors, or travel start drifting faster than your team can spot manually."
+          ],
+          sideEyebrow: "What happens after signup",
+          sideItems: [
+            "1. Pay securely through Stripe and create your account.",
+            "2. Land in your dashboard and choose the categories you care about most.",
+            "3. Start seeing drift signals and use AI Coach to decide what to review first.",
+            "4. Build a repeatable weekly or biweekly review habit without starting from scratch."
+          ]
+        },
+        "fit-scale": {
+          eyebrow: "When to move up",
+          title: "Scale is for teams that need quicker follow-through and deeper planning support.",
+          body: "Choose this when the cost of delay is higher, spending decisions are spread across more people, or you need a tighter review rhythm than Growth provides.",
+          points: [
+            "Best for teams with more moving parts, more approvals, or higher stakes around forecast accuracy.",
+            "Includes weekly advisor check-ins, deeper planning help, and a faster support lane."
+          ],
+          sideEyebrow: "What AI Coach means in practice",
+          sideItems: [
+            "It flags which categories deserve attention first instead of making you hunt through the dashboard.",
+            "It suggests next actions like pausing a spend line, reviewing contractor scope, or tightening a threshold.",
+            "It helps turn alerts into a review list your team can actually act on that week."
+          ]
+        },
+        "fit-managed": {
+          eyebrow: "Higher-touch support",
+          title: "Managed service is for teams that want a second pair of eyes, not just another tool.",
+          body: "Choose this when the budget process is already straining, owners need accountability, or someone wants help translating alerts into a cleaner operating rhythm.",
+          points: [
+            "Best for teams that want support around setup, recurring reviews, planning decisions, and follow-through.",
+            "A good fit when you know you need more structure but are not ready for a full finance hire."
+          ],
+          sideEyebrow: "What managed service includes",
+          sideItems: [
+            "Hands-on setup help so the right categories, thresholds, and review cadence are in place.",
+            "Recurring budget reviews with a clearer list of what changed, what matters, and what to do next.",
+            "Support tightening the process around approvals, category ownership, and monthly decision-making."
+          ]
+        }
+      };
 
       const validTargets = new Set(chips.map(function (chip) {
         return chip.getAttribute("data-fit-target");
@@ -1391,6 +1402,7 @@ $shareImage = "https://budget.konticode.com/assets/media/layout-video/01-landing
         const shouldFocus = options && options.focusTab;
         const shouldUpdateHash = !options || options.updateHash !== false;
         const safeTargetId = validTargets.has(targetId) ? targetId : "fit-growth";
+        const activeContent = fitContent[safeTargetId] || fitContent["fit-growth"];
 
         chips.forEach(function (chip) {
           const isActive = chip.getAttribute("data-fit-target") === safeTargetId;
@@ -1402,17 +1414,25 @@ $shareImage = "https://budget.konticode.com/assets/media/layout-video/01-landing
           }
         });
 
-        panels.forEach(function (panel) {
-          const isActive = panel.id === safeTargetId;
-          panel.classList.toggle("is-active", isActive);
-          panel.hidden = !isActive;
-          panel.style.display = isActive ? "block" : "none";
-          panel.setAttribute("aria-hidden", isActive ? "false" : "true");
-          if (isActive) {
-            panel.removeAttribute("hidden");
-          } else {
-            panel.setAttribute("hidden", "hidden");
-          }
+        panelSurface.setAttribute("aria-labelledby", "fit-tab-" + safeTargetId.replace("fit-", ""));
+        panelEyebrow.textContent = activeContent.eyebrow;
+        panelTitle.textContent = activeContent.title;
+        panelBody.textContent = activeContent.body;
+        panelSideEyebrow.textContent = activeContent.sideEyebrow;
+
+        panelPoints.innerHTML = "";
+        activeContent.points.forEach(function (point) {
+          const item = document.createElement("div");
+          item.className = "panel-soft rounded-2xl px-4 py-4";
+          item.textContent = point;
+          panelPoints.appendChild(item);
+        });
+
+        panelSideContent.innerHTML = "";
+        activeContent.sideItems.forEach(function (itemText) {
+          const item = document.createElement("div");
+          item.textContent = itemText;
+          panelSideContent.appendChild(item);
         });
 
         if (shouldUpdateHash) {
