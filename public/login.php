@@ -36,10 +36,15 @@ $planLabels = [
 $selectedPlanLabel = $planLabels[$selectedPlan] ?? null;
 $completedPlanLabel = $planLabels[$completedPlan] ?? null;
 $canCreateAccount = $completedPlan !== "";
-$showForgotPassword = $completedPlan !== "";
+$showForgotPassword = true;
 $authAvailable = btDatabaseAvailable();
 $authStatusMessage = btDatabaseStatusMessage();
 $requestMethod = $_SERVER["REQUEST_METHOD"] ?? "GET";
+$registerUrl = $canCreateAccount
+    ? "register.php?plan=" . urlencode($completedPlan) . ($purchaseToken !== "" ? "&purchase_token=" . urlencode($purchaseToken) : "")
+    : "landing.php#pricing";
+$checkoutUrl = $selectedPlan !== "" ? "checkout.php?plan=" . urlencode($selectedPlan) : "landing.php#pricing";
+$supportEmail = "contact@budget.konticode.com";
 
 if (isset($_SESSION["user_id"])) {
     header("Location: dashboard.php");
@@ -364,30 +369,51 @@ if ($requestMethod === "POST") {
                             >
                                 <?php echo $authAvailable ? "Sign In" : "Temporarily Unavailable"; ?>
                             </button>
-                            <?php if ($showForgotPassword && $authAvailable): ?>
-                                <div class="text-right">
-                                    <a href="forgot_password.php" class="text-sm text-[var(--accent)] hover:text-[var(--accent-strong)]">Forgot password?</a>
-                                </div>
-                            <?php endif; ?>
+                            <div class="flex flex-wrap items-center justify-between gap-3 text-sm">
+                                <?php if ($showForgotPassword && $authAvailable): ?>
+                                    <a href="forgot_password.php" class="text-[var(--accent)] hover:text-[var(--accent-strong)]">Forgot password?</a>
+                                <?php else: ?>
+                                    <span class="text-black/45">Password recovery is temporarily unavailable.</span>
+                                <?php endif; ?>
+                                <a href="mailto:<?php echo htmlspecialchars($supportEmail); ?>" class="text-black/55 hover:text-black">Need help activating access?</a>
+                            </div>
                         </form>
 
-                        <div class="mt-6 rounded-3xl bg-[#0A0A0B] text-white p-5">
-                            <p class="eyebrow text-[#7aa2ff]">Need an account?</p>
-                            <?php if ($canCreateAccount): ?>
-                                <p class="mt-3 text-sm text-white/74 leading-6">
-                                    Your purchase is ready to attach. Create the account with the same email you used for checkout.
+                        <div class="mt-6 grid gap-4 md:grid-cols-2">
+                            <div class="rounded-3xl bg-[#0A0A0B] text-white p-5">
+                                <p class="eyebrow text-[#7aa2ff]">Create account</p>
+                                <?php if ($canCreateAccount): ?>
+                                    <p class="mt-3 text-sm text-white/74 leading-6">
+                                        Your purchase is ready to attach. Create the account with the same email you used for checkout so your <?php echo htmlspecialchars($completedPlanLabel ?? "plan"); ?> access activates immediately.
+                                    </p>
+                                    <a href="<?php echo htmlspecialchars($registerUrl); ?>" class="cta-primary mt-5 px-5 py-3 text-sm">
+                                        Create Account
+                                    </a>
+                                <?php else: ?>
+                                    <p class="mt-3 text-sm text-white/74 leading-6">
+                                        New accounts open after a completed purchase so we know which plan to activate for you. Start from pricing, then come back here to finish setup.
+                                    </p>
+                                    <a href="<?php echo htmlspecialchars($checkoutUrl); ?>" class="cta-secondary mt-5 px-5 py-3 text-sm text-white border-white/20 bg-white/5">
+                                        <?php echo $selectedPlanLabel !== null ? "Continue " . htmlspecialchars($selectedPlanLabel) : "See pricing"; ?>
+                                    </a>
+                                <?php endif; ?>
+                            </div>
+
+                            <div class="panel-soft rounded-3xl p-5">
+                                <p class="eyebrow text-[var(--accent)]">Recovery path</p>
+                                <p class="mt-3 text-sm text-black/68 leading-6">
+                                    Already paid but stuck? Use the same email as your payment receipt when possible, or reset your password if the account already exists.
                                 </p>
-                                <a href="register.php?plan=<?php echo urlencode($completedPlan); ?><?php echo $purchaseToken !== "" ? "&purchase_token=" . urlencode($purchaseToken) : ""; ?>" class="cta-primary mt-5 px-5 py-3 text-sm">
-                                    Create Account
-                                </a>
-                            <?php else: ?>
-                                <p class="mt-3 text-sm text-white/74 leading-6">
-                                    Account creation opens after a completed purchase so we know which plan to activate for you.
-                                </p>
-                                <a href="landing.php#pricing" class="cta-secondary mt-5 px-5 py-3 text-sm text-white border-white/20 bg-white/5">
-                                    See pricing
-                                </a>
-                            <?php endif; ?>
+                                <?php if ($purchaseEmail !== ""): ?>
+                                    <p class="mt-3 text-sm text-black/55 leading-6">
+                                        Receipt email on file: <strong class="text-black"><?php echo htmlspecialchars($purchaseEmail); ?></strong>
+                                    </p>
+                                <?php endif; ?>
+                                <div class="mt-5 flex flex-wrap gap-3">
+                                    <a href="forgot_password.php" class="cta-secondary px-5 py-3 text-sm">Reset password</a>
+                                    <a href="mailto:<?php echo htmlspecialchars($supportEmail); ?>" class="cta-secondary px-5 py-3 text-sm">Contact us</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </section>
