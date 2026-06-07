@@ -1,14 +1,34 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
+<?php
+$canonicalUrl = "https://budget.konticode.com/";
+$shareTitle = "Budget Tracker - Turn budget visibility into better decisions";
+$shareDescription = "Track spending, catch drift early, and turn budget into action with smart categories, alerts, AI Coach, and managed support.";
+$shareImage = "https://budget.konticode.com/assets/media/layout-video/01-landing.png";
+?>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta
     name="description"
-    content="Budget Tracker App - Track spending, catch drift early, and turn your budget into action with smart categories, alerts, AI Coach, and managed support."
+    content="<?php echo htmlspecialchars($shareDescription, ENT_QUOTES, 'UTF-8'); ?>"
   />
-  <title>Budget Tracker - Turn budget visibility into better decisions</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="<?php echo htmlspecialchars($canonicalUrl, ENT_QUOTES, 'UTF-8'); ?>" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Budget Tracker" />
+  <meta property="og:url" content="<?php echo htmlspecialchars($canonicalUrl, ENT_QUOTES, 'UTF-8'); ?>" />
+  <meta property="og:title" content="<?php echo htmlspecialchars($shareTitle, ENT_QUOTES, 'UTF-8'); ?>" />
+  <meta property="og:description" content="<?php echo htmlspecialchars($shareDescription, ENT_QUOTES, 'UTF-8'); ?>" />
+  <meta property="og:image" content="<?php echo htmlspecialchars($shareImage, ENT_QUOTES, 'UTF-8'); ?>" />
+  <meta property="og:image:alt" content="Budget Tracker landing page preview" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="<?php echo htmlspecialchars($shareTitle, ENT_QUOTES, 'UTF-8'); ?>" />
+  <meta name="twitter:description" content="<?php echo htmlspecialchars($shareDescription, ENT_QUOTES, 'UTF-8'); ?>" />
+  <meta name="twitter:image" content="<?php echo htmlspecialchars($shareImage, ENT_QUOTES, 'UTF-8'); ?>" />
+  <meta name="twitter:image:alt" content="Budget Tracker landing page preview" />
+  <title><?php echo htmlspecialchars($shareTitle, ENT_QUOTES, 'UTF-8'); ?></title>
+  <link rel="stylesheet" href="/assets/css/tailwind.css">
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -290,6 +310,201 @@
       animation: bt-float 6s ease-in-out infinite;
     }
 
+    .fit-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      border: 1px solid rgba(10, 10, 11, 0.12);
+      background: rgba(255, 255, 255, 0.78);
+      color: rgba(10, 10, 11, 0.74);
+      padding: 0.85rem 1.1rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: all 180ms ease;
+    }
+
+    .fit-chip:hover {
+      border-color: rgba(0, 82, 255, 0.24);
+      color: var(--ink);
+      transform: translateY(-1px);
+    }
+
+    .fit-chip.is-active {
+      border-color: rgba(0, 82, 255, 0.22);
+      background: #0A0A0B;
+      color: white;
+      box-shadow: 0 18px 36px rgba(17, 24, 39, 0.12);
+    }
+
+    .fit-panel {
+      display: none;
+    }
+
+    .fit-panel.is-active {
+      display: block;
+    }
+
+    .mobile-nav-shell {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .mobile-nav-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      gap: 0.75rem;
+      border-radius: 1.1rem;
+      border: 1px solid rgba(10, 10, 11, 0.12);
+      background: rgba(255, 255, 255, 0.82);
+      color: rgba(10, 10, 11, 0.74);
+      padding: 0.9rem 1rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: all 180ms ease;
+    }
+
+    .mobile-nav-toggle:hover {
+      border-color: rgba(0, 82, 255, 0.18);
+      background: rgba(255, 255, 255, 0.94);
+    }
+
+    .mobile-nav-toggle.is-open {
+      border-color: rgba(0, 82, 255, 0.18);
+      background: white;
+      box-shadow: 0 16px 32px rgba(17, 24, 39, 0.12);
+    }
+
+    .mobile-nav-current {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.18rem;
+      min-width: 0;
+      flex: 1 1 auto;
+    }
+
+    .mobile-nav-current-label {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(91, 91, 97, 0.7);
+    }
+
+    .mobile-nav-current-value {
+      color: #0A0A0B;
+      font-size: 0.95rem;
+      line-height: 1.2;
+    }
+
+    .mobile-nav-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      border-radius: 999px;
+      border: 1px solid rgba(10, 10, 11, 0.08);
+      background: rgba(10, 10, 11, 0.04);
+      color: rgba(10, 10, 11, 0.68);
+      padding: 0.45rem 0.7rem;
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .mobile-nav-chevron {
+      width: 1rem;
+      height: 1rem;
+      flex: 0 0 auto;
+      color: rgba(91, 91, 97, 0.82);
+      transition: transform 180ms ease;
+    }
+
+    .mobile-nav-toggle.is-open .mobile-nav-chevron {
+      transform: rotate(180deg);
+    }
+
+    .mobile-nav-panel {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.65rem;
+      padding: 0.2rem 0 0;
+    }
+
+    .mobile-nav-panel-header {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 0.15rem 0 0.1rem;
+    }
+
+    .mobile-nav-panel-title {
+      color: #0A0A0B;
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .mobile-nav-panel-subtitle {
+      color: rgba(91, 91, 97, 0.78);
+      font-size: 0.8rem;
+      line-height: 1.35;
+    }
+
+    .mobile-nav-panel[hidden] {
+      display: none;
+    }
+
+    .mobile-quick-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      min-height: 3rem;
+      border-radius: 1rem;
+      border: 1px solid rgba(10, 10, 11, 0.1);
+      background: rgba(255, 255, 255, 0.86);
+      color: rgba(10, 10, 11, 0.74);
+      padding: 0.8rem 0.9rem;
+      font-size: 0.84rem;
+      font-weight: 600;
+      transition: all 180ms ease;
+    }
+
+    .mobile-quick-link.is-active {
+      border-color: rgba(0, 82, 255, 0.18);
+      background: #0A0A0B;
+      color: white;
+      box-shadow: 0 16px 32px rgba(17, 24, 39, 0.12);
+    }
+
+    .skip-link {
+      position: absolute;
+      left: 1rem;
+      top: -3.5rem;
+      z-index: 60;
+      border-radius: 999px;
+      background: #0A0A0B;
+      color: white;
+      padding: 0.8rem 1rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      box-shadow: 0 18px 36px rgba(17, 24, 39, 0.16);
+      transition: top 180ms ease;
+    }
+
+    .skip-link:focus {
+      top: 1rem;
+      outline: 3px solid rgba(0, 82, 255, 0.28);
+      outline-offset: 2px;
+    }
+
     .mockup-shell {
       position: relative;
     }
@@ -371,28 +586,56 @@
   </style>
 </head>
 <body id="top">
+  <a href="#main-content" class="skip-link">Skip to content</a>
   <header class="sticky top-0 z-30 border-b border-black/5 glass">
-    <div class="shell py-4 flex items-center justify-between gap-6">
-      <a href="#top" class="flex items-center gap-3">
-        <span class="w-9 h-9 rounded-xl bg-[#0A0A0B] flex items-center justify-center">
-          <span class="block w-3 h-3 bg-[#0052FF] rounded-sm rotate-12"></span>
-        </span>
-        <span class="text-xl tracking-tight" style="font-family: 'Playfair Display', serif;">Budget Tracker</span>
-      </a>
-      <nav class="hidden md:flex items-center gap-7 text-sm text-black/70">
-        <a href="#features" class="hover:text-[var(--accent)] transition">Features</a>
-        <a href="#pricing" class="hover:text-[var(--accent)] transition">Pricing</a>
-        <a href="#faq" class="hover:text-[var(--accent)] transition">FAQ</a>
-        <a href="#managed-service" class="hover:text-[var(--accent)] transition">Managed Service</a>
-      </nav>
-      <div class="flex items-center gap-2">
-        <a href="login.php" class="hidden sm:inline-flex cta-secondary px-4 py-2.5 text-sm font-medium">Client Login</a>
-        <a href="checkout.php?plan=growth" class="cta-primary px-4 py-2.5 text-sm">Start Growth</a>
+    <div class="shell py-4">
+      <div class="flex items-center justify-between gap-4">
+        <a href="#top" class="flex items-center gap-3">
+          <span class="w-9 h-9 rounded-xl bg-[#0A0A0B] flex items-center justify-center">
+            <span class="block w-3 h-3 bg-[#0052FF] rounded-sm rotate-12"></span>
+          </span>
+          <span class="text-xl tracking-tight" style="font-family: 'Playfair Display', serif;">Budget Tracker</span>
+        </a>
+        <nav class="hidden md:flex items-center gap-7 text-sm text-black/70">
+          <a href="#features" class="hover:text-[var(--accent)] transition">Features</a>
+          <a href="#pricing" class="hover:text-[var(--accent)] transition">Pricing</a>
+          <a href="#faq" class="hover:text-[var(--accent)] transition">FAQ</a>
+          <a href="#managed-service" class="hover:text-[var(--accent)] transition">Managed Service</a>
+        </nav>
+        <div class="flex items-center gap-2">
+          <a href="login.php" class="hidden sm:inline-flex cta-secondary px-4 py-2.5 text-sm font-medium">Client Login</a>
+          <a href="checkout.php?plan=growth" class="cta-primary px-4 py-2.5 text-sm">Start Growth</a>
+        </div>
+      </div>
+      <div class="md:hidden mt-4 pt-4 border-t border-black/5">
+        <div class="mobile-nav-shell">
+          <button type="button" class="mobile-nav-toggle" id="mobile-nav-toggle" aria-expanded="false" aria-controls="mobile-nav-panel">
+            <span class="mobile-nav-current">
+              <span class="mobile-nav-current-label">Page sections</span>
+              <span class="mobile-nav-current-value" id="mobile-nav-current">Features</span>
+            </span>
+            <span class="mobile-nav-action">Browse</span>
+            <span class="mobile-nav-chevron" aria-hidden="true">⌄</span>
+          </button>
+          <div class="mobile-nav-panel" id="mobile-nav-panel" aria-label="Mobile section navigation" hidden>
+            <div class="mobile-nav-panel-header">
+              <div>
+                <div class="mobile-nav-panel-title">Jump to a section</div>
+                <div class="mobile-nav-panel-subtitle">Move through the page without losing your place.</div>
+              </div>
+            </div>
+            <a href="#features" class="mobile-quick-link is-active" data-mobile-nav-link="features" data-mobile-nav-label="Features">Features</a>
+            <a href="#interactive-demo" class="mobile-quick-link" data-mobile-nav-link="interactive-demo" data-mobile-nav-label="See demo">See demo</a>
+            <a href="#pricing" class="mobile-quick-link" data-mobile-nav-link="pricing" data-mobile-nav-label="Pricing">Pricing</a>
+            <a href="#managed-service" class="mobile-quick-link" data-mobile-nav-link="managed-service" data-mobile-nav-label="Managed Service">Managed Service</a>
+            <a href="#faq" class="mobile-quick-link" data-mobile-nav-link="faq" data-mobile-nav-label="FAQ">FAQ</a>
+          </div>
+        </div>
       </div>
     </div>
   </header>
 
-  <main>
+  <main id="main-content" tabindex="-1">
     <section class="shell pt-10 md:pt-16 pb-12 md:pb-20 relative overflow-hidden">
       <div class="hero-mesh"></div>
       <div class="grid lg:grid-cols-12 gap-8 lg:gap-10 items-center relative">
@@ -404,15 +647,15 @@
           <h1 class="text-5xl md:text-7xl lg:text-[78px] mt-5 max-w-5xl">
             Track spending.<br />
             <span class="italic text-black/55">Catch drift.</span><br />
-            Turn budget into <span class="relative inline-block">action<span class="absolute left-0 right-0 bottom-1 h-3 bg-[#E0E7FF] -z-0"></span></span>.
+            Turn budget into action.
           </h1>
           <p class="mt-6 text-lg md:text-xl leading-relaxed text-black/68 max-w-2xl">
-            Budget Tracker helps solo operators and growing teams monitor category limits, review spending trends, and act before overspending compounds, starting at $5/mo.
+            Budget Tracker helps small teams spot overspending sooner, stay aligned on budget decisions, and take action before small misses become expensive habits.
           </p>
           <div class="mt-8 flex flex-wrap gap-3">
-            <a href="checkout.php?plan=growth" class="cta-primary px-6 py-3.5 text-sm md:text-base">Start Growth - $10/mo</a>
-            <a href="#pricing" class="cta-secondary px-6 py-3.5 text-sm md:text-base">Pricing Sheet</a>
-            <a href="#interactive-demo" class="cta-secondary px-6 py-3.5 text-sm md:text-base">Product Demo</a>
+            <a href="checkout.php?plan=growth" class="cta-primary px-6 py-3.5 text-sm md:text-base">Start Growth for $10/mo</a>
+            <a href="#pricing" class="cta-secondary px-6 py-3.5 text-sm md:text-base">See pricing</a>
+            <a href="#interactive-demo" class="cta-secondary px-6 py-3.5 text-sm md:text-base">See demo</a>
           </div>
           <div class="mt-12 grid grid-cols-3 gap-6 max-w-lg">
             <div class="border-l border-black/10 pl-4">
@@ -438,7 +681,7 @@
             </div>
             <div class="callout-chip dark bottom-right">
               <span class="mini-label text-white/55">Drift</span>
-              <span style="font-family: 'Playfair Display', serif; font-size: 1rem;">−$412 saved</span>
+              <span style="font-family: 'Playfair Display', serif; font-size: 1rem;">-$412 saved</span>
             </div>
 
             <div class="panel hero-grid rounded-[28px] p-5 md:p-6 overflow-hidden bt-float">
@@ -451,7 +694,7 @@
                   </div>
                   <span class="mini-label text-[#52525B] ml-2">budgettracker / overview</span>
                 </div>
-                <span class="mini-label text-[#52525B]">Dec · 2025</span>
+                <span class="mini-label text-[#52525B]">Aug · 2026</span>
               </div>
 
               <div class="flex items-end justify-between border-b border-black/5 pb-5">
@@ -530,29 +773,20 @@
       </div>
     </section>
 
-    <section class="section-divider py-6 overflow-hidden">
+    <section class="section-divider py-10 md:py-12">
       <div class="shell">
-        <div class="flex items-center gap-4">
-          <span class="mono text-[10px] uppercase tracking-[0.22em] text-[#52525B] shrink-0">Trusted by lean operators</span>
-          <div class="relative overflow-hidden flex-1">
-            <div class="logo-track">
-              <span class="text-xl md:text-2xl text-[#0A0A0B]/55 hover:text-[#0A0A0B] transition-colors" style="font-family: 'Playfair Display', serif;">Northwind Studio</span>
-              <span class="text-xl md:text-2xl text-[#0A0A0B]/55 hover:text-[#0A0A0B] transition-colors" style="font-family: 'Playfair Display', serif;">Helios Labs</span>
-              <span class="text-xl md:text-2xl text-[#0A0A0B]/55 hover:text-[#0A0A0B] transition-colors" style="font-family: 'Playfair Display', serif;">Atlas &amp; Co.</span>
-              <span class="text-xl md:text-2xl text-[#0A0A0B]/55 hover:text-[#0A0A0B] transition-colors" style="font-family: 'Playfair Display', serif;">Pinepoint</span>
-              <span class="text-xl md:text-2xl text-[#0A0A0B]/55 hover:text-[#0A0A0B] transition-colors" style="font-family: 'Playfair Display', serif;">Foundry Seven</span>
-              <span class="text-xl md:text-2xl text-[#0A0A0B]/55 hover:text-[#0A0A0B] transition-colors" style="font-family: 'Playfair Display', serif;">Mercatus</span>
-              <span class="text-xl md:text-2xl text-[#0A0A0B]/55 hover:text-[#0A0A0B] transition-colors" style="font-family: 'Playfair Display', serif;">Ember Holdings</span>
-              <span class="text-xl md:text-2xl text-[#0A0A0B]/55 hover:text-[#0A0A0B] transition-colors" style="font-family: 'Playfair Display', serif;">Quintile</span>
-              <span class="text-xl md:text-2xl text-[#0A0A0B]/55 hover:text-[#0A0A0B] transition-colors" style="font-family: 'Playfair Display', serif;">Northwind Studio</span>
-              <span class="text-xl md:text-2xl text-[#0A0A0B]/55 hover:text-[#0A0A0B] transition-colors" style="font-family: 'Playfair Display', serif;">Helios Labs</span>
-              <span class="text-xl md:text-2xl text-[#0A0A0B]/55 hover:text-[#0A0A0B] transition-colors" style="font-family: 'Playfair Display', serif;">Atlas &amp; Co.</span>
-              <span class="text-xl md:text-2xl text-[#0A0A0B]/55 hover:text-[#0A0A0B] transition-colors" style="font-family: 'Playfair Display', serif;">Pinepoint</span>
-              <span class="text-xl md:text-2xl text-[#0A0A0B]/55 hover:text-[#0A0A0B] transition-colors" style="font-family: 'Playfair Display', serif;">Foundry Seven</span>
-              <span class="text-xl md:text-2xl text-[#0A0A0B]/55 hover:text-[#0A0A0B] transition-colors" style="font-family: 'Playfair Display', serif;">Mercatus</span>
-              <span class="text-xl md:text-2xl text-[#0A0A0B]/55 hover:text-[#0A0A0B] transition-colors" style="font-family: 'Playfair Display', serif;">Ember Holdings</span>
-              <span class="text-xl md:text-2xl text-[#0A0A0B]/55 hover:text-[#0A0A0B] transition-colors" style="font-family: 'Playfair Display', serif;">Quintile</span>
-            </div>
+        <div class="grid gap-6 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+          <div>
+            <p class="mono text-[10px] uppercase tracking-[0.22em] text-[#52525B]">Built for focused teams</p>
+            <h2 class="text-3xl md:text-4xl mt-3">Made for the people who actually carry budget discipline week to week.</h2>
+          </div>
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <div class="panel-soft rounded-2xl px-4 py-4 text-sm text-black/68">Founders watching every dollar</div>
+            <div class="panel-soft rounded-2xl px-4 py-4 text-sm text-black/68">Operations leads keeping spending on pace</div>
+            <div class="panel-soft rounded-2xl px-4 py-4 text-sm text-black/68">Finance managers reducing monthly surprises</div>
+            <div class="panel-soft rounded-2xl px-4 py-4 text-sm text-black/68">Agencies balancing payroll, tools, and client work</div>
+            <div class="panel-soft rounded-2xl px-4 py-4 text-sm text-black/68">Service businesses tightening category control</div>
+            <div class="panel-soft rounded-2xl px-4 py-4 text-sm text-black/68">Growing teams adding structure before drift compounds</div>
           </div>
         </div>
       </div>
@@ -564,11 +798,11 @@
           <p class="eyebrow text-[var(--accent)]">Interactive Demo</p>
           <h2 class="text-4xl md:text-6xl mt-4">See how budget visibility becomes a weekly operating rhythm.</h2>
           <p class="mt-5 text-lg leading-relaxed text-black/64 max-w-xl">
-            The reference site leans hard into movement and proof. This version mirrors that with a focused demo section that shows alerts, review cadence, and AI Coach guidance working together.
+            See how alerts, review cadence, and AI Coach guidance work together to help your team catch drift earlier and act with more confidence.
           </p>
           <div class="mt-8 flex flex-wrap gap-3">
-            <a href="#interactive-demo" class="cta-primary px-6 py-3.5 text-sm md:text-base">Watch Product Demo</a>
-            <a href="#pricing" class="cta-secondary px-6 py-3.5 text-sm md:text-base">Open Pricing Sheet</a>
+            <a href="#interactive-demo" class="cta-primary px-6 py-3.5 text-sm md:text-base">See demo</a>
+            <a href="#pricing" class="cta-secondary px-6 py-3.5 text-sm md:text-base">See pricing</a>
           </div>
         </div>
         <div class="lg:col-span-7">
@@ -602,7 +836,7 @@
                 <div class="mt-5 space-y-3 text-sm text-white/72">
                   <div class="rounded-2xl border border-white/10 px-4 py-3">Biweekly reviews on Growth</div>
                   <div class="rounded-2xl border border-white/10 px-4 py-3">Weekly check-ins on Scale</div>
-                  <div class="rounded-2xl border border-white/10 px-4 py-3">Managed service path for higher-need teams</div>
+                  <div class="rounded-2xl border border-white/10 px-4 py-3">Managed service support when your team needs more help</div>
                 </div>
                 <a href="#managed-service" class="inline-flex items-center gap-2 mt-6 text-sm text-[#7aa2ff] hover:text-white transition">Explore managed service</a>
               </div>
@@ -617,7 +851,7 @@
         <p class="eyebrow text-[var(--accent)]">Features</p>
         <h2 class="text-4xl md:text-6xl mt-4">Everything you need to manage budget drift without getting buried in spreadsheets.</h2>
         <p class="mt-5 text-lg leading-relaxed text-black/64">
-          The experience is built for lean operators who want earlier signals, less ambiguity, and a clear path from self-serve software into deeper support when the business gets more complex.
+          Budget Tracker gives growing teams earlier signals, clearer decisions, and the confidence to stay ahead of drift before it turns into a bigger problem.
         </p>
       </div>
 
@@ -635,12 +869,12 @@
         <article class="feature-card panel-soft rounded-3xl p-6">
           <p class="eyebrow text-[var(--accent)]">03</p>
           <h3 class="text-2xl mt-3">AI Coach</h3>
-          <p class="mt-3 text-sm leading-6 text-black/62">Move from dashboards to decisions with generated recommendations and practical follow-up prompts.</p>
+          <p class="mt-3 text-sm leading-6 text-black/62">Move from dashboards to decisions with prioritized review prompts, next-step recommendations, and a clearer picture of what deserves attention first.</p>
         </article>
         <article class="feature-card panel-soft rounded-3xl p-6">
           <p class="eyebrow text-[var(--accent)]">04</p>
           <h3 class="text-2xl mt-3">Managed Path</h3>
-          <p class="mt-3 text-sm leading-6 text-black/62">Offer software and premium service from one product funnel, with a clear step-up path for higher-need teams.</p>
+          <p class="mt-3 text-sm leading-6 text-black/62">Start with software, then add hands-on help for setup, recurring reviews, and stronger follow-through when your budget process needs more support.</p>
         </article>
       </div>
     </section>
@@ -651,7 +885,7 @@
           <p class="eyebrow text-[var(--accent)]">ROI Calculator</p>
           <h2 class="text-4xl md:text-6xl mt-4">Estimate what one saved overspend cycle is worth.</h2>
           <p class="mt-5 text-lg leading-relaxed text-black/64 max-w-xl">
-            The reference site includes an ROI calculator to make the pricing feel small compared with the cost of missed drift. This version mirrors that idea with a lightweight live calculator.
+            Compare the cost of your plan with the value of catching overspend earlier, before a small drift turns into a larger operating problem.
           </p>
         </div>
         <div class="lg:col-span-7">
@@ -697,28 +931,73 @@
     <section class="dark-section py-20 md:py-28">
       <div class="shell grid lg:grid-cols-12 gap-8 items-start">
         <div class="lg:col-span-5">
-          <p class="eyebrow text-[#7aa2ff]">How it Works</p>
-          <h2 class="text-4xl md:text-6xl mt-4">Three plans, one clean path from visibility to support.</h2>
+          <p class="eyebrow text-[#7aa2ff]">Ways to Work Together</p>
+          <h2 class="text-4xl md:text-6xl mt-4">Choose the level of support that fits how your site is growing.</h2>
           <p class="mt-6 text-lg leading-relaxed text-white/70 max-w-xl">
-            Most teams start with Growth. It gives them enough monitoring, review rhythm, and guidance to feel real value quickly. Scale is there when the stakes, pace, or support needs go up.
+            Start with software if you want visibility. Move into monthly care when you want consistent improvements, lighter maintenance overhead, and a clearer rhythm for updates.
           </p>
+          <div class="mt-8 grid gap-3 text-sm text-white/72 max-w-lg">
+            <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-4">A simple path from product access to hands-on support as needs become more ongoing.</div>
+            <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-4">Built for teams that want the site improving steadily without reopening scope every time.</div>
+          </div>
         </div>
-        <div class="lg:col-span-7 grid md:grid-cols-3 gap-4">
+        <div class="lg:col-span-7 grid md:grid-cols-2 xl:grid-cols-3 gap-4">
           <article class="rounded-3xl border border-white/10 bg-white/5 p-6">
             <p class="eyebrow text-white/45">Starter</p>
             <h3 class="text-3xl mt-4">$5<span class="text-lg text-white/45">/mo</span></h3>
-            <p class="mt-4 text-white/72 text-sm leading-6">The lower-friction entry step for solo operators who want basic visibility and early warning signals.</p>
+            <p class="mt-4 text-white/72 text-sm leading-6">A simple starting point for smaller teams that want visibility and early warning signals without added complexity.</p>
           </article>
           <article class="rounded-3xl border border-[#0052FF] bg-[#0052FF]/10 p-6 shadow-[0_18px_40px_-25px_rgba(0,82,255,0.4)]">
             <p class="eyebrow text-[#7aa2ff]">Growth</p>
             <h3 class="text-3xl mt-4">$10<span class="text-lg text-white/45">/mo</span></h3>
-            <p class="mt-4 text-white/82 text-sm leading-6">The strongest default plan with biweekly reviews, full alerts, and AI Coach access.</p>
+            <p class="mt-4 text-white/82 text-sm leading-6">Our most popular plan, with biweekly reviews, full alerts, and AI Coach access.</p>
           </article>
           <article class="rounded-3xl border border-white/10 bg-white/5 p-6">
             <p class="eyebrow text-white/45">Scale</p>
-            <h3 class="text-3xl mt-4">$19.99<span class="text-lg text-white/45">/mo</span></h3>
-            <p class="mt-4 text-white/72 text-sm leading-6">For customers who want faster support, more planning help, and a stronger bridge into managed service.</p>
+            <h3 class="text-3xl mt-4">$20<span class="text-lg text-white/45">/mo</span></h3>
+            <p class="mt-4 text-white/72 text-sm leading-6">For teams that want faster support, deeper planning help, and a closer working relationship.</p>
           </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-divider py-20 md:py-28">
+      <div class="shell grid lg:grid-cols-12 gap-8 items-start">
+        <div class="lg:col-span-5">
+          <p class="eyebrow text-[var(--accent)]">Start Here</p>
+          <h2 class="text-4xl md:text-6xl mt-4">A clearer path from signup to a working budget rhythm.</h2>
+          <p class="mt-5 text-lg leading-relaxed text-black/64 max-w-xl">
+            Buyers usually want three things before they commit: confidence that this is for a team like theirs, clarity on what happens right after checkout, and a practical picture of what extra guidance actually looks like.
+          </p>
+          <div class="mt-8 flex flex-wrap gap-3" role="tablist" aria-label="Choose the plan-fit view">
+            <button type="button" id="fit-tab-growth" class="fit-chip is-active" data-fit-target="fit-growth" role="tab" aria-selected="true" aria-controls="fit-growth" tabindex="0">Most teams</button>
+            <button type="button" id="fit-tab-scale" class="fit-chip" data-fit-target="fit-scale" role="tab" aria-selected="false" aria-controls="fit-scale" tabindex="-1">Fast-moving teams</button>
+            <button type="button" id="fit-tab-managed" class="fit-chip" data-fit-target="fit-managed" role="tab" aria-selected="false" aria-controls="fit-managed" tabindex="-1">Need hands-on help</button>
+          </div>
+        </div>
+        <div class="lg:col-span-7">
+          <div id="fit-panel-surface" class="panel rounded-[30px] p-6 md:p-8" role="tabpanel" aria-labelledby="fit-tab-growth" tabindex="-1">
+            <div class="grid md:grid-cols-[1.1fr_0.9fr] gap-6">
+              <div>
+                <p id="fit-panel-eyebrow" class="eyebrow text-[var(--accent)]">Best fit right now</p>
+                <h3 id="fit-panel-title" class="text-3xl md:text-4xl mt-3">Growth is the right starting point for most small teams with real monthly spend.</h3>
+                <p id="fit-panel-body" class="mt-4 text-base leading-7 text-black/68">Choose this if one person is carrying budget accountability, reviews happen inconsistently, and you want earlier alerts without adding a lot of process.</p>
+                <div id="fit-panel-points" class="mt-6 grid gap-3 text-sm text-black/70">
+                  <div class="panel-soft rounded-2xl px-4 py-4">Best for founders, operators, and finance leads managing roughly 5 to 50 people.</div>
+                  <div class="panel-soft rounded-2xl px-4 py-4">Good when marketing, software, contractors, or travel start drifting faster than your team can spot manually.</div>
+                </div>
+              </div>
+              <div class="rounded-[26px] bg-[#0A0A0B] text-white p-6">
+                <p id="fit-panel-side-eyebrow" class="eyebrow text-[#7aa2ff]">What happens after signup</p>
+                <div id="fit-panel-side-content" class="mt-5 space-y-4 text-sm text-white/78 leading-6">
+                  <div>1. Pay securely through Stripe and create your account.</div>
+                  <div>2. Land in your dashboard and choose the categories you care about most.</div>
+                  <div>3. Start seeing drift signals and use AI Coach to decide what to review first.</div>
+                  <div>4. Build a repeatable weekly or biweekly review habit without starting from scratch.</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -726,31 +1005,31 @@
     <section id="pricing" class="shell py-20 md:py-28">
       <div class="max-w-3xl">
         <p class="eyebrow text-[var(--accent)]">Pricing</p>
-        <h2 class="text-4xl md:text-6xl mt-4">Choose the level of support your team actually needs.</h2>
-        <p class="mt-5 text-lg leading-relaxed text-black/64">
-          Growth is the strongest default. It includes alerts, AI Coach access, and enough ongoing value to justify a monthly subscription for solo operators and small teams.
-        </p>
+          <h2 class="text-4xl md:text-6xl mt-4">Start with the plan that fits today, then grow when you need more support.</h2>
+          <p class="mt-5 text-lg leading-relaxed text-black/64">
+          Most teams should begin with Growth. It gives you the visibility, alerts, and guidance to stay ahead without adding unnecessary complexity.
+          </p>
       </div>
 
       <div class="grid lg:grid-cols-3 gap-5 mt-12">
         <article class="price-card panel rounded-[28px] p-7 flex flex-col">
           <p class="eyebrow text-black/42">Starter</p>
           <h3 class="text-4xl mt-4">$5<span class="text-lg text-black/45">/mo</span></h3>
-          <p class="mt-4 text-sm text-black/62 leading-6">A low-friction starting point that works like the paid trial step for the product.</p>
+          <p class="mt-4 text-sm text-black/62 leading-6">A simple way to start tracking spend, reviewing trends, and catching early signs of drift.</p>
           <ul class="mt-6 space-y-3 text-sm text-black/68 flex-1">
             <li>Core dashboard access</li>
             <li>Monthly budget health report</li>
             <li>Early drift visibility by category</li>
             <li>Limited alerts and threshold monitoring</li>
-            <li>Best for solo operators testing the workflow</li>
+            <li>Best for smaller teams getting started</li>
           </ul>
-          <a href="checkout.php?plan=starter" class="cta-secondary mt-8 px-5 py-3 text-sm font-semibold">Start Starter</a>
+          <a href="checkout.php?plan=starter" class="cta-secondary mt-8 px-5 py-3 text-sm font-semibold">Choose Starter</a>
         </article>
 
         <article class="price-card rounded-[28px] border border-[#0052FF] bg-[#0A0A0B] text-white p-7 flex flex-col shadow-[0_24px_60px_-30px_rgba(0,82,255,0.5)]">
           <p class="eyebrow text-[#7aa2ff]">Best Value</p>
           <h3 class="text-4xl mt-4">Growth<span class="block text-2xl mt-1">$10/mo</span></h3>
-          <p class="mt-4 text-sm text-white/72 leading-6">Most teams should start here. It is the strongest mix of alerts, cadence, and guided action.</p>
+          <p class="mt-4 text-sm text-white/72 leading-6">The best fit for most teams, with the right mix of alerts, review cadence, and practical guidance.</p>
           <ul class="mt-6 space-y-3 text-sm text-white/80 flex-1">
             <li>Biweekly spend and variance reviews</li>
             <li>Full dashboard alerts</li>
@@ -758,22 +1037,28 @@
             <li>Monthly action plan</li>
             <li>AI Coach guidance</li>
           </ul>
-          <a href="checkout.php?plan=growth" class="cta-primary mt-8 px-5 py-3 text-sm">Start Growth</a>
+          <div class="mt-6 rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-sm text-white/74 leading-6">
+            AI Coach helps you decide what to review first, what changed, and what action to take next when drift starts building.
+          </div>
+          <a href="checkout.php?plan=growth" class="cta-primary mt-8 px-5 py-3 text-sm">Choose Growth</a>
         </article>
 
         <article class="price-card panel rounded-[28px] p-7 flex flex-col">
           <p class="eyebrow text-black/42">Scale</p>
-          <h3 class="text-4xl mt-4">$19.99<span class="text-lg text-black/45">/mo</span></h3>
-          <p class="mt-4 text-sm text-black/62 leading-6">For customers who need faster support, planning help, or a stepping stone into managed finance operations.</p>
+          <h3 class="text-4xl mt-4">$20<span class="text-lg text-black/45">/mo</span></h3>
+          <p class="mt-4 text-sm text-black/62 leading-6">For teams that want faster support, deeper planning help, and a more hands-on working rhythm.</p>
           <ul class="mt-6 space-y-3 text-sm text-black/68 flex-1">
             <li>Weekly advisor check-ins</li>
             <li>Forecasting and scenario planning</li>
             <li>Priority support lane</li>
             <li>Custom workflow guidance</li>
-            <li>Best bridge into managed service</li>
+            <li>Best fit for teams that want deeper support</li>
           </ul>
+          <div class="mt-6 rounded-2xl border border-black/10 bg-black/[0.02] px-4 py-4 text-sm text-black/66 leading-6">
+            Scale adds a closer working rhythm for teams that want more planning help and quicker follow-through before moving into managed service.
+          </div>
           <div class="mt-8 grid gap-3">
-            <a href="checkout.php?plan=scale" class="cta-secondary px-5 py-3 text-sm font-semibold">Start Scale</a>
+            <a href="checkout.php?plan=scale" class="cta-secondary px-5 py-3 text-sm font-semibold">Choose Scale</a>
             <a href="#managed-service" class="cta-secondary px-5 py-3 text-sm font-semibold">Explore Managed Service</a>
           </div>
         </article>
@@ -782,24 +1067,24 @@
 
     <section class="shell py-20 md:py-28">
       <div class="max-w-3xl">
-        <p class="eyebrow text-[var(--accent)]">Testimonials</p>
-        <h2 class="text-4xl md:text-6xl mt-4">Built for lean operators who need clarity, not finance theater.</h2>
+        <p class="eyebrow text-[var(--accent)]">Use Cases</p>
+        <h2 class="text-4xl md:text-6xl mt-4">Where teams usually feel the value first.</h2>
       </div>
       <div class="grid md:grid-cols-3 gap-4 mt-12">
         <article class="quote-card panel-soft rounded-3xl p-6 transition">
-          <p class="text-lg leading-8 text-black/72">&ldquo;The alerts gave us something actionable before the month was gone. That alone justified the subscription.&rdquo;</p>
-          <p class="mt-6 font-semibold">Operations lead</p>
-          <p class="text-sm text-black/52 mt-1">8-person services team</p>
+          <p class="eyebrow text-[var(--accent)]">Marketing spend</p>
+          <h3 class="text-3xl mt-3">Catch overspend before campaigns outrun the plan.</h3>
+          <p class="mt-4 text-base leading-7 text-black/72">Track category pace, see threshold pressure early, and make changes while there is still time to protect the month.</p>
         </article>
         <article class="quote-card panel-soft rounded-3xl p-6 transition">
-          <p class="text-lg leading-8 text-black/72">&ldquo;Growth felt like the right middle ground. Enough structure to stay ahead, not so much that it slowed us down.&rdquo;</p>
-          <p class="mt-6 font-semibold">Founder</p>
-          <p class="text-sm text-black/52 mt-1">Bootstrapped SaaS company</p>
+          <p class="eyebrow text-[var(--accent)]">Monthly review</p>
+          <h3 class="text-3xl mt-3">Give your team a simple rhythm for better budget decisions.</h3>
+          <p class="mt-4 text-base leading-7 text-black/72">Use recurring reviews, alerts, and AI Coach guidance to turn scattered information into a clear weekly and monthly routine.</p>
         </article>
         <article class="quote-card panel-soft rounded-3xl p-6 transition">
-          <p class="text-lg leading-8 text-black/72">&ldquo;We started self-serve and moved into managed support when the team got busier. The path up felt natural.&rdquo;</p>
-          <p class="mt-6 font-semibold">Finance manager</p>
-          <p class="text-sm text-black/52 mt-1">Growing agency</p>
+          <p class="eyebrow text-[var(--accent)]">Growing complexity</p>
+          <h3 class="text-3xl mt-3">Add support when the budget process starts to strain.</h3>
+          <p class="mt-4 text-base leading-7 text-black/72">Start with the software, then step into managed help when you need more accountability, planning support, and follow-through.</p>
         </article>
       </div>
     </section>
@@ -808,13 +1093,13 @@
       <div class="shell grid lg:grid-cols-12 gap-8 items-center">
         <div class="lg:col-span-7">
           <p class="eyebrow text-[var(--accent)]">Managed Service</p>
-          <h2 class="text-4xl md:text-6xl mt-4">Need a second pair of eyes instead of another dashboard?</h2>
+          <h2 class="text-4xl md:text-6xl mt-4">Need more support than software alone can give?</h2>
           <p class="mt-5 text-lg leading-relaxed text-black/64 max-w-3xl">
-            Use Budget Tracker as the self-serve entry point, then move higher-need customers into a premium service layer with setup help, recurring reviews, workflow tuning, and operating support.
+            Start with Budget Tracker, then add hands-on support when your team wants help with setup, recurring reviews, workflow tuning, and ongoing operating discipline.
           </p>
           <div class="mt-8 flex flex-wrap gap-3">
             <a href="#managed-service-contact" class="cta-primary px-6 py-3.5 text-sm md:text-base">Explore Managed Service</a>
-            <a href="#pricing" class="cta-secondary px-6 py-3.5 text-sm md:text-base">Open Pricing Sheet</a>
+            <a href="#pricing" class="cta-secondary px-6 py-3.5 text-sm md:text-base">See pricing</a>
           </div>
         </div>
         <div class="lg:col-span-5">
@@ -822,9 +1107,9 @@
             <p class="eyebrow text-[#7aa2ff]">Why teams upgrade</p>
             <ul class="mt-6 space-y-4 text-white/72">
               <li>Weekly support replaces biweekly cadence</li>
-              <li>Planning help goes deeper than software prompts</li>
+              <li>Planning help goes deeper than on-screen recommendations</li>
               <li>Stronger accountability around follow-through</li>
-              <li>Cleaner bridge from self-serve into premium ops support</li>
+              <li>A smoother move into higher-touch support</li>
             </ul>
           </div>
         </div>
@@ -836,52 +1121,55 @@
         <div class="lg:col-span-5">
           <p class="eyebrow text-[#7aa2ff]">Managed service</p>
           <h2 class="text-5xl md:text-6xl mt-4">Need a second pair of eyes?</h2>
-          <p class="text-white/70 mt-6 text-lg leading-relaxed max-w-md">Tell us about your team. We&apos;ll point you to the right plan or open a managed service conversation if that&apos;s a better fit.</p>
+          <p class="text-white/70 mt-6 text-lg leading-relaxed max-w-md">Tell us about your team. We&apos;ll recommend the right plan or help you decide whether managed support is the better fit.</p>
           <div class="mt-10 space-y-3 text-sm text-white/70">
             <div class="flex items-center gap-2"><span class="text-[#0052FF]">●</span>One business day response</div>
-            <div class="flex items-center gap-2"><span class="text-[#0052FF]">●</span>No sales pressure - straight recommendation</div>
-            <div class="flex items-center gap-2"><span class="text-[#0052FF]">●</span>Honest path from self-serve to managed</div>
+            <div class="flex items-center gap-2"><span class="text-[#0052FF]">●</span>No sales pressure, just a clear recommendation</div>
+            <div class="flex items-center gap-2"><span class="text-[#0052FF]">●</span>Guidance on when extra support is worth it</div>
           </div>
         </div>
         <div class="lg:col-span-7">
-          <form class="bg-white/5 border border-white/10 rounded-2xl p-7 md:p-10 backdrop-blur-sm">
+          <form id="lead-form" data-budget-contact-form action="/api/contact.php" method="post" class="bg-white/5 border border-white/10 rounded-2xl p-7 md:p-10 backdrop-blur-sm">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
                 <label for="lead-name-input" class="text-white/70 mono text-[10px] uppercase tracking-widest">Name</label>
-                <input id="lead-name-input" class="form-input" placeholder="Avery Tan" />
+                <input id="lead-name-input" name="name" class="form-input" placeholder="Avery Tan" autocomplete="name" required />
               </div>
               <div>
                 <label for="lead-email-input" class="text-white/70 mono text-[10px] uppercase tracking-widest">Work email</label>
-                <input id="lead-email-input" type="email" class="form-input" placeholder="you@company.com" />
+                <input id="lead-email-input" name="email" type="email" class="form-input" placeholder="you@company.com" autocomplete="email" required />
               </div>
               <div>
                 <label for="lead-company-size" class="text-white/70 mono text-[10px] uppercase tracking-widest">Company size</label>
-                <select id="lead-company-size" class="form-select">
-                  <option>Select team size</option>
-                  <option>1-5</option>
-                  <option>6-15</option>
-                  <option>16-50</option>
-                  <option>50+</option>
+                <select id="lead-company-size" name="company_size" class="form-select">
+                  <option value="">Select team size</option>
+                  <option value="1-5">1-5</option>
+                  <option value="6-15">6-15</option>
+                  <option value="16-50">16-50</option>
+                  <option value="50+">50+</option>
                 </select>
               </div>
               <div>
                 <label for="lead-plan-interest" class="text-white/70 mono text-[10px] uppercase tracking-widest">Plan interest</label>
-                <select id="lead-plan-interest" class="form-select">
-                  <option>Pick a plan</option>
-                  <option>Starter</option>
-                  <option>Growth</option>
-                  <option>Scale</option>
-                  <option>Managed service</option>
+                <select id="lead-plan-interest" name="plan_interest" class="form-select">
+                  <option value="">Pick a plan</option>
+                  <option value="Starter">Starter</option>
+                  <option value="Growth">Growth</option>
+                  <option value="Scale">Scale</option>
+                  <option value="Managed service">Managed service</option>
                 </select>
               </div>
             </div>
             <div class="mt-5">
               <label for="lead-message-input" class="text-white/70 mono text-[10px] uppercase tracking-widest">What are you trying to control?</label>
-              <textarea id="lead-message-input" rows="4" class="form-textarea" placeholder="Contractor spend, marketing drift, monthly close cadence..."></textarea>
+              <textarea id="lead-message-input" name="message" rows="4" class="form-textarea" placeholder="Contractor spend, marketing drift, monthly close cadence..." required></textarea>
             </div>
             <div class="mt-7 flex flex-wrap items-center justify-between gap-4">
-              <span class="text-xs text-white/50">We&apos;ll never share your details. Reply within one business day.</span>
-              <a href="mailto:sales@budgettrackerpro.com?subject=Managed%20service%20inquiry" class="cta-primary px-6 py-3 text-sm">Send message</a>
+              <div>
+                <span class="text-xs text-white/50">We&apos;ll never share your details. Reply within one business day.</span>
+                <p id="lead-form-status" data-budget-contact-status class="mt-2 text-sm text-white/70 hidden"></p>
+              </div>
+              <button id="lead-submit-button" type="submit" class="cta-primary px-6 py-3 text-sm">Send message</button>
             </div>
           </form>
         </div>
@@ -900,21 +1188,42 @@
             <span>Which plan should most people buy?</span>
             <span class="faq-icon" aria-hidden="true"></span>
           </summary>
-          <div class="faq-content">Growth is the strongest default. It includes alerts, AI Coach access, and enough ongoing value to justify a monthly subscription for solo operators and small teams.</div>
+          <div class="faq-content">Growth is the best fit for most teams because it combines alerts, AI Coach access, and a steady review rhythm without overcomplicating the process.</div>
         </details>
         <details class="faq-item">
           <summary class="faq-summary">
             <span>What is Scale for?</span>
             <span class="faq-icon" aria-hidden="true"></span>
           </summary>
-          <div class="faq-content">Scale is for customers who need faster support, planning help, or a stepping stone into managed finance operations. Weekly check-ins replace the biweekly cadence on Growth.</div>
+          <div class="faq-content">Scale is for teams that want faster support, deeper planning help, and weekly check-ins instead of the biweekly cadence on Growth.</div>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-summary">
+            <span>What happens right after I sign up?</span>
+            <span class="faq-icon" aria-hidden="true"></span>
+          </summary>
+          <div class="faq-content">You complete checkout, create or log into your account, and land in the dashboard ready to start tracking the categories that matter most. From there, alerts, review prompts, and your chosen plan support level start guiding the rhythm.</div>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-summary">
+            <span>What does AI Coach actually do?</span>
+            <span class="faq-icon" aria-hidden="true"></span>
+          </summary>
+          <div class="faq-content">AI Coach helps you turn raw budget signals into decisions by highlighting what needs attention first, suggesting practical next steps, and helping your team stay consistent in reviews and follow-through.</div>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-summary">
+            <span>What does managed service include?</span>
+            <span class="faq-icon" aria-hidden="true"></span>
+          </summary>
+          <div class="faq-content">Managed service adds hands-on help with setup, recurring reviews, planning support, and stronger accountability so your team is not left to figure out the process alone.</div>
         </details>
         <details class="faq-item">
           <summary class="faq-summary">
             <span>Can I sell both software and services?</span>
             <span class="faq-icon" aria-hidden="true"></span>
           </summary>
-          <div class="faq-content">Yes. The funnel supports low-ticket self-serve subscriptions and a premium service upsell from the same site. Managed clients usually graduate from Growth or Scale.</div>
+          <div class="faq-content">Yes. Many teams begin with the software, then add managed support when they want more hands-on help with setup, reviews, and follow-through.</div>
         </details>
         <details class="faq-item">
           <summary class="faq-summary">
@@ -928,14 +1237,14 @@
             <span>Is there a free trial?</span>
             <span class="faq-icon" aria-hidden="true"></span>
           </summary>
-          <div class="faq-content">Starter is intentionally priced at $5/mo as the trial step. It is lower friction than a free trial and proves the workflow before you commit to Growth.</div>
+          <div class="faq-content">Starter gives you a low-risk way to get real visibility first, then move up to Growth when you want fuller alerts and more guidance.</div>
         </details>
         <details class="faq-item">
           <summary class="faq-summary">
             <span>What do I need before taking payments?</span>
             <span class="faq-icon" aria-hidden="true"></span>
           </summary>
-          <div class="faq-content">Add your Stripe Payment Links in <code>config/payments.local.php</code> or set the matching <code>BT_STRIPE_*_LINK</code> environment variables. Checkout works the moment links are configured.</div>
+          <div class="faq-content">Just choose the plan that fits your team and complete checkout securely with Stripe. If you need help selecting the right starting point, we can guide you before you buy.</div>
         </details>
       </div>
     </section>
@@ -949,7 +1258,7 @@
           <h2 class="text-5xl md:text-7xl lg:text-[88px] mt-5">Turn budget visibility into <span class="italic text-white/55">better decisions.</span></h2>
           <div class="mt-9 flex flex-wrap gap-3">
             <a href="checkout.php?plan=growth" class="cta-primary px-6 py-3.5 text-sm md:text-base">Start Growth - $10/mo</a>
-            <a href="pricing-sheet.php" class="cta-secondary px-6 py-3.5 text-sm md:text-base text-white border-white/20 bg-white/5">Pricing Sheet</a>
+            <a href="#pricing" class="cta-secondary px-6 py-3.5 text-sm md:text-base text-white border-white/20 bg-white/5">See pricing</a>
           </div>
         </div>
 
@@ -960,15 +1269,15 @@
               <li><a href="#features" class="hover:text-white">Features</a></li>
               <li><a href="#calculator" class="hover:text-white">ROI calculator</a></li>
               <li><a href="#pricing" class="hover:text-white">Pricing</a></li>
-              <li><a href="#pricing" class="hover:text-white">Pricing Sheet</a></li>
-              <li><a href="#interactive-demo" class="hover:text-white">Product demo</a></li>
+              <li><a href="#pricing" class="hover:text-white">See pricing</a></li>
+              <li><a href="#interactive-demo" class="hover:text-white">See demo</a></li>
             </ul>
           </div>
           <div>
             <div class="mono text-[10px] uppercase tracking-[0.22em] text-white/40 mb-4">Company</div>
             <ul class="space-y-3 text-white/74">
               <li><a href="#managed-service" class="hover:text-white">Managed service</a></li>
-              <li><a href="mailto:sales@budgettrackerpro.com" class="hover:text-white">Contact sales</a></li>
+              <li><a href="mailto:contact@budget.konticode.com" class="hover:text-white">Contact us</a></li>
               <li><a href="#faq" class="hover:text-white">FAQ</a></li>
               <li><a href="login.php" class="hover:text-white">Client Login</a></li>
             </ul>
@@ -984,13 +1293,250 @@
           <span>&copy; <?php echo date("Y"); ?> Budget Tracker &middot; Konticode</span>
         </div>
         <div class="flex flex-wrap gap-6">
-          <span>Built for lean operators.</span>
+          <span>Built for focused teams.</span>
           <a href="#top" class="hover:text-white transition">budget.konticode.com</a>
         </div>
       </div>
     </div>
   </footer>
   <script>
+    (function () {
+      const mobileLinks = Array.from(document.querySelectorAll("[data-mobile-nav-link]"));
+      const mobileToggle = document.getElementById("mobile-nav-toggle");
+      const mobilePanel = document.getElementById("mobile-nav-panel");
+      const mobileCurrent = document.getElementById("mobile-nav-current");
+
+      if (!mobileLinks.length || !("IntersectionObserver" in window)) {
+        return;
+      }
+
+      const sectionIds = mobileLinks
+        .map(function (link) {
+          return link.getAttribute("data-mobile-nav-link");
+        })
+        .filter(Boolean);
+
+      const sections = sectionIds
+        .map(function (id) {
+          return document.getElementById(id);
+        })
+        .filter(Boolean);
+
+      function setActiveMobileLink(id) {
+        mobileLinks.forEach(function (link) {
+          const isActive = link.getAttribute("data-mobile-nav-link") === id;
+          link.classList.toggle("is-active", isActive);
+          if (isActive && mobileCurrent) {
+            mobileCurrent.textContent = link.getAttribute("data-mobile-nav-label") || link.textContent.trim();
+          }
+        });
+      }
+
+      function setMobilePanelOpen(isOpen) {
+        if (!mobileToggle || !mobilePanel) {
+          return;
+        }
+
+        mobileToggle.classList.toggle("is-open", isOpen);
+        mobileToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        mobilePanel.hidden = !isOpen;
+      }
+
+      const observer = new IntersectionObserver(function (entries) {
+        const visible = entries
+          .filter(function (entry) {
+            return entry.isIntersecting;
+          })
+          .sort(function (a, b) {
+            return b.intersectionRatio - a.intersectionRatio;
+          });
+
+        if (visible.length) {
+          setActiveMobileLink(visible[0].target.id);
+        }
+      }, {
+        rootMargin: "-20% 0px -55% 0px",
+        threshold: [0.2, 0.45, 0.7]
+      });
+
+      sections.forEach(function (section) {
+        observer.observe(section);
+      });
+
+      mobileLinks.forEach(function (link) {
+        link.addEventListener("click", function () {
+          setActiveMobileLink(link.getAttribute("data-mobile-nav-link"));
+          setMobilePanelOpen(false);
+        });
+      });
+
+      if (mobileToggle && mobilePanel) {
+        mobileToggle.addEventListener("click", function () {
+          const isOpen = mobileToggle.getAttribute("aria-expanded") === "true";
+          setMobilePanelOpen(!isOpen);
+        });
+      }
+
+      setMobilePanelOpen(false);
+    })();
+
+    (function () {
+      const chips = Array.from(document.querySelectorAll("[data-fit-target]"));
+      const panelSurface = document.getElementById("fit-panel-surface");
+      const panelEyebrow = document.getElementById("fit-panel-eyebrow");
+      const panelTitle = document.getElementById("fit-panel-title");
+      const panelBody = document.getElementById("fit-panel-body");
+      const panelPoints = document.getElementById("fit-panel-points");
+      const panelSideEyebrow = document.getElementById("fit-panel-side-eyebrow");
+      const panelSideContent = document.getElementById("fit-panel-side-content");
+
+      if (!chips.length || !panelSurface || !panelEyebrow || !panelTitle || !panelBody || !panelPoints || !panelSideEyebrow || !panelSideContent) {
+        return;
+      }
+
+      const fitContent = {
+        "fit-growth": {
+          eyebrow: "Best fit right now",
+          title: "Growth is the right starting point for most small teams with real monthly spend.",
+          body: "Choose this if one person is carrying budget accountability, reviews happen inconsistently, and you want earlier alerts without adding a lot of process.",
+          points: [
+            "Best for founders, operators, and finance leads managing roughly 5 to 50 people.",
+            "Good when marketing, software, contractors, or travel start drifting faster than your team can spot manually."
+          ],
+          sideEyebrow: "What happens after signup",
+          sideItems: [
+            "1. Pay securely through Stripe and create your account.",
+            "2. Land in your dashboard and choose the categories you care about most.",
+            "3. Start seeing drift signals and use AI Coach to decide what to review first.",
+            "4. Build a repeatable weekly or biweekly review habit without starting from scratch."
+          ]
+        },
+        "fit-scale": {
+          eyebrow: "When to move up",
+          title: "Scale is for teams that need quicker follow-through and deeper planning support.",
+          body: "Choose this when the cost of delay is higher, spending decisions are spread across more people, or you need a tighter review rhythm than Growth provides.",
+          points: [
+            "Best for teams with more moving parts, more approvals, or higher stakes around forecast accuracy.",
+            "Includes weekly advisor check-ins, deeper planning help, and a faster support lane."
+          ],
+          sideEyebrow: "What AI Coach means in practice",
+          sideItems: [
+            "It flags which categories deserve attention first instead of making you hunt through the dashboard.",
+            "It suggests next actions like pausing a spend line, reviewing contractor scope, or tightening a threshold.",
+            "It helps turn alerts into a review list your team can actually act on that week."
+          ]
+        },
+        "fit-managed": {
+          eyebrow: "Higher-touch support",
+          title: "Managed service is for teams that want a second pair of eyes, not just another tool.",
+          body: "Choose this when the budget process is already straining, owners need accountability, or someone wants help translating alerts into a cleaner operating rhythm.",
+          points: [
+            "Best for teams that want support around setup, recurring reviews, planning decisions, and follow-through.",
+            "A good fit when you know you need more structure but are not ready for a full finance hire."
+          ],
+          sideEyebrow: "What managed service includes",
+          sideItems: [
+            "Hands-on setup help so the right categories, thresholds, and review cadence are in place.",
+            "Recurring budget reviews with a clearer list of what changed, what matters, and what to do next.",
+            "Support tightening the process around approvals, category ownership, and monthly decision-making."
+          ]
+        }
+      };
+
+      const validTargets = new Set(chips.map(function (chip) {
+        return chip.getAttribute("data-fit-target");
+      }));
+
+      function activate(targetId, options) {
+        const shouldFocus = options && options.focusTab;
+        const shouldUpdateHash = !options || options.updateHash !== false;
+        const safeTargetId = validTargets.has(targetId) ? targetId : "fit-growth";
+        const activeContent = fitContent[safeTargetId] || fitContent["fit-growth"];
+
+        chips.forEach(function (chip) {
+          const isActive = chip.getAttribute("data-fit-target") === safeTargetId;
+          chip.classList.toggle("is-active", isActive);
+          chip.setAttribute("aria-selected", isActive ? "true" : "false");
+          chip.tabIndex = isActive ? 0 : -1;
+          if (isActive && shouldFocus) {
+            chip.focus();
+          }
+        });
+
+        panelSurface.setAttribute("aria-labelledby", "fit-tab-" + safeTargetId.replace("fit-", ""));
+        panelEyebrow.textContent = activeContent.eyebrow;
+        panelTitle.textContent = activeContent.title;
+        panelBody.textContent = activeContent.body;
+        panelSideEyebrow.textContent = activeContent.sideEyebrow;
+
+        panelPoints.innerHTML = "";
+        activeContent.points.forEach(function (point) {
+          const item = document.createElement("div");
+          item.className = "panel-soft rounded-2xl px-4 py-4";
+          item.textContent = point;
+          panelPoints.appendChild(item);
+        });
+
+        panelSideContent.innerHTML = "";
+        activeContent.sideItems.forEach(function (itemText) {
+          const item = document.createElement("div");
+          item.textContent = itemText;
+          panelSideContent.appendChild(item);
+        });
+
+        if (shouldUpdateHash) {
+          if (window.history && typeof window.history.replaceState === "function") {
+            window.history.replaceState(null, "", "#" + safeTargetId);
+          } else {
+            window.location.hash = safeTargetId;
+          }
+        }
+      }
+
+      function moveTab(currentIndex, direction) {
+        const nextIndex = (currentIndex + direction + chips.length) % chips.length;
+        const nextChip = chips[nextIndex];
+        if (nextChip) {
+          activate(nextChip.getAttribute("data-fit-target"), { focusTab: true });
+        }
+      }
+
+      chips.forEach(function (chip, index) {
+        chip.addEventListener("click", function () {
+          activate(chip.getAttribute("data-fit-target"), { focusTab: false });
+        });
+
+        chip.addEventListener("keydown", function (event) {
+          if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+            event.preventDefault();
+            moveTab(index, 1);
+          } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+            event.preventDefault();
+            moveTab(index, -1);
+          } else if (event.key === "Home") {
+            event.preventDefault();
+            activate(chips[0].getAttribute("data-fit-target"), { focusTab: true });
+          } else if (event.key === "End") {
+            event.preventDefault();
+            activate(chips[chips.length - 1].getAttribute("data-fit-target"), { focusTab: true });
+          }
+        });
+      });
+
+      window.addEventListener("hashchange", function () {
+        const hashTarget = (window.location.hash || "").replace(/^#/, "");
+        if (validTargets.has(hashTarget)) {
+          activate(hashTarget, { focusTab: false, updateHash: false });
+        }
+      });
+
+      const initialTarget = (window.location.hash || "").replace(/^#/, "");
+      activate(validTargets.has(initialTarget) ? initialTarget : "fit-growth", {
+        focusTab: false,
+        updateHash: validTargets.has(initialTarget)
+      });
+    })();
+
     (function () {
       const budget = document.getElementById("calc-budget");
       const drift = document.getElementById("calc-drift");
@@ -1041,6 +1587,79 @@
       });
 
       render();
+    })();
+
+    (function () {
+      const form = document.querySelector("[data-budget-contact-form]");
+      const status = document.querySelector("[data-budget-contact-status]");
+      const submitButton = document.getElementById("lead-submit-button");
+
+      if (!form || !status || !submitButton) {
+        return;
+      }
+
+      async function postLead(url, payload) {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        let data = {};
+        try {
+          data = await response.json();
+        } catch (error) {
+          data = { error: "Unexpected response from the server." };
+        }
+
+        return { response, data };
+      }
+
+      function setStatus(message, tone) {
+        status.textContent = message;
+        status.classList.remove("hidden", "text-emerald-300", "text-rose-300", "text-white/70");
+        status.classList.add(tone);
+      }
+
+      form.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        submitButton.disabled = true;
+        submitButton.textContent = "Sending...";
+        setStatus("Sending your message...", "text-white/70");
+
+        const payload = {
+          name: document.getElementById("lead-name-input").value.trim(),
+          email: document.getElementById("lead-email-input").value.trim(),
+          company_size: document.getElementById("lead-company-size").value.trim(),
+          plan_interest: document.getElementById("lead-plan-interest").value.trim(),
+          message: document.getElementById("lead-message-input").value.trim()
+        };
+
+        try {
+          let result = await postLead("/api/contact", payload);
+          if (result.response.status === 404 || result.response.status === 405) {
+            result = await postLead("/api/contact.php", payload);
+          }
+
+          const response = result.response;
+          const data = result.data;
+
+          if (!response.ok || !data.ok) {
+            throw new Error(data.error || "Something went wrong.");
+          }
+
+          form.reset();
+          setStatus(data.message || "Thanks. We'll be in touch within one business day.", "text-emerald-300");
+        } catch (error) {
+          setStatus(error.message || "Unable to send your message right now.", "text-rose-300");
+        } finally {
+          submitButton.disabled = false;
+          submitButton.textContent = "Send message";
+        }
+      });
     })();
   </script>
 </body>

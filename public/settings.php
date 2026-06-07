@@ -58,7 +58,7 @@ $aiSettings = getUserAiSettings($userId);
 <head>
     <meta charset="UTF-8">
     <title>Settings - Driftwise</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/assets/css/tailwind.css">
     <link rel="stylesheet" href="css/style.css">
     <style>
         @keyframes toast-in {

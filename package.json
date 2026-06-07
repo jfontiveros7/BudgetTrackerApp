@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "build:css": "tailwindcss -i ./scripts/tailwind-input.css -o ./public/assets/css/tailwind.css --minify"
+  },
+  "dependencies": {
+    "resend": "^6.12.4"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.17"
+  }
+}

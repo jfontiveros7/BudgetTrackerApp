@@ -2,11 +2,32 @@
 session_start();
 define("BT_ALLOW_DB_DEGRADED", true);
 require_once __DIR__ . "/../src/auth.php";
+require_once __DIR__ . "/../src/purchases.php";
 
 $error = "";
-$email = "";
+$email = trim((string) ($_SESSION["completed_purchase_email"] ?? ""));
 $selectedPlan = normalizePlan($_GET["plan"] ?? "", "");
 $completedPlan = normalizePlan($_SESSION["completed_purchase_plan"] ?? "", "");
+$purchaseToken = trim((string) ($_POST["purchase_token"] ?? ($_GET["purchase_token"] ?? ($_SESSION["completed_purchase_token"] ?? ""))));
+$purchaseEmail = trim((string) ($_SESSION["completed_purchase_email"] ?? ""));
+$purchaseClaim = $purchaseToken !== "" ? btGetPurchaseClaimByToken($purchaseToken) : null;
+if ($purchaseClaim) {
+    $claimPlan = normalizePlan((string) ($purchaseClaim["plan"] ?? ""), "");
+    if ($selectedPlan === "" && $claimPlan !== "") {
+        $selectedPlan = $claimPlan;
+    }
+    if ($completedPlan === "" && $claimPlan !== "") {
+        $completedPlan = $claimPlan;
+        $_SESSION["completed_purchase_plan"] = $claimPlan;
+    }
+    if ($purchaseEmail === "" && !empty($purchaseClaim["stripe_customer_email"])) {
+        $purchaseEmail = trim((string) $purchaseClaim["stripe_customer_email"]);
+        $_SESSION["completed_purchase_email"] = $purchaseEmail;
+        if ($email === "") {
+            $email = $purchaseEmail;
+        }
+    }
+}
 $planLabels = [
     "starter" => "Starter",
     "growth" => "Growth",
@@ -15,10 +36,16 @@ $planLabels = [
 $selectedPlanLabel = $planLabels[$selectedPlan] ?? null;
 $completedPlanLabel = $planLabels[$completedPlan] ?? null;
 $canCreateAccount = $completedPlan !== "";
-$showForgotPassword = $completedPlan !== "";
+$showForgotPassword = true;
 $authAvailable = btDatabaseAvailable();
 $authStatusMessage = btDatabaseStatusMessage();
 $requestMethod = $_SERVER["REQUEST_METHOD"] ?? "GET";
+$publicSiteUrl = "/";
+$registerUrl = $canCreateAccount
+    ? "register.php?plan=" . urlencode($completedPlan) . ($purchaseToken !== "" ? "&purchase_token=" . urlencode($purchaseToken) : "")
+    : $publicSiteUrl . "#pricing";
+$checkoutUrl = $selectedPlan !== "" ? "checkout.php?plan=" . urlencode($selectedPlan) : $publicSiteUrl . "#pricing";
+$supportEmail = "contact@budget.konticode.com";
 
 if (isset($_SESSION["user_id"])) {
     header("Location: dashboard.php");
@@ -41,9 +68,14 @@ if ($requestMethod === "POST") {
         if ($user) {
             session_regenerate_id(true);
             if ($completedPlan !== "" && ($postedPlan === "" || $postedPlan === $completedPlan)) {
-                updateUserPlan((int) $user["id"], $completedPlan);
-                unset($_SESSION["completed_purchase_plan"], $_SESSION["pending_plan"]);
-                $_SESSION["purchase_flash"] = $planLabels[$completedPlan] . " access is now active on your account.";
+                $claimedPurchase = btClaimPurchaseForUser((int) $user["id"], $email, $purchaseToken, $completedPlan);
+                $activatedPlan = $completedPlan;
+                if (!empty($claimedPurchase["ok"]) && !empty($claimedPurchase["plan"])) {
+                    $activatedPlan = normalizePlan($claimedPurchase["plan"], $completedPlan);
+                }
+                updateUserPlan((int) $user["id"], $activatedPlan);
+                unset($_SESSION["completed_purchase_plan"], $_SESSION["pending_plan"], $_SESSION["completed_purchase_token"], $_SESSION["pending_purchase_token"], $_SESSION["completed_purchase_email"]);
+                $_SESSION["purchase_flash"] = $planLabels[$activatedPlan] . " access is now active on your account.";
                 header("Location: dashboard.php");
                 exit;
             }
@@ -67,7 +99,7 @@ if ($requestMethod === "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Client Login - Budget Tracker</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/assets/css/tailwind.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -216,15 +248,15 @@ if ($requestMethod === "POST") {
 <body>
     <header class="sticky top-0 z-30 border-b border-black/5 glass">
         <div class="shell py-4 flex items-center justify-between gap-6">
-            <a href="landing.php#top" class="flex items-center gap-3">
+            <a href="<?php echo htmlspecialchars($publicSiteUrl); ?>" class="flex items-center gap-3">
                 <span class="w-9 h-9 rounded-xl bg-[#0A0A0B] flex items-center justify-center">
                     <span class="block w-3 h-3 bg-[#0052FF] rounded-sm rotate-12"></span>
                 </span>
                 <span class="text-xl tracking-tight" style="font-family: 'Playfair Display', serif;">Budget Tracker</span>
             </a>
             <div class="hidden md:flex items-center gap-3">
-                <a href="landing.php#pricing" class="cta-secondary px-4 py-2.5 text-sm">Pricing</a>
-                <a href="landing.php#faq" class="cta-secondary px-4 py-2.5 text-sm">FAQ</a>
+                <a href="<?php echo htmlspecialchars($publicSiteUrl); ?>#pricing" class="cta-secondary px-4 py-2.5 text-sm">See pricing</a>
+                <a href="<?php echo htmlspecialchars($publicSiteUrl); ?>#faq" class="cta-secondary px-4 py-2.5 text-sm">FAQ</a>
             </div>
         </div>
     </header>
@@ -286,6 +318,17 @@ if ($requestMethod === "POST") {
                             <div class="mb-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900">
                                 Your <strong><?php echo htmlspecialchars($completedPlanLabel); ?></strong> payment is complete. Sign in to activate it on your account.
                             </div>
+                            <div class="mb-6 rounded-[24px] border border-black/8 bg-[#F9F8F6] p-5">
+                                <p class="eyebrow text-[var(--accent)]">Activate your access</p>
+                                <h2 class="text-3xl mt-3">Choose the fastest next step for this paid plan.</h2>
+                                <p class="mt-3 text-sm text-black/62 leading-6">
+                                    If you are brand new, create the account you want to own this <?php echo htmlspecialchars($completedPlanLabel); ?> access. If you already have an account, sign in below and we will attach the plan automatically.
+                                </p>
+                                <div class="mt-5 flex flex-col gap-3 sm:flex-row">
+                                    <a href="<?php echo htmlspecialchars($registerUrl); ?>" class="cta-primary px-5 py-3 text-sm">Create account now</a>
+                                    <a href="#sign-in-form" class="cta-secondary px-5 py-3 text-sm">I already have an account</a>
+                                </div>
+                            </div>
                         <?php elseif ($selectedPlanLabel !== null): ?>
                             <div class="mb-4 rounded-2xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-900">
                                 You selected the <strong><?php echo htmlspecialchars($selectedPlanLabel); ?></strong> plan. Sign in to continue your purchase flow.
@@ -302,8 +345,9 @@ if ($requestMethod === "POST") {
                             </div>
                         <?php endif; ?>
 
-                        <form method="POST" class="space-y-4">
+                        <form id="sign-in-form" method="POST" class="space-y-4">
                             <input type="hidden" name="plan" value="<?php echo htmlspecialchars($selectedPlan); ?>">
+                            <input type="hidden" name="purchase_token" value="<?php echo htmlspecialchars($purchaseToken); ?>">
                             <div>
                                 <label class="mono text-[10px] uppercase tracking-[0.22em] text-black/55">Email</label>
                                 <input
@@ -315,6 +359,9 @@ if ($requestMethod === "POST") {
                                     class="field mt-2"
                                     placeholder="you@company.com"
                                 >
+                                <?php if ($purchaseEmail !== ""): ?>
+                                    <p class="mt-2 text-xs text-black/45">Payment email on file: <?php echo htmlspecialchars($purchaseEmail); ?></p>
+                                <?php endif; ?>
                             </div>
                             <div>
                                 <label class="mono text-[10px] uppercase tracking-[0.22em] text-black/55">Password</label>
@@ -334,30 +381,51 @@ if ($requestMethod === "POST") {
                             >
                                 <?php echo $authAvailable ? "Sign In" : "Temporarily Unavailable"; ?>
                             </button>
-                            <?php if ($showForgotPassword && $authAvailable): ?>
-                                <div class="text-right">
-                                    <a href="forgot_password.php" class="text-sm text-[var(--accent)] hover:text-[var(--accent-strong)]">Forgot password?</a>
-                                </div>
-                            <?php endif; ?>
+                            <div class="flex flex-wrap items-center justify-between gap-3 text-sm">
+                                <?php if ($showForgotPassword && $authAvailable): ?>
+                                    <a href="forgot_password.php" class="text-[var(--accent)] hover:text-[var(--accent-strong)]">Forgot password?</a>
+                                <?php else: ?>
+                                    <span class="text-black/45">Password recovery is temporarily unavailable.</span>
+                                <?php endif; ?>
+                                <a href="mailto:<?php echo htmlspecialchars($supportEmail); ?>" class="text-black/55 hover:text-black">Need help activating access?</a>
+                            </div>
                         </form>
 
-                        <div class="mt-6 rounded-3xl bg-[#0A0A0B] text-white p-5">
-                            <p class="eyebrow text-[#7aa2ff]">Need an account?</p>
-                            <?php if ($canCreateAccount): ?>
-                                <p class="mt-3 text-sm text-white/74 leading-6">
-                                    Your purchase is ready to attach. Create the account with the same email you used for checkout.
+                        <div class="mt-6 grid gap-4 md:grid-cols-2">
+                            <div class="rounded-3xl bg-[#0A0A0B] text-white p-5">
+                                <p class="eyebrow text-[#7aa2ff]">Create account</p>
+                                <?php if ($canCreateAccount): ?>
+                                    <p class="mt-3 text-sm text-white/74 leading-6">
+                                        Your purchase is ready to attach. Create the account with the same email you used for checkout so your <?php echo htmlspecialchars($completedPlanLabel ?? "plan"); ?> access activates immediately.
+                                    </p>
+                                    <a href="<?php echo htmlspecialchars($registerUrl); ?>" class="cta-primary mt-5 px-5 py-3 text-sm">
+                                        Create Account
+                                    </a>
+                                <?php else: ?>
+                                    <p class="mt-3 text-sm text-white/74 leading-6">
+                                        New accounts open after a completed purchase so we know which plan to activate for you. Start from pricing, then come back here to finish setup.
+                                    </p>
+                                    <a href="<?php echo htmlspecialchars($checkoutUrl); ?>" class="cta-secondary mt-5 px-5 py-3 text-sm text-white border-white/20 bg-white/5">
+                                        <?php echo $selectedPlanLabel !== null ? "Continue " . htmlspecialchars($selectedPlanLabel) : "See pricing"; ?>
+                                    </a>
+                                <?php endif; ?>
+                            </div>
+
+                            <div class="panel-soft rounded-3xl p-5">
+                                <p class="eyebrow text-[var(--accent)]">Recovery path</p>
+                                <p class="mt-3 text-sm text-black/68 leading-6">
+                                    Already paid but stuck? Use the same email as your payment receipt when possible, or reset your password if the account already exists.
                                 </p>
-                                <a href="register.php?plan=<?php echo urlencode($completedPlan); ?>" class="cta-primary mt-5 px-5 py-3 text-sm">
-                                    Create Account
-                                </a>
-                            <?php else: ?>
-                                <p class="mt-3 text-sm text-white/74 leading-6">
-                                    Account creation opens after a completed purchase so we know which plan to activate for you.
-                                </p>
-                                <a href="landing.php#pricing" class="cta-secondary mt-5 px-5 py-3 text-sm text-white border-white/20 bg-white/5">
-                                    View Pricing
-                                </a>
-                            <?php endif; ?>
+                                <?php if ($purchaseEmail !== ""): ?>
+                                    <p class="mt-3 text-sm text-black/55 leading-6">
+                                        Receipt email on file: <strong class="text-black"><?php echo htmlspecialchars($purchaseEmail); ?></strong>
+                                    </p>
+                                <?php endif; ?>
+                                <div class="mt-5 flex flex-wrap gap-3">
+                                    <a href="forgot_password.php" class="cta-secondary px-5 py-3 text-sm">Reset password</a>
+                                    <a href="mailto:<?php echo htmlspecialchars($supportEmail); ?>" class="cta-secondary px-5 py-3 text-sm">Contact us</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </section>

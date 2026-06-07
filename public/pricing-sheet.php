@@ -8,26 +8,27 @@ header("Expires: 0");
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Driftwise | Pricing Sheet</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta
+    name="description"
+    content="Budget Tracker pricing sheet for Starter, Growth, Scale, and managed service support."
+  />
+  <title>Budget Tracker - Pricing</title>
+  <link rel="stylesheet" href="/assets/css/tailwind.css">
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #f7f1e8;
-      --surface: #fffaf4;
-      --surface-2: #fdf7ef;
-      --line: rgba(102, 82, 61, 0.14);
-      --line-soft: rgba(102, 82, 61, 0.08);
-      --text: #231912;
-      --muted: #6e6053;
-      --accent: #0c7a70;
-      --accent-strong: #0a655d;
-      --accent-alt: #4768de;
-      --warn: #e89a36;
-      --success: #1e8c67;
-      --shadow: 0 18px 42px rgba(93, 64, 30, 0.08);
+      --bg: #f9f8f6;
+      --panel: #ffffff;
+      --panel-soft: rgba(255, 255, 255, 0.78);
+      --ink: #0a0a0b;
+      --muted: #5b5b61;
+      --line: rgba(10, 10, 11, 0.08);
+      --line-strong: rgba(10, 10, 11, 0.14);
+      --accent: #0052ff;
+      --accent-strong: #0040c5;
+      --shadow: 0 24px 70px rgba(17, 24, 39, 0.08);
     }
 
     * {
@@ -36,80 +37,110 @@ header("Expires: 0");
 
     body {
       margin: 0;
-      font-family: "Space Grotesk", sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(900px 420px at 84% -10%, rgba(232, 154, 54, 0.22), transparent 56%),
-        radial-gradient(880px 500px at -6% 12%, rgba(71, 104, 222, 0.1), transparent 60%),
-        linear-gradient(180deg, #fffdf9 0%, var(--bg) 46%, #efe3d3 100%);
-      min-height: 100vh;
+      font-family: "Manrope", sans-serif;
+      color: var(--ink);
+      background: var(--bg);
     }
 
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background: linear-gradient(180deg, rgba(255,255,255,0.24), transparent 24%);
-      opacity: 0.65;
+    h1,
+    h2,
+    h3 {
+      font-family: "Playfair Display", serif;
+      letter-spacing: -0.035em;
+      line-height: 0.98;
     }
 
     .mono {
       font-family: "JetBrains Mono", monospace;
     }
 
-    .frame {
+    .glass {
+      background: rgba(249, 248, 246, 0.78);
+      backdrop-filter: blur(14px);
+    }
+
+    .panel {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.88));
       border: 1px solid var(--line);
-      background: linear-gradient(180deg, rgba(255, 251, 245, 0.95), rgba(251, 245, 236, 0.96));
       box-shadow: var(--shadow);
     }
 
-    .soft-frame {
-      border: 1px solid var(--line-soft);
-      background: rgba(255, 255, 255, 0.68);
+    .panel-soft {
+      background: var(--panel-soft);
+      border: 1px solid rgba(10, 10, 11, 0.06);
     }
 
-    .lift {
-      transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+    .eyebrow {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      font-weight: 600;
     }
 
-    .lift:hover {
+    .cta-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 500;
+      transition: all 180ms ease;
+    }
+
+    .cta-primary:hover {
+      background: var(--accent-strong);
       transform: translateY(-2px);
-      border-color: rgba(12, 122, 112, 0.18);
-      box-shadow: 0 12px 26px rgba(93, 64, 30, 0.08);
     }
 
-    h1,
-    h2,
-    h3 {
-      font-family: "Newsreader", serif;
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      line-height: 0.98;
+    .cta-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      border-radius: 999px;
+      border: 1px solid rgba(10, 10, 11, 0.15);
+      background: transparent;
+      color: var(--ink);
+      font-weight: 500;
+      transition: all 180ms ease;
     }
 
-    .body-copy {
-      line-height: 1.75;
-      max-width: 60ch;
+    .cta-secondary:hover {
+      transform: translateY(-2px);
+      background: rgba(10, 10, 11, 0.03);
     }
 
-    .price-card {
-      position: relative;
-      overflow: hidden;
+    .price-card,
+    .info-card {
+      transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
     }
 
-    .price-card.featured {
-      border-color: rgba(12, 122, 112, 0.24);
-      box-shadow: 0 16px 34px rgba(12, 122, 112, 0.08);
+    .price-card:hover,
+    .info-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(0, 82, 255, 0.16);
+      box-shadow: 0 18px 40px rgba(17, 24, 39, 0.08);
     }
 
-    .price-card.featured::before {
-      content: "";
+    .hero-mesh {
       position: absolute;
-      inset: 0 auto auto 0;
-      width: 100%;
-      height: 4px;
-      background: linear-gradient(90deg, var(--accent), var(--warn));
+      inset: 0;
+      opacity: 0.04;
+      pointer-events: none;
+      background-image:
+        linear-gradient(#0A0A0B 1px, transparent 1px),
+        linear-gradient(90deg, #0A0A0B 1px, transparent 1px);
+      background-size: 64px 64px;
+    }
+
+    .dark-panel {
+      background:
+        radial-gradient(420px 220px at 84% 10%, rgba(0, 82, 255, 0.18), transparent 60%),
+        #0a0a0b;
+      color: white;
     }
 
     @media print {
@@ -118,149 +149,189 @@ header("Expires: 0");
       }
 
       body {
-        background: #fffdf9;
+        background: white;
       }
 
-      .frame {
+      .panel,
+      .panel-soft,
+      .dark-panel {
+        box-shadow: none !important;
         break-inside: avoid;
       }
     }
   </style>
 </head>
 <body>
-  <header class="sticky top-0 z-30 bg-[#fffaf4]/90 border-b border-[rgba(105,84,63,0.10)] backdrop-blur">
-    <div class="max-w-6xl mx-auto px-5 py-4 flex items-center justify-between gap-4">
-      <a href="landing.php" class="font-semibold tracking-tight text-base md:text-lg">Driftwise</a>
-      <div class="hidden md:flex items-center gap-6 text-sm text-slate-300">
-        <a href="landing.php#pricing" class="hover:text-[var(--accent)] transition">Pricing</a>
-        <a href="landing.php#process" class="hover:text-[var(--accent)] transition">Process</a>
-        <a href="landing.php#faq" class="hover:text-[var(--accent)] transition">FAQ</a>
-      </div>
+  <header class="sticky top-0 z-30 border-b border-black/5 glass">
+    <div class="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-4 md:px-10">
+      <a href="landing.php#top" class="flex items-center gap-3">
+        <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-[#0A0A0B]">
+          <span class="block h-3 w-3 rotate-12 rounded-sm bg-[#0052FF]"></span>
+        </span>
+        <span class="text-xl tracking-tight" style="font-family: 'Playfair Display', serif;">Budget Tracker</span>
+      </a>
+      <nav class="hidden md:flex items-center gap-7 text-sm text-black/70">
+        <a href="landing.php#features" class="hover:text-[#0052FF] transition">Features</a>
+        <a href="landing.php#pricing" class="hover:text-[#0052FF] transition">See pricing</a>
+        <a href="landing.php#faq" class="hover:text-[#0052FF] transition">FAQ</a>
+        <a href="landing.php#managed-service" class="hover:text-[#0052FF] transition">Explore Managed Service</a>
+      </nav>
       <div class="flex items-center gap-2">
-        <span class="hidden sm:inline mono text-[11px] px-2 py-1 rounded border border-[rgba(102,82,61,0.14)] text-[var(--accent-alt)]">PRICING SHEET</span>
-        <a href="login.php" class="text-xs sm:text-sm px-3 py-2 rounded border border-[rgba(105,84,63,0.16)] hover:bg-[rgba(12,122,112,0.10)] hover:border-[rgba(12,122,112,0.22)] transition">Client Portal</a>
+        <a href="login.php" class="hidden sm:inline-flex cta-secondary px-4 py-2.5 text-sm font-medium">Client Login</a>
+        <a href="checkout.php?plan=growth" class="cta-primary px-4 py-2.5 text-sm">Start Growth</a>
       </div>
     </div>
   </header>
 
-  <main class="max-w-6xl mx-auto px-5 py-10 md:py-14">
-    <section class="frame rounded-2xl p-6 md:p-9 mb-6">
-      <p class="mono text-[11px] tracking-[0.2em] text-[var(--accent-alt)] mb-3">DRIFTWISE / PRICING SHEET</p>
-      <h1 class="text-4xl md:text-5xl mb-4">Simple pricing for teams that want clearer budget decisions</h1>
-      <p class="text-slate-300 body-copy mb-7">Use this page to compare self-serve plans and the premium support path. Most teams should start with Control, then grow into Command or Ops+ only if they need more guidance and hands-on help.</p>
-      <div class="grid sm:grid-cols-3 gap-3 mb-6">
-        <div class="soft-frame rounded-md px-4 py-3 mono text-xs text-slate-300">always-on budget visibility</div>
-        <div class="soft-frame rounded-md px-4 py-3 mono text-xs text-slate-300">billing: monthly subscription</div>
-        <div class="soft-frame rounded-md px-4 py-3 mono text-xs text-slate-300">response target: &lt;24h</div>
-      </div>
-      <div class="no-print flex flex-wrap gap-3">
-        <a href="landing.php" class="px-5 py-3 rounded-md border border-[rgba(105,84,63,0.16)] hover:bg-[rgba(12,122,112,0.10)] hover:border-[rgba(12,122,112,0.22)] transition">Back To Landing</a>
-        <button onclick="window.print()" class="px-5 py-3 rounded-md bg-[var(--accent)] text-[#fffaf2] font-semibold hover:bg-[var(--accent-strong)] transition">Print Or Save PDF</button>
-        <a href="mailto:jfontiveros7@gmail.com" class="px-5 py-3 rounded-md border border-[rgba(105,84,63,0.16)] hover:bg-[rgba(12,122,112,0.10)] hover:border-[rgba(12,122,112,0.22)] transition">Email Sales</a>
-      </div>
-    </section>
+  <main class="relative overflow-hidden">
+    <div class="hero-mesh"></div>
 
-    <section class="grid md:grid-cols-3 gap-4 mb-6">
-      <article class="frame price-card lift rounded-2xl p-6 flex flex-col">
-        <p class="mono text-xs text-emerald-300 mb-2">TIER 1</p>
-        <h2 class="text-2xl font-semibold mb-1">Monitor</h2>
-        <p class="text-sm text-slate-300 mb-4">For solo operators who want a cleaner view of drift and a low-risk entry point.</p>
-        <p class="text-4xl font-bold mb-1">$5<span class="text-lg text-slate-400">/mo</span></p>
-        <p class="mono text-xs text-slate-400 mb-5">month-to-month</p>
-        <ul class="text-sm text-slate-300 space-y-2 mb-7 flex-1">
-          <li>Monthly budget health report</li>
-          <li>Core dashboard visibility</li>
-          <li>Transaction anomaly highlights</li>
-          <li>Early category drift awareness</li>
-          <li>Self-serve onboarding flow</li>
-        </ul>
-        <a href="checkout.php?plan=starter" class="mt-5 inline-flex items-center justify-center rounded-lg border border-[rgba(105,84,63,0.16)] px-4 py-3 text-sm font-medium hover:bg-[rgba(12,122,112,0.10)] hover:border-[rgba(12,122,112,0.22)] transition">Choose Monitor</a>
-      </article>
-
-      <article class="frame price-card featured lift rounded-2xl p-6 flex flex-col border-2 border-[var(--accent)]">
-        <p class="mono text-xs text-emerald-300 mb-2">MOST POPULAR</p>
-        <h2 class="text-2xl font-semibold mb-1">Control</h2>
-        <p class="text-sm text-slate-300 mb-4">For teams that need stronger accountability, guided action, and a weekly operating rhythm.</p>
-        <p class="text-4xl font-bold mb-1">$10<span class="text-lg text-slate-400">/mo</span></p>
-        <p class="mono text-xs text-slate-400 mb-5">recommended minimum: 3 months</p>
-        <ul class="text-sm text-slate-300 space-y-2 mb-7 flex-1">
-          <li>Biweekly spend and variance reviews</li>
-          <li>Alert tuning and threshold updates</li>
-          <li>Monthly strategic action plan</li>
-          <li>Priority support, 24-hour response SLA</li>
-          <li>Budget Copilot guidance</li>
-        </ul>
-        <a href="checkout.php?plan=growth" class="mt-5 inline-flex items-center justify-center rounded-lg bg-[var(--accent)] px-4 py-3 text-sm font-semibold text-[#fffaf2] hover:bg-[var(--accent-strong)] transition">Choose Control</a>
-      </article>
-
-      <article class="frame price-card lift rounded-2xl p-6 flex flex-col">
-        <p class="mono text-xs text-emerald-300 mb-2">TIER 3</p>
-        <h2 class="text-2xl font-semibold mb-1">Command</h2>
-        <p class="text-sm text-slate-300 mb-4">For customers who need planning help, faster support, and a premium budget operations lane.</p>
-        <p class="text-4xl font-bold mb-1">$19.99<span class="text-lg text-slate-400">/mo</span></p>
-        <p class="mono text-xs text-slate-400 mb-5">custom scope available</p>
-        <ul class="text-sm text-slate-300 space-y-2 mb-7 flex-1">
-          <li>Weekly advisor check-ins</li>
-          <li>Forecasting and scenario planning</li>
-          <li>Custom workflows and automation support</li>
-          <li>Priority support and escalation channel</li>
-          <li>Best bridge into Driftwise Ops+</li>
-        </ul>
-        <div class="mt-5 grid gap-3">
-          <a href="checkout.php?plan=scale" class="inline-flex items-center justify-center rounded-lg border border-[rgba(105,84,63,0.16)] px-4 py-3 text-sm font-medium hover:bg-[rgba(12,122,112,0.10)] hover:border-[rgba(12,122,112,0.22)] transition">Choose Command</a>
-          <a href="mailto:jfontiveros7@gmail.com" class="inline-flex items-center justify-center rounded-lg border border-[rgba(105,84,63,0.16)] px-4 py-3 text-sm hover:bg-[rgba(12,122,112,0.10)] hover:border-[rgba(12,122,112,0.22)] transition">Talk To Sales</a>
+    <section class="relative mx-auto max-w-7xl px-6 pt-10 pb-8 md:px-10 md:pt-16 md:pb-12">
+      <div class="panel rounded-[32px] p-7 md:p-10">
+        <div class="flex flex-wrap items-center gap-3">
+          <span class="eyebrow text-[#0052FF]">Budget Tracker · Pricing</span>
+          <span class="h-px w-20 bg-black/10"></span>
+          <span class="mono rounded-full border border-black/10 px-3 py-1 text-[11px] text-black/52">Updated for current plans</span>
         </div>
-      </article>
+        <div class="mt-6 grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
+          <div>
+            <h1 class="max-w-4xl text-5xl md:text-7xl lg:text-[76px]">Clear pricing for teams that want budget visibility without finance theater.</h1>
+            <p class="mt-6 max-w-2xl text-lg leading-relaxed text-black/64 md:text-xl">
+              Use this page to compare Starter, Growth, and Scale, then route higher-need teams into managed service only when they genuinely need the extra support.
+            </p>
+          </div>
+          <div class="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+            <div class="panel-soft rounded-3xl px-5 py-4">
+              <p class="mono text-[11px] uppercase tracking-[0.2em] text-[#0052FF]">Default recommendation</p>
+              <p class="mt-2 text-sm text-black/64">Most teams should start with Growth.</p>
+            </div>
+            <div class="panel-soft rounded-3xl px-5 py-4">
+              <p class="mono text-[11px] uppercase tracking-[0.2em] text-[#0052FF]">Billing</p>
+              <p class="mt-2 text-sm text-black/64">Monthly subscription, secure Stripe checkout.</p>
+            </div>
+            <div class="panel-soft rounded-3xl px-5 py-4">
+              <p class="mono text-[11px] uppercase tracking-[0.2em] text-[#0052FF]">Support target</p>
+              <p class="mt-2 text-sm text-black/64">Managed service inquiries answered within one business day.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="no-print mt-8 flex flex-wrap gap-3">
+          <a href="landing.php#pricing" class="cta-secondary px-5 py-3 text-sm">See pricing</a>
+          <a href="checkout.php?plan=growth" class="cta-primary px-5 py-3 text-sm">Start Growth</a>
+          <button onclick="window.print()" class="cta-secondary px-5 py-3 text-sm">Print Or Save PDF</button>
+        </div>
+      </div>
     </section>
 
-    <section class="frame rounded-2xl p-6 md:p-8 mb-6">
-      <p class="mono text-[11px] tracking-[0.2em] text-[var(--warn)] mb-3">TERMS</p>
-      <h3 class="text-2xl font-semibold mb-5">Scope, SLAs, and commercial notes</h3>
-      <div class="grid md:grid-cols-2 gap-4 text-sm">
-        <div class="soft-frame rounded-xl p-4">
-          <p class="font-semibold mb-3">Included in all tiers</p>
-          <ul class="space-y-2 text-slate-300">
+    <section class="mx-auto max-w-7xl px-6 pb-8 md:px-10 md:pb-12">
+      <div class="grid gap-5 lg:grid-cols-3">
+        <article class="price-card panel rounded-[28px] p-7 flex flex-col">
+          <p class="eyebrow text-black/42">Starter</p>
+          <h2 class="mt-4 text-4xl">$5<span class="text-lg text-black/45">/mo</span></h2>
+          <p class="mt-4 text-sm leading-6 text-black/62">A low-friction entry point for solo operators who want visibility before committing to a heavier operating rhythm.</p>
+          <ul class="mt-6 space-y-3 text-sm text-black/68 flex-1">
+            <li>Core dashboard access</li>
+            <li>Monthly budget health report</li>
+            <li>Early drift visibility by category</li>
+            <li>Limited alerts and threshold monitoring</li>
+            <li>Best for testing the workflow</li>
+          </ul>
+          <a href="checkout.php?plan=starter" class="cta-secondary mt-8 px-5 py-3 text-sm font-semibold">Start Starter</a>
+        </article>
+
+        <article class="price-card rounded-[28px] border border-[#0052FF] bg-[#0A0A0B] text-white p-7 flex flex-col shadow-[0_24px_60px_-30px_rgba(0,82,255,0.5)]">
+          <p class="eyebrow text-[#7aa2ff]">Best Value</p>
+          <h2 class="mt-4 text-4xl">Growth<span class="block text-2xl mt-1">$10/mo</span></h2>
+          <p class="mt-4 text-sm leading-6 text-white/72">The strongest default for most teams. Enough structure, alerts, and guided follow-through to make the product feel real quickly.</p>
+          <ul class="mt-6 space-y-3 text-sm text-white/80 flex-1">
+            <li>Biweekly spend and variance reviews</li>
+            <li>Full dashboard alerts</li>
+            <li>Alert tuning and threshold updates</li>
+            <li>Monthly action plan</li>
+            <li>AI Coach guidance</li>
+          </ul>
+          <a href="checkout.php?plan=growth" class="cta-primary mt-8 px-5 py-3 text-sm">Start Growth</a>
+        </article>
+
+        <article class="price-card panel rounded-[28px] p-7 flex flex-col">
+          <p class="eyebrow text-black/42">Scale</p>
+          <h2 class="mt-4 text-4xl">$20<span class="text-lg text-black/45">/mo</span></h2>
+          <p class="mt-4 text-sm leading-6 text-black/62">For customers who need faster support, more planning help, and a stronger bridge into managed service.</p>
+          <ul class="mt-6 space-y-3 text-sm text-black/68 flex-1">
+            <li>Weekly advisor check-ins</li>
+            <li>Forecasting and scenario planning</li>
+            <li>Priority support lane</li>
+            <li>Custom workflow guidance</li>
+            <li>Best bridge into managed service</li>
+          </ul>
+          <div class="mt-8 grid gap-3">
+            <a href="checkout.php?plan=scale" class="cta-secondary px-5 py-3 text-sm font-semibold">Start Scale</a>
+            <a href="landing.php#managed-service-contact" class="cta-secondary px-5 py-3 text-sm font-semibold">Talk To Sales</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-7xl px-6 pb-8 md:px-10 md:pb-12">
+      <div class="grid gap-5 lg:grid-cols-2">
+        <article class="info-card panel-soft rounded-[28px] p-7">
+          <p class="eyebrow text-[#0052FF]">Included in all plans</p>
+          <h3 class="mt-4 text-3xl">What every subscriber gets</h3>
+          <ul class="mt-6 space-y-3 text-sm leading-6 text-black/68">
             <li>Secure client portal access</li>
             <li>Recurring budget operations review</li>
-            <li>Actionable recommendations, not just charts</li>
-            <li>Clear visibility into variance and drift</li>
+            <li>Visibility into variance and category drift</li>
+            <li>Action-oriented recommendations, not just charts</li>
           </ul>
-        </div>
-        <div class="soft-frame rounded-xl p-4">
-          <p class="font-semibold mb-3">Commercial notes</p>
-          <ul class="space-y-2 text-slate-300">
-            <li>Pricing excludes tax and third-party fees</li>
-            <li>Advisory and optimization only, no tax filing services</li>
-            <li>Payment due at start of each monthly cycle</li>
-            <li>Extra requests can be scoped as add-ons</li>
+        </article>
+
+        <article class="info-card panel-soft rounded-[28px] p-7">
+          <p class="eyebrow text-[#0052FF]">Commercial notes</p>
+          <h3 class="mt-4 text-3xl">Terms worth knowing</h3>
+          <ul class="mt-6 space-y-3 text-sm leading-6 text-black/68">
+            <li>Pricing excludes tax and third-party payment fees where applicable.</li>
+            <li>Budget Tracker provides monitoring, advisory, and workflow support, not tax filing services.</li>
+            <li>Subscriptions renew monthly unless canceled through the payment provider.</li>
+            <li>Extra advisory requests can be scoped separately when needed.</li>
           </ul>
-        </div>
+        </article>
       </div>
     </section>
 
-    <section class="frame rounded-2xl p-6 md:p-8">
-      <p class="mono text-[11px] tracking-[0.2em] text-emerald-300 mb-3">DRIFTWISE OPS+ OPTIONS</p>
-      <div class="grid md:grid-cols-3 gap-4 mb-7">
-        <div class="soft-frame rounded-xl p-4">
-        <p class="font-semibold mb-1">Managed Onboarding</p>
-        <p class="text-sm text-slate-300">$75 setup + first month tier fee</p>
-      </div>
-      <div class="soft-frame rounded-xl p-4">
-        <p class="font-semibold mb-1">Extra Advisory Call</p>
-        <p class="text-sm text-slate-300">$90 per 45-minute session</p>
-      </div>
-        <div class="soft-frame rounded-xl p-4">
-          <p class="font-semibold mb-1">Custom Workflow Build</p>
-          <p class="text-sm text-slate-300">From $150 per scoped request</p>
-        </div>
-      </div>
+    <section class="mx-auto max-w-7xl px-6 pb-12 md:px-10 md:pb-16">
+      <div class="dark-panel rounded-[32px] p-7 md:p-10">
+        <div class="grid gap-8 lg:grid-cols-[1fr_1.1fr]">
+          <div>
+            <p class="eyebrow text-[#7aa2ff]">Managed service options</p>
+            <h3 class="mt-4 text-4xl md:text-5xl">When software alone is not enough, step up cleanly.</h3>
+            <p class="mt-5 max-w-xl text-lg leading-relaxed text-white/70">
+              Keep self-serve pricing simple, then use managed service only for higher-need teams that want setup help, recurring support, or deeper finance operating structure.
+            </p>
+          </div>
 
-        <div class="soft-frame rounded-xl p-5">
-        <p class="font-semibold mb-2">Next step</p>
-        <p class="text-slate-300 mb-4">Most buyers can start immediately on Monitor or Control. If the buyer needs planning help or process ownership, route them to Command or a discovery call.</p>
-        <div class="no-print flex flex-wrap gap-3">
-          <a href="checkout.php?plan=growth" class="px-5 py-3 rounded-md bg-[var(--accent)] text-[#fffaf2] font-semibold hover:bg-[var(--accent-strong)] transition">Start Control</a>
-          <a href="mailto:jfontiveros7@gmail.com" class="px-5 py-3 rounded-md border border-[rgba(105,84,63,0.16)] hover:bg-[rgba(12,122,112,0.10)] hover:border-[rgba(12,122,112,0.22)] transition">Book Discovery Call</a>
+          <div class="grid gap-4 md:grid-cols-3">
+            <div class="rounded-[24px] border border-white/10 bg-white/5 p-5">
+              <p class="mono text-[11px] uppercase tracking-[0.2em] text-[#7aa2ff]">Setup</p>
+              <p class="mt-3 text-xl" style="font-family: 'Playfair Display', serif;">Managed Onboarding</p>
+              <p class="mt-2 text-sm text-white/70">$75 setup plus first month tier fee.</p>
+            </div>
+            <div class="rounded-[24px] border border-white/10 bg-white/5 p-5">
+              <p class="mono text-[11px] uppercase tracking-[0.2em] text-[#7aa2ff]">Support</p>
+              <p class="mt-3 text-xl" style="font-family: 'Playfair Display', serif;">Extra Advisory Call</p>
+              <p class="mt-2 text-sm text-white/70">$90 per 45-minute session.</p>
+            </div>
+            <div class="rounded-[24px] border border-white/10 bg-white/5 p-5">
+              <p class="mono text-[11px] uppercase tracking-[0.2em] text-[#7aa2ff]">Build</p>
+              <p class="mt-3 text-xl" style="font-family: 'Playfair Display', serif;">Custom Workflow</p>
+              <p class="mt-2 text-sm text-white/70">From $150 per scoped request.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="landing.php#managed-service-contact" class="cta-primary px-5 py-3 text-sm">Explore Managed Service</a>
+          <a href="landing.php#faq" class="cta-secondary px-5 py-3 text-sm" style="color: white; border-color: rgba(255,255,255,0.2);">Read FAQ</a>
         </div>
       </div>
     </section>

@@ -49,7 +49,10 @@ BEGIN
           AND column_name = 'selected_plan'
     ) THEN
         ALTER TABLE users
-            ADD COLUMN selected_plan ENUM('starter', 'growth') NOT NULL DEFAULT 'growth' AFTER role;
+            ADD COLUMN selected_plan ENUM('starter', 'growth', 'scale') NOT NULL DEFAULT 'growth' AFTER role;
+    ELSE
+        ALTER TABLE users
+            MODIFY COLUMN selected_plan ENUM('starter', 'growth', 'scale') NOT NULL DEFAULT 'growth';
     END IF;
 
     IF NOT EXISTS (
@@ -179,6 +182,24 @@ WHERE b.category_id IS NULL
   AND b.category IS NOT NULL
   AND TRIM(b.category) <> '';
 
+CREATE TABLE IF NOT EXISTS purchase_claims (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    claim_token VARCHAR(64) NOT NULL UNIQUE,
+    plan ENUM('starter','growth','scale') NOT NULL,
+    stripe_checkout_session_id VARCHAR(255) DEFAULT NULL UNIQUE,
+    stripe_customer_email VARCHAR(255) DEFAULT NULL,
+    payment_status ENUM('initiated','paid','claimed') NOT NULL DEFAULT 'initiated',
+    claimed_user_id INT DEFAULT NULL,
+    metadata_json TEXT DEFAULT NULL,
+    paid_at DATETIME DEFAULT NULL,
+    claimed_at DATETIME DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_purchase_claims_user
+        FOREIGN KEY (claimed_user_id) REFERENCES users(id)
+        ON DELETE SET NULL
+);
+
 DELIMITER $$
 
 DROP PROCEDURE IF EXISTS add_budgettracker_v2_constraints_and_indexes $$
@@ -288,6 +309,26 @@ BEGIN
           AND index_name = 'idx_password_resets_expires_at'
     ) THEN
         CREATE INDEX idx_password_resets_expires_at ON password_resets(expires_at);
+    END IF;
+
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.statistics
+        WHERE table_schema = DATABASE()
+          AND table_name = 'purchase_claims'
+          AND index_name = 'idx_purchase_claims_customer_email'
+    ) THEN
+        CREATE INDEX idx_purchase_claims_customer_email ON purchase_claims(stripe_customer_email);
+    END IF;
+
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.statistics
+        WHERE table_schema = DATABASE()
+          AND table_name = 'purchase_claims'
+          AND index_name = 'idx_purchase_claims_status_paid'
+    ) THEN
+        CREATE INDEX idx_purchase_claims_status_paid ON purchase_claims(payment_status, paid_at);
     END IF;
 END $$
 
